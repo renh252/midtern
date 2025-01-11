@@ -14,19 +14,21 @@
           <!--end::Start Navbar Links-->
           <!--begin::End Navbar Links-->
           <ul class="navbar-nav ms-auto">
-            <!--begin::Navbar Search-->
+            <!--begin::Navbar Search 搜尋按鈕(目前無功能)-->
             <li class="nav-item">
               <a class="nav-link" data-widget="navbar-search" href="#" role="button">
                 <i class="bi bi-search"></i>
               </a>
             </li>
             <!--end::Navbar Search-->
-            <!--begin::Messages Dropdown Menu-->
+            <!--begin::Messages Dropdown Menu 訊息按鈕&下拉式選單-->
             <li class="nav-item dropdown">
+              <!-- 訊息按鈕 -->
               <a class="nav-link" data-bs-toggle="dropdown" href="#">
                 <i class="bi bi-chat-text"></i>
                 <span class="navbar-badge badge text-bg-danger">3</span>
               </a>
+              <!-- 下拉式選單 -->
               <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <a href="#" class="dropdown-item">
                   <!--begin::Message-->
@@ -81,7 +83,7 @@
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">
-                  <!--begin::Message-->
+                  <!--begin::Message -->
                   <div class="d-flex">
                     <div class="flex-shrink-0">
                       <img
@@ -110,7 +112,7 @@
               </div>
             </li>
             <!--end::Messages Dropdown Menu-->
-            <!--begin::Notifications Dropdown Menu-->
+            <!--begin::Notifications Dropdown Menu 通知按鈕-->
             <li class="nav-item dropdown">
               <a class="nav-link" data-bs-toggle="dropdown" href="#">
                 <i class="bi bi-bell-fill"></i>
@@ -138,7 +140,7 @@
               </div>
             </li>
             <!--end::Notifications Dropdown Menu-->
-            <!--begin::Fullscreen Toggle-->
+            <!--begin::Fullscreen Toggle 全螢幕按鈕 -->
             <li class="nav-item">
               <a class="nav-link" href="#" data-lte-toggle="fullscreen">
                 <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>

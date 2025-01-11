@@ -11,7 +11,7 @@
     />
     <!--end::Brand Image-->
     <!--begin::Brand Text-->
-    <span class="brand-text fw-light">AdminLTE 4</span>
+    <span class="brand-text fw-light">寵物認養網站</span>
     <!--end::Brand Text-->
   </a>
   <!--end::Brand Link-->
@@ -31,7 +31,7 @@
         <a href="#" class="nav-link active">
           <i class="nav-icon bi bi-speedometer"></i>
           <p>
-            Dashboard
+            儀表板
             <i class="nav-arrow bi bi-chevron-right"></i>
           </p>
         </a>
@@ -57,16 +57,10 @@
         </ul>
       </li>
       <li class="nav-item">
-        <a href="./generate/theme.html" class="nav-link">
-          <i class="nav-icon bi bi-palette"></i>
-          <p>Theme Generate</p>
-        </a>
-      </li>
-      <li class="nav-item">
         <a href="#" class="nav-link">
           <i class="nav-icon bi bi-box-seam-fill"></i>
           <p>
-            Widgets
+            元件
             <i class="nav-arrow bi bi-chevron-right"></i>
           </p>
         </a>
@@ -95,7 +89,7 @@
         <a href="#" class="nav-link">
           <i class="nav-icon bi bi-clipboard-fill"></i>
           <p>
-            Layout Options
+            排版
             <span class="nav-badge badge text-bg-secondary me-3">6</span>
             <i class="nav-arrow bi bi-chevron-right"></i>
           </p>
@@ -149,7 +143,7 @@
         <a href="#" class="nav-link">
           <i class="nav-icon bi bi-tree-fill"></i>
           <p>
-            UI Elements
+            UI元件
             <i class="nav-arrow bi bi-chevron-right"></i>
           </p>
         </a>
@@ -178,7 +172,7 @@
         <a href="#" class="nav-link">
           <i class="nav-icon bi bi-pencil-square"></i>
           <p>
-            Forms
+            表單
             <i class="nav-arrow bi bi-chevron-right"></i>
           </p>
         </a>
@@ -195,7 +189,7 @@
         <a href="#" class="nav-link">
           <i class="nav-icon bi bi-table"></i>
           <p>
-            Tables
+            表格
             <i class="nav-arrow bi bi-chevron-right"></i>
           </p>
         </a>
@@ -210,10 +204,16 @@
       </li>
       <li class="nav-header">EXAMPLES</li>
       <li class="nav-item">
+        <a href="./generate/theme.html" class="nav-link">
+          <i class="nav-icon bi bi-palette"></i>
+          <p>主題產生器</p>
+        </a>
+      </li>
+      <li class="nav-item">
         <a href="#" class="nav-link">
           <i class="nav-icon bi bi-box-arrow-in-right"></i>
           <p>
-            Auth
+            授權
             <i class="nav-arrow bi bi-chevron-right"></i>
           </p>
         </a>
@@ -276,26 +276,26 @@
       <li class="nav-item">
         <a href="./docs/introduction.html" class="nav-link">
           <i class="nav-icon bi bi-download"></i>
-          <p>Installation</p>
+          <p>如何安裝</p>
         </a>
       </li>
       <li class="nav-item">
         <a href="./docs/layout.html" class="nav-link">
           <i class="nav-icon bi bi-grip-horizontal"></i>
-          <p>Layout</p>
+          <p>佈局</p>
         </a>
       </li>
       <li class="nav-item">
         <a href="./docs/color-mode.html" class="nav-link">
           <i class="nav-icon bi bi-star-half"></i>
-          <p>Color Mode</p>
+          <p>色彩模式</p>
         </a>
       </li>
       <li class="nav-item">
         <a href="#" class="nav-link">
           <i class="nav-icon bi bi-ui-checks-grid"></i>
           <p>
-            Components
+            構件
             <i class="nav-arrow bi bi-chevron-right"></i>
           </p>
         </a>
@@ -334,13 +334,13 @@
       <li class="nav-item">
         <a href="./docs/browser-support.html" class="nav-link">
           <i class="nav-icon bi bi-browser-edge"></i>
-          <p>Browser Support</p>
+          <p>瀏覽器支援</p>
         </a>
       </li>
       <li class="nav-item">
         <a href="./docs/how-to-contribute.html" class="nav-link">
           <i class="nav-icon bi bi-hand-thumbs-up-fill"></i>
-          <p>How To Contribute</p>
+          <p>如何貢獻</p>
         </a>
       </li>
       <li class="nav-item">
@@ -352,7 +352,7 @@
       <li class="nav-item">
         <a href="./docs/license.html" class="nav-link">
           <i class="nav-icon bi bi-patch-check-fill"></i>
-          <p>License</p>
+          <p>憑證</p>
         </a>
       </li>
       <li class="nav-header">MULTI LEVEL EXAMPLE</li>

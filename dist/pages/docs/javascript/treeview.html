@@ -271,7 +271,7 @@
         <!--begin::Sidebar Brand-->
         <div class="sidebar-brand">
           <!--begin::Brand Link-->
-          <a href="../../index.html" class="brand-link">
+          <a href="../../index.php" class="brand-link">
             <!--begin::Brand Image-->
             <img
               src="../../../../dist/assets/img/AdminLTELogo.png"
@@ -306,7 +306,7 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="../../index.html" class="nav-link">
+                    <a href="../../index.php" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Dashboard v1</p>
                     </a>
@@ -723,7 +723,7 @@
           <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-              <div class="col-sm-6"><h3 class="mb-0">Treeview Plugin</h3></div>
+              <div class="col-sm-6"><h3 class="mb-0">樹狀視圖插件Treeview Plugin</h3></div>
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
                   <li class="breadcrumb-item"><a href="#">Docs</a></li>
@@ -741,15 +741,13 @@
           <!--begin::Container-->
           <div class="container-fluid">
             <p>
-              The Treeview plugin converts a nested list into a tree view where sub menus can be
-              expanded.
+              Treeview 插件可以將巢狀列表（nested list，也就是列表中包含子列表）轉換成樹狀視圖，讓子選單可以展開和收合。
             </p>
-            <h5 id="usage">Usage</h5>
-            <p>This plugin can be used as the data api.</p>
-            <p><strong>Data API</strong></p>
+            <h5 id="usage">用途</h5>
+            <p>這個插件可以使用 "data API" 的方式來使用。Data API 是一種透過 HTML 元素的 data-* 屬性來設定和控制 JavaScript 行為的方式，不需要額外撰寫 JavaScript 程式碼。</p>
+            <p><strong>使用Data API</strong></p>
             <p>
-              Add <code>data-lte-toggle=&quot;treeview&quot;</code> to any ul or ol element to
-              activate the plugin.
+              加入 <code>data-lte-toggle=&quot;treeview&quot;</code> 在任何 ul 或 ol 元素中就可以啟用 Treeview 插件。
             </p>
             <pre
               class="astro-code dark-plus"
@@ -770,7 +768,7 @@
             <ul data-lte-toggle="treeview">
               <li><a href="#">One Level</a></li>
               <li class="nav-item menu-open">
-                <a class="nav-link" href="#"><p>Multilevel</p></a>
+                <a class="nav-link" href="#"><p>Multilevel(按我)</p></a>
                 <ul class="nav-treeview">
                   <li><a href="#">Level 2</a></li>
                 </ul>
