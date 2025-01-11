@@ -27,8 +27,120 @@
       role="menu"
       data-accordion="false"
     >
-      <li class="nav-item menu-open">
-        <a href="#" class="nav-link active">
+      <li class="nav-header">後台介面</li>
+      <li class="nav-item menu">
+        <a href="#" class="nav-link">
+          <i class="nav-icon bi bi-coin"></i>
+          <p>
+            金流管理
+            <i class="nav-arrow bi bi-chevron-right"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="./finance/donations.php" class="nav-link">
+              <i class="nav-icon bi bi-circle"></i>
+              <p>捐款明細</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="./finance/incomes.php" class="nav-link">
+              <i class="nav-icon bi bi-circle"></i>
+              <p>收入表</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="./finance/expenses.php" class="nav-link">
+              <i class="nav-icon bi bi-circle"></i>
+              <p>支出表</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-item menu">
+        <a href="#" class="nav-link">
+          <i class="nav-icon bi bi-bag"></i>
+          <p>
+            商城管理
+            <i class="nav-arrow bi bi-chevron-right"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="./shop/orders.php" class="nav-link">
+              <i class="nav-icon bi bi-circle"></i>
+              <p>訂單</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="./shop/products.php" class="nav-link">
+              <i class="nav-icon bi bi-circle"></i>
+              <p>商品列表</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="./shop/return.php" class="nav-link">
+              <i class="nav-icon bi bi-circle"></i>
+              <p>退貨審核</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="./shop/promotions.php" class="nav-link">
+              <i class="nav-icon bi bi-circle"></i>
+              <p>促銷活動</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-item menu">
+        <a href="#" class="nav-link">
+          <i class="nav-icon bi bi-file-earmark-text"></i>
+          <p>
+            論壇管理
+            <i class="nav-arrow bi bi-chevron-right"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="./forums/post.php" class="nav-link">
+              <i class="nav-icon bi bi-circle"></i>
+              <p>文章</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="./forums/comment.php" class="nav-link">
+              <i class="nav-icon bi bi-circle"></i>
+              <p>留言列表</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="./forums/report.php" class="nav-link">
+              <i class="nav-icon bi bi-circle"></i>
+              <p>檢舉列表</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="./forums/blacklist.php" class="nav-link">
+              <i class="nav-icon bi bi-circle"></i>
+              <p>黑名單</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="./users/user.php" class="nav-link">
+          <i class="nav-icon bi bi-person"></i>
+          <p>會員列表</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="./admin/admin.php" class="nav-link">
+          <i class="nav-icon bi bi-people"></i>
+          <p>管理員列表</p>
+        </a>
+      </li>
+      <li class="nav-item menu">
+        <a href="#" class="nav-link">
           <i class="nav-icon bi bi-speedometer"></i>
           <p>
             儀表板
@@ -37,7 +149,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="./index.php" class="nav-link active">
+            <a href="./index.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Dashboard v1</p>
             </a>
@@ -56,6 +168,7 @@
           </li>
         </ul>
       </li>
+      <li class="nav-header">雜項</li>
       <li class="nav-item">
         <a href="#" class="nav-link">
           <i class="nav-icon bi bi-box-seam-fill"></i>
