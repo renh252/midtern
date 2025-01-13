@@ -2,7 +2,7 @@
 <!--begin::Sidebar Brand-->
 <div class="sidebar-brand">
   <!--begin::Brand Link-->
-  <a href="./index.php" class="brand-link">
+  <a href="<?= ROOT_URL ?>dist/pages/index.php" class="brand-link">
     <!--begin::Brand Image-->
     <img
       src="<?= ROOT_URL ?>dist/assets/img/AdminLTELogo.png"
@@ -38,19 +38,19 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="./finance/donations.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/finance/donations.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>捐款明細</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./finance/incomes.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/finance/incomes.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>收入表</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./finance/expenses.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/finance/expenses.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>支出表</p>
             </a>
@@ -67,25 +67,25 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="./shop/orders.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/shop/orders.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>訂單</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./shop/products.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/shop/products.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>商品列表</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./shop/return.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/shop/return.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>退貨審核</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./shop/promotions.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/shop/promotions.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>促銷活動</p>
             </a>
@@ -102,25 +102,25 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="./forums/post.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/forums/post.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>文章</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./forums/comment.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/forums/comment.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>留言列表</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./forums/report.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/forums/report.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>檢舉列表</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./forums/blacklist.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/forums/blacklist.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>黑名單</p>
             </a>
@@ -128,13 +128,13 @@
         </ul>
       </li>
       <li class="nav-item">
-        <a href="./users/user.php" class="nav-link">
+        <a href="<?= ROOT_URL ?>dist/pages/users/user.php" class="nav-link">
           <i class="nav-icon bi bi-person"></i>
           <p>會員列表</p>
         </a>
       </li>
       <li class="nav-item">
-        <a href="./admin/admin.php" class="nav-link">
+        <a href="<?= ROOT_URL ?>dist/pages/admin/admin.php" class="nav-link">
           <i class="nav-icon bi bi-people"></i>
           <p>管理員列表</p>
         </a>
@@ -149,19 +149,19 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="./index.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/index.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Dashboard v1</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./index2.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/index2.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Dashboard v2</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./index3.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/index3.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Dashboard v3</p>
             </a>
@@ -179,19 +179,19 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="./widgets/small-box.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/widgets/small-box.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Small Box</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./widgets/info-box.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/widgets/info-box.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>info Box</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./widgets/cards.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/widgets/cards.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Cards</p>
             </a>
@@ -209,43 +209,43 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="./layout/unfixed-sidebar.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/layout/unfixed-sidebar.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Default Sidebar</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./layout/fixed-sidebar.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/layout/fixed-sidebar.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Fixed Sidebar</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./layout/layout-custom-area.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/layout/layout-custom-area.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Layout <small>+ Custom Area </small></p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./layout/sidebar-mini.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/layout/sidebar-mini.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Sidebar Mini</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./layout/collapsed-sidebar.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/layout/collapsed-sidebar.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Sidebar Mini <small>+ Collapsed</small></p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./layout/logo-switch.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/layout/logo-switch.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Sidebar Mini <small>+ Logo Switch</small></p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./layout/layout-rtl.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/layout/layout-rtl.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Layout RTL</p>
             </a>
@@ -262,19 +262,19 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="./UI/general.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/UI/general.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>General</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./UI/icons.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/UI/icons.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Icons</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./UI/timeline.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/UI/timeline.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Timeline</p>
             </a>
@@ -291,7 +291,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="./forms/general.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/forms/general.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>General Elements</p>
             </a>
@@ -308,7 +308,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="./tables/simple.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/tables/simple.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Simple Tables</p>
             </a>
@@ -317,7 +317,7 @@
       </li>
       <li class="nav-header">EXAMPLES</li>
       <li class="nav-item">
-        <a href="./generate/theme.html" class="nav-link">
+        <a href="<?= ROOT_URL ?>dist/pages/generate/theme.html" class="nav-link">
           <i class="nav-icon bi bi-palette"></i>
           <p>主題產生器</p>
         </a>
@@ -341,13 +341,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="./examples/login.html" class="nav-link">
+                <a href="<?= ROOT_URL ?>dist/pages/examples/login.html" class="nav-link">
                   <i class="nav-icon bi bi-circle"></i>
                   <p>Login</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./examples/register.html" class="nav-link">
+                <a href="<?= ROOT_URL ?>dist/pages/examples/register.html" class="nav-link">
                   <i class="nav-icon bi bi-circle"></i>
                   <p>Register</p>
                 </a>
@@ -364,13 +364,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="./examples/login-v2.html" class="nav-link">
+                <a href="<?= ROOT_URL ?>dist/pages/examples/login-v2.html" class="nav-link">
                   <i class="nav-icon bi bi-circle"></i>
                   <p>Login</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./examples/register-v2.html" class="nav-link">
+                <a href="<?= ROOT_URL ?>dist/pages/examples/register-v2.html" class="nav-link">
                   <i class="nav-icon bi bi-circle"></i>
                   <p>Register</p>
                 </a>
@@ -378,7 +378,7 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a href="./examples/lockscreen.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/examples/lockscreen.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Lockscreen</p>
             </a>
@@ -387,19 +387,19 @@
       </li>
       <li class="nav-header">DOCUMENTATIONS</li>
       <li class="nav-item">
-        <a href="./docs/introduction.html" class="nav-link">
+        <a href="<?= ROOT_URL ?>dist/pages/docs/introduction.html" class="nav-link">
           <i class="nav-icon bi bi-download"></i>
           <p>如何安裝</p>
         </a>
       </li>
       <li class="nav-item">
-        <a href="./docs/layout.html" class="nav-link">
+        <a href="<?= ROOT_URL ?>dist/pages/docs/layout.html" class="nav-link">
           <i class="nav-icon bi bi-grip-horizontal"></i>
           <p>佈局</p>
         </a>
       </li>
       <li class="nav-item">
-        <a href="./docs/color-mode.html" class="nav-link">
+        <a href="<?= ROOT_URL ?>dist/pages/docs/color-mode.html" class="nav-link">
           <i class="nav-icon bi bi-star-half"></i>
           <p>色彩模式</p>
         </a>
@@ -414,13 +414,13 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="./docs/components/main-header.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/docs/components/main-header.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Main Header</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./docs/components/main-sidebar.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/docs/components/main-sidebar.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Main Sidebar</p>
             </a>
@@ -437,7 +437,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="./docs/javascript/treeview.html" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/docs/javascript/treeview.html" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>Treeview</p>
             </a>
@@ -445,25 +445,25 @@
         </ul>
       </li>
       <li class="nav-item">
-        <a href="./docs/browser-support.html" class="nav-link">
+        <a href="<?= ROOT_URL ?>dist/pages/docs/browser-support.html" class="nav-link">
           <i class="nav-icon bi bi-browser-edge"></i>
           <p>瀏覽器支援</p>
         </a>
       </li>
       <li class="nav-item">
-        <a href="./docs/how-to-contribute.html" class="nav-link">
+        <a href="<?= ROOT_URL ?>dist/pages/docs/how-to-contribute.html" class="nav-link">
           <i class="nav-icon bi bi-hand-thumbs-up-fill"></i>
           <p>如何貢獻</p>
         </a>
       </li>
       <li class="nav-item">
-        <a href="./docs/faq.html" class="nav-link">
+        <a href="<?= ROOT_URL ?>dist/pages/docs/faq.html" class="nav-link">
           <i class="nav-icon bi bi-question-circle-fill"></i>
           <p>FAQ</p>
         </a>
       </li>
       <li class="nav-item">
-        <a href="./docs/license.html" class="nav-link">
+        <a href="<?= ROOT_URL ?>dist/pages/docs/license.html" class="nav-link">
           <i class="nav-icon bi bi-patch-check-fill"></i>
           <p>憑證</p>
         </a>
