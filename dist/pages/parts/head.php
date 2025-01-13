@@ -3,7 +3,7 @@
   <!--begin::Head-->
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Home | 寵物認養網站</title>
+    <title><?= empty($title) ? '寵物認養網站':"$title | 寵物認養網站" ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--begin::Fonts, 引入Source Sans 3 字體的 CSS 文件-->
     <link
@@ -30,7 +30,7 @@
     />
     <!--end::Third Party Plugin(Bootstrap Icons)-->
     <!--begin::Required Plugin(AdminLTE) AdminLTE內建的CSS -->
-    <link rel="stylesheet" href="../../dist/css/adminlte.css" />
+    <link rel="stylesheet" href="<?= ROOT_URL ?>dist/css/adminlte.css" />
     <!--end::Required Plugin(AdminLTE)-->
     <!-- apexcharts 用於製作互動式圖表-->
     <link

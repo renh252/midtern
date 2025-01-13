@@ -1,13 +1,17 @@
-<?php include __DIR__ . '/parts/head.php' ?>
+<?php require __DIR__ . '/parts/init.php';
+$title = "首頁"; // 這個變數可修改，用在<head>的標題
+$pageName = "home"; // 這個變數可修改，用在sidebar的按鈕active
+?>
+<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
 <!--begin::Body-->
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
   <!--begin::App Wrapper 網頁的主要內容在這-->
   <div class="app-wrapper">
     <!--begin::Header-->
-    <?php include __DIR__ . '/parts/navbar.php' ?>
+    <?php include ROOT_PATH . 'dist/pages/parts/navbar.php' ?>
     <!--end::Header-->
     <!--begin::Sidebar-->
-    <?php include __DIR__ . '/parts/sidebar.php' ?>
+    <?php include ROOT_PATH . 'dist/pages/parts/sidebar.php' ?>
     <!--end::Sidebar-->
     <!--begin::App Main-->
     <main class="app-main pt-5">
@@ -434,7 +438,7 @@
     </main>
     <!--end::App Main-->
     <!--begin::Footer-->
-    <?php include __DIR__ . '/parts/footer.php' ?>
+    <?php include ROOT_PATH . 'dist/pages/parts/footer.php' ?>
     <!--end::Footer-->
   </div>
   <!--end::App Wrapper-->

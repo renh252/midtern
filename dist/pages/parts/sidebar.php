@@ -5,7 +5,7 @@
   <a href="./index.php" class="brand-link">
     <!--begin::Brand Image-->
     <img
-      src="../../dist/assets/img/AdminLTELogo.png"
+      src="<?= ROOT_URL ?>dist/assets/img/AdminLTELogo.png"
       alt="AdminLTE Logo"
       class="brand-image opacity-75 shadow"
     />

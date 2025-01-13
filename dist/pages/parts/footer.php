@@ -2,7 +2,7 @@
   <!--begin::Copyright-->
   <strong>
     Copyright &copy; 2014-2024&nbsp;
-    <a href="index.php" class="text-decoration-none">寵物認養網站</a>
+    <a href="<?= ROOT_PATH ?>" class="text-decoration-none">寵物認養網站</a>
   </strong>
   All rights reserved.
   <!--end::Copyright-->
