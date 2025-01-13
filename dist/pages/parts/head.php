@@ -5,13 +5,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title><?= empty($title) ? '寵物認養網站':"$title | 寵物認養網站" ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!--begin::Fonts, 引入Source Sans 3 字體的 CSS 文件-->
+    <!--begin::Fonts, 引入Source Sans 3 字體 & FontAwesome-->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
       integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q="
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
     <!--end::Fonts-->
     <!--begin::Third Party Plugin(OverlayScrollbars) 可自定義的覆蓋滾動條-->
     <link
