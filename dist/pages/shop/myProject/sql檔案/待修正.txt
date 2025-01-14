@@ -1,0 +1,2 @@
+forign key需要連向別的 database(會員id)
+*目前是在自己的database建立一個user 的表
