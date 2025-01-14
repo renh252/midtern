@@ -1,6 +1,7 @@
-<?php require __DIR__ . '/../parts/init.php';
-$title = "通訊錄列表"; // 這個變數可修改，用在<head>的標題
-$pageName = "demo"; // 這個變數可修改，用在sidebar的按鈕active
+<?php
+require __DIR__ . '/parts/init.php';
+$title = "通訊錄列表";
+$pageName = "list";
 
 $perPage = 25; # 每一頁有幾筆
 
@@ -34,7 +35,7 @@ if ($birth_end) {
   }
 }
 
-$t_sql = "SELECT COUNT(1) FROM `posts` $where";
+$t_sql = "SELECT COUNT(1) FROM `comments` $where";
 
 # 總筆數
 $totalRows = $pdo->query($t_sql)->fetch(PDO::FETCH_NUM)[0];
@@ -50,29 +51,17 @@ if ($totalRows > 0) {
 }
 
   # 取第一頁的資料
-  $sql = sprintf("SELECT posts.*, users.user_name FROM posts JOIN users ON posts.user_id = users.user_id
-  ORDER BY is_pinned, id  LIMIT %s, %s", ($page - 1) * $perPage,  $perPage);
+  $sql = sprintf("SELECT comments.*, users.user_name FROM comments JOIN users ON comments.user_id = users.user_id
+  ORDER BY created_at , id LIMIT %s, %s", ($page - 1) * $perPage,  $perPage);
 $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
 
 
 
 ?>
-<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
-<!--begin::Body-->
+<?php include __DIR__ . '/parts/html-head.php' ?>
+<?php include __DIR__ . '/parts/html-navbar.php' ?>
 
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-  <!--begin::App Wrapper 網頁的主要內容在這-->
-  <div class="app-wrapper">
-    <!--begin::Header-->
-    <?php include ROOT_PATH . 'dist/pages/parts/navbar.php' ?>
-    <!--end::Header-->
-    <!--begin::Sidebar-->
-    <?php include ROOT_PATH . 'dist/pages/parts/sidebar.php' ?>
-    <!--end::Sidebar-->
-    <!--begin::App Main-->
-    <br>
-    <main class="app-main pt-5">
-    <div class="container">
+<div class="container">
   <div class="row mt-2">
     <div class="col-6"></div>
     <div class="col-6">
@@ -140,30 +129,26 @@ $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
         <thead>
           <tr>
           <th>#</th>
-            <th>標題</th>
+            <th>留言內容</th>
             <th>作者id</th>
             <th>作者暱稱</th>
             <th>按讚數</th>
-            <th>收藏數</th>
-            <th>置頂</th>
+            <th>狀態</th>
             <th>建立時間</th>
             <th>更新時間</th>
-            <th>狀態</th>
           </tr>
         </thead>
         <tbody>
           <?php foreach ($rows as $r): ?>
             <tr>
               <td><?= $r['id'] ?></td>
-              <td><?= htmlentities($r['title']) ?></td>
+              <td><?= htmlentities($r['body']) ?></td>
               <td><?= htmlentities($r['user_id']) ?></td>
               <td><?= htmlentities($r['user_name']) ?></td>
               <td><?= $r['likes_count'] ?></td>
-              <td><?= $r['bookmark_count'] ?></td>
-              <td><?= $r['is_pinned'] ? '是' : '否' ?></td>
+              <td><?= $r['status'] ?></td>
               <td><?= $r['created_at'] ?></td>
               <td><?= $r['updated_at'] ?></td>
-              <td><?= $r['status'] ?></td>
             </tr>
           <?php endforeach; ?>
         </tbody>
@@ -171,63 +156,28 @@ $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
     </div>
   </div>
 </div>
-    </main>
-    <!--end::App Main-->
-    <!--begin::Footer-->
-    <?php include ROOT_PATH . 'dist/pages/parts/footer.php' ?>
-    <!--end::Footer-->
-  </div>
-  <!--end::App Wrapper-->
-  <!--begin::Script-->
-  <!--begin::Third Party Plugin(OverlayScrollbars) 可自定義的覆蓋滾動條-->
-  <script
-    src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
-    integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ="
-    crossorigin="anonymous"></script>
-  <!--end::Third Party Plugin(OverlayScrollbars)-->
-  <!--begin::Required Plugin(popperjs for Bootstrap 5) Bootstrap彈出元素"（如工具提示和彈出窗口）-->
-  <script
-    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-    crossorigin="anonymous"></script>
-  <!--end::Required Plugin(popperjs for Bootstrap 5)-->
-  <!--begin::Required Plugin(Bootstrap 5)-->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-    crossorigin="anonymous"></script>
-  <!--end::Required Plugin(Bootstrap 5)-->
-  <!--begin::Required Plugin(AdminLTE)-->
-  <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
-  <!--end::Required Plugin(AdminLTE)-->
-  <!--begin::OverlayScrollbars Configure 設定滾動條-->
-  <script>
-    const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
-    const Default = {
-      // 當鼠標離開滾動區域時，滾動條會自動隱藏；允許用戶通過點擊滾動條來進行滾動
-      scrollbarTheme: 'os-theme-light',
-      scrollbarAutoHide: 'leave',
-      scrollbarClickScroll: true,
-    };
-    // DOMContentLoaded確保在DOM完全加載後執行代碼
-    document.addEventListener('DOMContentLoaded', function() {
-      const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
-      if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
-        // 初始化滾動條，並傳遞配置選項，如主題和自動隱藏行為
-        OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-          scrollbars: {
-            theme: Default.scrollbarTheme,
-            autoHide: Default.scrollbarAutoHide,
-            clickScroll: Default.scrollbarClickScroll,
-          },
-        });
-      }
-    });
-  </script>
-  <!--end::OverlayScrollbars Configure-->
 
-  <!--end::Script-->
-</body>
-<!--end::Body-->
-
-</html>
+<?php include __DIR__ . '/parts/html-scripts.php' ?>
+<script>
+  const deleteOne = e => {
+    e.preventDefault(); // 沒有要連到某處
+    const tr = e.target.closest('tr');
+    const [, td_ab_id, , td_name] = tr.querySelectorAll('td');
+    const ab_id = td_ab_id.innerHTML;
+    const name = td_name.innerHTML;
+    console.log([td_ab_id.innerHTML, td_name.innerHTML]);
+    if (confirm(`是否要刪除編號為 ${ab_id} 姓名為 ${name} 的資料?`)) {
+      // 使用 JS 做跳轉頁面
+      location.href = `del.php?ab_id=${ab_id}`;
+    }
+  }
+  /*
+  const deleteOne = ab_id => {
+    if (confirm(`是否要刪除編號為 ${ab_id} 的資料?`)) {
+      // 使用 JS 做跳轉頁面
+      location.href = `del.php?ab_id=${ab_id}`;
+    }
+  }
+  */
+</script>
+<?php include __DIR__ . '/parts/html-tail.php' ?>

@@ -51,13 +51,13 @@ if ($totalRows > 0) {
 
   # 取第一頁的資料
   $sql = sprintf(
-    "SELECT reports.*, posts.user_id AS reports_user_id, posts.title AS reports_title, users.user_name AS reports_user_name, reporters.user_name AS target_name
+    "SELECT reports.*, comments.user_id AS reports_user_id, comments.body AS reports_body, users.user_name AS reports_user_name, reporters.user_name AS target_name
     FROM reports
-    JOIN posts ON reports.target_id = posts.id
-    JOIN users ON posts.user_id = users.user_id
+    JOIN comments ON reports.target_id = comments.id
+    JOIN users ON comments.user_id = users.user_id
     JOIN users AS reporters ON reports.reporter_id = reporters.user_id
 
-    ORDER BY is_pinned, id
+    ORDER BY created_at, id
     LIMIT %s, %s",
     ($page - 1) * $perPage, $perPage
   );
@@ -141,7 +141,6 @@ $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
               </a>
             </li>
           </ul>
-
           <!-- 讓按鈕保持在同一行並對齊右側 -->
           <div>
           <div>
@@ -161,7 +160,7 @@ $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
         <thead>
           <tr>
           <th>#</th>
-            <th>被檢舉文章</th>
+            <th>被檢舉留言</th>
             <th>被檢舉人id</th>
             <th>被檢舉人暱稱</th>
             <th>檢舉人id</th>
@@ -174,7 +173,7 @@ $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
           <?php foreach ($rows as $r): ?>
             <tr>
               <td><?= $r['id'] ?></td>
-              <td><?= htmlentities($r['reports_title']) ?></td>
+              <td><?= htmlentities($r['reports_body']) ?></td>
               <td><?= htmlentities($r['reports_user_id']) ?></td>
               <td><?= htmlentities($r['reports_user_name']) ?></td>
               <td><?= htmlentities($r['reporter_id']) ?></td>
