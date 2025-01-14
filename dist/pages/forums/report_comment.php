@@ -1,68 +1,61 @@
 <?php require __DIR__ . '/../parts/init.php';
-$title = "檢舉列表"; // 這個變數可修改，用在<head>的標題
+$title = "檢舉列表(留言)"; // 這個變數可修改，用在<head>的標題
 $pageName = "demo"; // 這個變數可修改，用在sidebar的按鈕active
 
-$perPage = 25; # 每一頁有幾筆
 
+$perPage = 25; # 每一頁有幾筆
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 if ($page < 1) {
-  header('Location: ?page=1'); # 跳轉頁面 (後端), 也稱為 redirect (轉向)
-  exit; # 離開 (結束) 程式 (以下的程式都不會執行)
-  die(); # 同 exit 的功能, 但可以回傳字串或編號
+  header('Location: ?page=1');
+  exit;
 }
 
 $keyword = empty($_GET['keyword']) ? '' : $_GET['keyword'];
-$birth_begin = empty($_GET['birth_begin']) ? '' : $_GET['birth_begin'];
-$birth_end = empty($_GET['birth_end']) ? '' : $_GET['birth_end'];
 
 $where = ' WHERE 1 '; # SQL 條件的開頭
 
 if ($keyword) {
-  $keyword_ = $pdo->quote("%{$keyword}%"); # 字串內容做 SQL 引號的跳脫, 同時前後標單引號
-  $where .= " AND ( name LIKE $keyword_ OR mobile LIKE $keyword_ ) ";
-}
-if ($birth_begin) {
-  $t = strtotime($birth_begin); # 把日期字串轉換成 timestamp
-  if ($t !== false) {
-    $where .= sprintf(" AND birthday >= '%s' ",   date('Y-m-d', $t));
-  }
-}
-if ($birth_end) {
-  $t = strtotime($birth_end); # 把日期字串轉換成 timestamp
-  if ($t !== false) {
-    $where .= sprintf(" AND birthday <= '%s' ",   date('Y-m-d', $t));
-  }
+  $keyword_ = $pdo->quote("%{$keyword}%");
+  $where .= " AND (
+    comments.body LIKE $keyword_ OR
+    users.user_name LIKE $keyword_ OR
+    reporters.user_name LIKE $keyword_ OR
+    reports.status LIKE $keyword_ OR
+    reports.created_at LIKE $keyword_
+  )";
 }
 
-$t_sql = "SELECT COUNT(1) FROM `reports` $where";
+$t_sql = "SELECT COUNT(1) FROM reports
+          JOIN comments ON reports.target_id = comments.id
+          JOIN users ON comments.user_id = users.user_id
+          JOIN users AS reporters ON reports.reporter_id = reporters.user_id
+          $where";
 
 # 總筆數
 $totalRows = $pdo->query($t_sql)->fetch(PDO::FETCH_NUM)[0];
 # 總頁數
 $totalPages = ceil($totalRows / $perPage);
-$rows = []; # 設定預設值
+
 if ($totalRows > 0) {
   if ($page > $totalPages) {
-    # 用戶要看的頁碼超出範圍, 跳到最後一頁
     header('Location: ?page=' . $totalPages);
     exit;
   }
-}
 
-  # 取第一頁的資料
+  # 取得該分頁的檢舉資料
   $sql = sprintf(
     "SELECT reports.*, comments.user_id AS reports_user_id, comments.body AS reports_body, users.user_name AS reports_user_name, reporters.user_name AS target_name
     FROM reports
     JOIN comments ON reports.target_id = comments.id
     JOIN users ON comments.user_id = users.user_id
     JOIN users AS reporters ON reports.reporter_id = reporters.user_id
-
-    ORDER BY created_at, id
+    %s
+    ORDER BY reports.created_at DESC, reports.id DESC
     LIMIT %s, %s",
-    ($page - 1) * $perPage, $perPage
+    $where, ($page - 1) * $perPage, $perPage
   );
-
-$rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
+  $rows = $pdo->query($sql)->fetchAll();
+}
 
 
 
@@ -87,14 +80,15 @@ $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
 
     <div class="col-6"></div>
     <div class="col-6">
-      <form class="d-flex" role="search">
-        <input class="form-control me-2"
-          name="keyword"
-          value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>"
-          type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-    </div>
+  <form class="d-flex" role="search" id="searchForm">
+    <input class="form-control me-2"
+      id="searchInput"
+      name="keyword"
+      value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>"
+      type="search" placeholder="搜尋留言內容、被檢舉人、檢舉人等" aria-label="Search">
+    <button class="btn btn-outline-primary" type="submit">Search</button>
+  </form>
+</div>
   </div>
   <div class="row mt-2">
     <div class="col">
@@ -144,8 +138,8 @@ $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
           <!-- 讓按鈕保持在同一行並對齊右側 -->
           <div>
           <div>
-          <a href="/midtern-main/dist/pages/forums/report.php" class="btn btn-primary">貼文檢舉</a>
-          <a href="/midtern-main/dist/pages/forums/report-comment.php" class="btn btn-primary">留言檢舉</a>
+          <a href="/midtern/dist/pages/forums/report.php" class="btn btn-primary">貼文檢舉</a>
+          <a href="/midtern/dist/pages/forums/report_comment.php" class="btn btn-primary">留言檢舉</a>
 </div>
 
           </div>
@@ -241,6 +235,28 @@ $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
       }
     });
   </script>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('searchInput');
+  const searchForm = document.getElementById('searchForm');
+
+  if (searchInput && searchForm) {
+    searchInput.addEventListener('search', function(event) {
+      if (this.value === '') {
+        event.preventDefault();
+        window.location.href = 'report_comment.php';
+      }
+    });
+
+    searchForm.addEventListener('submit', function(event) {
+      if (searchInput.value.trim() === '') {
+        event.preventDefault();
+        window.location.href = 'report_comment.php';
+      }
+    });
+  }
+});
+</script>
   <!--end::OverlayScrollbars Configure-->
 
   <!--end::Script-->
