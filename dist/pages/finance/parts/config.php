@@ -5,5 +5,5 @@ const DB_PASS = 'P@ssw0rd';
 const DB_NAME = 'pet_proj';
 const DB_PORT = 3306;
 
-const PATH_BASE = '/midtern/';
+const PATH_BASE = '/pet/pet';
 

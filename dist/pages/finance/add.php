@@ -1,8 +1,11 @@
 <?php
-require __DIR__ . '/parts/init.php';
+require __DIR__ . '/../parts/init.php';
 $title = "新增捐款資料";
 $pageName = "add";
 
+// 查詢所有寵物的 ID
+$petSql = "SELECT `id`, `name` FROM pets";
+$pets = $pdo->query($petSql)->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <?php include __DIR__ . '/parts/html-head.php' ?>
 <?php include __DIR__ . '/parts/html-navbar.php' ?>
@@ -44,8 +47,13 @@ $pageName = "add";
         </div>
 
         <div class="mb-3" id="pet-id-container" style="display: none;">
-          <label for="pet_id" class="form-label">寵物 ID</label>
-          <input type="number" class="form-control" id="pet_id" name="pet_id">
+        <label for="pet_id" class="form-label">認養寵物</label>
+          <select class="form-select" id="pet_id" name="pet_id">
+            <option value="">選擇寵物</option>
+            <?php foreach ($pets as $pet): ?>
+              <option value="<?= $pet['id'] ?>"><?= $pet['id'] ?>: <?= $pet['name']?></option>
+            <?php endforeach; ?>
+          </select>
         </div>
 
         <div class="mb-3">
@@ -68,13 +76,6 @@ $pageName = "add";
             <option value="信用卡">信用卡</option>
             <option value="銀行轉帳">銀行轉帳</option>
             <option value="郵政劃撥">郵政劃撥</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="reconciliation_status" class="form-label">對帳狀態</label>
-          <select class="form-select" id="reconciliation_status" name="reconciliation_status" required>
-            <option value="已完成">已完成</option>
-            <option value="未完成">未完成</option>
           </select>
         </div>
         <div class="form-check" style="display:none;">

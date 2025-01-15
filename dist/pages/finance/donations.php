@@ -1,7 +1,7 @@
 <?php
-require __DIR__ . '/parts/init.php';
-$title = "捐款明細";
-$pageName = "list";
+require __DIR__ . '/../parts/init.php'; // 確保資料庫連線已初始化
+$title = "捐款管理";
+$pageName = "donations";
 
 $perPage = 25; # 每一頁有幾筆
 
@@ -9,10 +9,20 @@ $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 if ($page < 1) {
   header('Location: ?page=1'); # 跳轉頁面 (後端), 也稱為 redirect (轉向)
   exit; # 離開 (結束) 程式 (以下的程式都不會執行)
-  die(); # 同 exit 的功能, 但可以回傳字串或編號
 }
 
-$t_sql = "SELECT COUNT(*) FROM donations";
+$keyword = empty($_GET['keyword']) ? '' : $_GET['keyword'];
+
+$where = ' WHERE 1 '; # SQL 條件的開頭
+
+if ($keyword) {
+  $keyword_ = $pdo->quote("%{$keyword}%"); # 字串內容做 SQL 引號的跳脫, 同時前後標單引號
+  $where .= " AND ( donations.donor_name LIKE $keyword_ OR donations.donor_phone LIKE $keyword_ OR donations.donation_type LIKE $keyword_ OR donations.donation_mode LIKE $keyword_ ) ";
+}
+
+
+
+$t_sql = "SELECT COUNT(*) FROM `donations` $where";
 
 # 總筆數
 $totalRows = $pdo->query($t_sql)->fetch(PDO::FETCH_NUM)[0];
@@ -27,47 +37,76 @@ if ($totalRows > 0) {
   }
 
   # 取第一頁的資料
-  $sql = sprintf("SELECT * FROM donations LIMIT %d, %d", ($page - 1) * $perPage, $perPage);
+  # 取第一頁的資料，並與 bank_transfer_details 進行聯結查詢
+  $sql = sprintf("SELECT donations.*, bank_transfer_details.reconciliation_status
+    FROM donations 
+  LEFT JOIN bank_transfer_details ON donations.id = bank_transfer_details.donation_id %s
+  LIMIT %d, %d",
+    $where,
+    ($page - 1) * $perPage,
+    $perPage
+  );
+
   $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的資料
 }
-
-
+;
 ?>
 <?php include __DIR__ . '/parts/html-head.php' ?>
 <?php include __DIR__ . '/parts/html-navbar.php' ?>
 
 <div class="container">
+
   <div class="row mt-4 align-items-center">
+    <div class="row mt-2">
+      <div class="col-9"></div>
+      <div class="col-3">
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" name="keyword"
+            value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
+            placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
     <div class="col-11">
+      <?php
+      $qs = array_filter($_GET); # 去除值是空字串的項目
+      ?>
       <nav aria-label="Page navigation">
         <ul class="pagination">
           <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
-            <a class="page-link" href="?page=1">
+            <a class="page-link" href="?<?php $qs['page'] = 1;
+            echo http_build_query($qs) ?>">
               <i class="fa-solid fa-angles-left"></i>
             </a>
           </li>
           <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
-            <a class="page-link" href="?page=<?= $page - 1 ?>">
+            <a class="page-link" href="?<?php $qs['page'] = $page - 1;
+            echo http_build_query($qs) ?>">
               <i class="fa-solid fa-angle-left"></i>
             </a>
           </li>
 
           <?php for ($i = $page - 5; $i <= $page + 5; $i++):
             if ($i >= 1 and $i <= $totalPages):
-              ?>
+          #$qs = array_filter($_GET); # 去除值是空字串的項目
+          $qs['page'] = $i;
+          ?>
               <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+              <a class="page-link" href="?<?= http_build_query($qs) ?>"><?= $i ?></a>
               </li>
             <?php endif;
           endfor; ?>
 
           <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
-            <a class="page-link" href="?page=<?= $page + 1 ?>">
+            <a class="page-link" href="?<?php $qs['page'] = $page + 1;
+            echo http_build_query($qs) ?>">
               <i class="fa-solid fa-angle-right"></i>
             </a>
           </li>
           <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
-            <a class="page-link" href="?page=<?= $totalPages ?>">
+            <a class="page-link" href="?<?php $qs['page'] = $totalPages;
+            echo http_build_query($qs) ?>">
               <i class="fa-solid fa-angles-right"></i>
             </a>
           </li>
@@ -84,6 +123,7 @@ if ($totalRows > 0) {
         <thead>
           <tr>
             <th><i class="fa-solid fa-trash"></i></th>
+            <th>捐款編號</th>
             <th>會員編號</th>
             <th>捐款人姓名</th>
             <th>捐款人電話</th>
@@ -107,6 +147,7 @@ if ($totalRows > 0) {
                   <i class="fa-solid fa-trash"></i>
                 </a></td>
               <td style="display:none"><?= $r['id'] ?></td>
+              <td><?= $r['id'] ?></td>
               <td><?= $r['user_id'] ?></td>
               <td><?= $r['donor_name'] ?></td>
               <td><?= $r['donor_phone'] ?></td>
@@ -118,7 +159,8 @@ if ($totalRows > 0) {
               <td><?= $r['regular_payment_date'] ?></td>
               <td><?= $r['payment_method'] ?></td>
               <td><?= $r['create_datetime'] ?></td>
-              <td><?= $r['reconciliation_status'] ?></td>
+              <td><?= empty($r['reconciliation_status']) ? '未核對' : $r['reconciliation_status'] ?></td>
+
               <td>
                 <?= $r['is_receipt_needed'] == 1 ? '<a href="javascript:void(0);" class="receipt-link" data-receipt_id="' . $r['id'] . '" data-receipt_name="' . htmlentities($r['donor_name']) . '">收據</a>' : '無收據'; ?>
               </td>
