@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2025-01-15 11:49:19
+-- 產生時間： 2025-01-15 13:25:40
 -- 伺服器版本： 8.0.40
 -- PHP 版本： 8.2.12
 
@@ -34,10 +34,10 @@ CREATE TABLE `bank_transfer_details` (
   `donation_id` int NOT NULL,
   `transfer_date` date NOT NULL,
   `transfer_amount` int NOT NULL,
-  `donor_name` varchar(80) COLLATE utf8mb4_general_ci NOT NULL,
-  `account_last_5` varchar(5) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `id_or_tax_id_number` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `reconciliation_status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '未核對'
+  `donor_name` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `account_last_5` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id_or_tax_id_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `reconciliation_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '未核對'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -66,7 +66,7 @@ CREATE TABLE `bans` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
   `banned_by` int NOT NULL,
-  `reason` text COLLATE utf8mb4_general_ci,
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `ban_until` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -144,9 +144,9 @@ INSERT INTO `bookmarks` (`id`, `user_id`, `post_id`, `created_at`) VALUES
 
 CREATE TABLE `categories` (
   `category_id` int NOT NULL,
-  `category_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `category_tag` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `category_description` text COLLATE utf8mb4_general_ci,
+  `category_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `category_tag` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `category_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `parent_id` int DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -160,11 +160,11 @@ CREATE TABLE `categories` (
 
 CREATE TABLE `comments` (
   `id` int NOT NULL,
-  `body` text COLLATE utf8mb4_general_ci NOT NULL,
+  `body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `post_id` int NOT NULL,
   `user_id` int NOT NULL,
   `likes_count` int DEFAULT '0',
-  `status` enum('已留言','被檢舉','已刪除') COLLATE utf8mb4_general_ci NOT NULL DEFAULT '已留言',
+  `status` enum('已留言','被檢舉','已刪除') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '已留言',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -683,19 +683,19 @@ INSERT INTO `comments` (`id`, `body`, `post_id`, `user_id`, `likes_count`, `stat
 
 CREATE TABLE `donations` (
   `id` int NOT NULL,
-  `donation_type` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `donation_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `pet_id` int DEFAULT NULL,
   `amount` int NOT NULL,
-  `donation_mode` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `donation_mode` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `regular_payment_date` date DEFAULT NULL,
   `is_anonymous` int NOT NULL DEFAULT '0',
-  `payment_method` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `payment_method` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `create_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id` int DEFAULT NULL,
   `is_receipt_needed` int NOT NULL DEFAULT '1',
-  `donor_name` varchar(80) COLLATE utf8mb4_general_ci NOT NULL,
-  `donor_phone` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
-  `donor_email` varchar(80) COLLATE utf8mb4_general_ci NOT NULL
+  `donor_name` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `donor_phone` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `donor_email` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -722,11 +722,11 @@ INSERT INTO `donations` (`id`, `donation_type`, `pet_id`, `amount`, `donation_mo
 
 CREATE TABLE `expenses` (
   `id` int NOT NULL,
-  `expense_purpose` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `expense_purpose` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `amount` int NOT NULL,
   `created_by` int NOT NULL,
   `expense_date` date NOT NULL,
-  `e_description` text COLLATE utf8mb4_general_ci,
+  `e_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `refund_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -846,23 +846,23 @@ INSERT INTO `manager` (`id`, `manager_account`, `manager_password`, `manager_pri
 --
 
 CREATE TABLE `orders` (
-  `order_id` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+  `order_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `user_id` int NOT NULL,
   `total_price` int NOT NULL,
-  `order_status` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
-  `payment_method` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `payment_status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `invoice_method` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `invoice` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `mobile_barcode` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `taxID_number` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `recipient_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `order_status` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `payment_method` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `payment_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `invoice_method` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `invoice` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `mobile_barcode` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `taxID_number` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `recipient_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `recipient_phone` int NOT NULL,
-  `recipient_email` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `remark` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `shipping_method` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `shipping_address` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `tracking_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `recipient_email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `remark` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `shipping_method` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `shipping_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `tracking_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `shipped_at` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `finish_at` datetime DEFAULT NULL,
@@ -877,12 +877,12 @@ CREATE TABLE `orders` (
 
 CREATE TABLE `order_items` (
   `order_item_id` int NOT NULL,
-  `order_id` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+  `order_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `product_id` int DEFAULT NULL,
   `variant_id` int DEFAULT NULL,
   `quantity` int NOT NULL,
   `price` int NOT NULL,
-  `return_status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `return_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `returned_quantity` int DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1136,10 +1136,10 @@ CREATE TABLE `pet_trait_list` (
 
 CREATE TABLE `posts` (
   `id` int NOT NULL,
-  `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `body` text COLLATE utf8mb4_general_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `user_id` int NOT NULL,
-  `status` enum('已發佈','被檢舉','已刪除') COLLATE utf8mb4_general_ci NOT NULL DEFAULT '已發佈',
+  `status` enum('已發佈','被檢舉','已刪除') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '已發佈',
   `likes_count` int DEFAULT '0',
   `bookmark_count` int DEFAULT '0',
   `is_pinned` tinyint(1) DEFAULT '0',
@@ -1363,7 +1363,7 @@ CREATE TABLE `posts_likes` (
   `id` int NOT NULL,
   `post_id` int NOT NULL,
   `user_id` int DEFAULT NULL,
-  `ip` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -1430,14 +1430,14 @@ INSERT INTO `posts_likes` (`id`, `post_id`, `user_id`, `ip`) VALUES
 
 CREATE TABLE `products` (
   `product_id` int NOT NULL,
-  `product_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `product_description` text COLLATE utf8mb4_general_ci,
+  `product_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `product_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `price` int NOT NULL,
   `category_id` int NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `product_status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '上架',
-  `image_url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `product_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '上架',
+  `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `stock_quantity` int NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -1455,7 +1455,7 @@ CREATE TABLE `product_reviews` (
   `product_id` int DEFAULT NULL,
   `variant_id` int DEFAULT NULL,
   `rating` int NOT NULL,
-  `review_text` text COLLATE utf8mb4_general_ci,
+  `review_text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1468,11 +1468,11 @@ CREATE TABLE `product_reviews` (
 CREATE TABLE `product_variants` (
   `variant_id` int NOT NULL,
   `product_id` int NOT NULL,
-  `variant_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `variant_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `price` int NOT NULL,
   `stock_quantity` int NOT NULL DEFAULT '0',
-  `variant_status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '上架',
-  `image_url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `variant_status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `is_deleted` tinyint(1) DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -1486,8 +1486,8 @@ CREATE TABLE `product_variants` (
 
 CREATE TABLE `promotions` (
   `promotion_id` int NOT NULL,
-  `promotion_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `promotion_description` text COLLATE utf8mb4_general_ci,
+  `promotion_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `promotion_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `start_date` date NOT NULL,
   `end_date` date DEFAULT NULL,
   `discount_percentage` int NOT NULL
@@ -1516,9 +1516,9 @@ CREATE TABLE `promotion_products` (
 CREATE TABLE `receipts` (
   `id` int NOT NULL,
   `donation_id` int NOT NULL,
-  `receipt_name` varchar(80) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `receipt_phone` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `receipt_address` varchar(250) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `receipt_name` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `receipt_phone` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `receipt_address` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -1545,13 +1545,13 @@ INSERT INTO `receipts` (`id`, `donation_id`, `receipt_name`, `receipt_phone`, `r
 
 CREATE TABLE `refunds` (
   `refund_id` int NOT NULL,
-  `order_id` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+  `order_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `refund_amount` int NOT NULL,
-  `refund_reason` text COLLATE utf8mb4_general_ci NOT NULL,
-  `refund_status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `refund_reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `refund_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `processed_at` datetime NOT NULL,
-  `payment_method` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `notes` text COLLATE utf8mb4_general_ci
+  `payment_method` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -1562,11 +1562,11 @@ CREATE TABLE `refunds` (
 
 CREATE TABLE `reports` (
   `id` int NOT NULL,
-  `target_table` enum('post','comment') COLLATE utf8mb4_general_ci NOT NULL,
+  `target_table` enum('post','comment') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `target_id` int NOT NULL,
   `reporter_id` int NOT NULL,
-  `reason` text COLLATE utf8mb4_general_ci NOT NULL,
-  `status` enum('待審核','resolved') COLLATE utf8mb4_general_ci DEFAULT '待審核',
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `status` enum('待審核','resolved') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '待審核',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1604,14 +1604,14 @@ INSERT INTO `reports` (`id`, `target_table`, `target_id`, `reporter_id`, `reason
 
 CREATE TABLE `return_order` (
   `return_id` int NOT NULL,
-  `order_id` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+  `order_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `return_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `return_status` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
-  `reason` text COLLATE utf8mb4_general_ci NOT NULL,
+  `return_status` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `refund_amount` int DEFAULT NULL,
-  `refund_status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `refund_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `refund_processed_at` datetime DEFAULT NULL,
-  `notes` text COLLATE utf8mb4_general_ci
+  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -1638,26 +1638,26 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `user_email`, `user_password`, `user_name`, `user_number`, `user_address`, `user_birthday`, `user_level`, `profile_picture`, `user_status`) VALUES
-(1, 'user1@example.com', 'password1', '王小明', '0912345671', '台北市中正區', '1990-01-01', '愛心小天使', NULL, 'active'),
-(2, 'user2@example.com', 'password2', '李小美', '0923456782', '台中市西屯區', '1992-02-15', '乾爹乾媽', NULL, 'active'),
-(3, 'user3@example.com', 'password3', '陳大同', '0934567893', '高雄市苓雅區', '1988-03-20', '愛心小天使', NULL, 'active'),
-(4, 'user4@example.com', 'password4', '林淑芬', '0945678904', '台南市安平區', '1995-04-10', '乾爹乾媽', NULL, 'active'),
-(5, 'user5@example.com', 'password5', '張志明', '0956789015', '新北市板橋區', '1991-05-25', '愛心小天使', NULL, 'active'),
-(6, 'user6@example.com', 'password6', '黃麗華', '0967890126', '桃園市桃園區', '1989-06-30', '乾爹乾媽', NULL, 'active'),
-(7, 'user7@example.com', 'password7', '蔡建國', '0978901237', '新竹市東區', '1993-07-05', '愛心小天使', NULL, 'active'),
-(8, 'user8@example.com', 'password8', '楊秀英', '0989012348', '基隆市仁愛區', '1994-08-18', '乾爹乾媽', NULL, 'active'),
-(9, 'user9@example.com', 'password9', '吳文雄', '0901234569', '嘉義市東區', '1996-09-22', '愛心小天使', NULL, 'active'),
-(10, 'user10@example.com', 'password10', '劉雅婷', '0913456780', '彰化縣彰化市', '1990-10-12', '乾爹乾媽', NULL, 'active'),
-(11, 'user11@example.com', 'password11', '鄭俊傑', '0924567891', '雲林縣斗六市', '1992-11-08', '愛心小天使', NULL, 'active'),
-(12, 'user12@example.com', 'password12', '謝美玲', '0935678902', '南投縣南投市', '1988-12-03', '乾爹乾媽', NULL, 'active'),
-(13, 'user13@example.com', 'password13', '郭富城', '0946789013', '屏東縣屏東市', '1995-01-28', '愛心小天使', NULL, 'active'),
-(14, 'user14@example.com', 'password14', '林依晨', '0957890124', '宜蘭縣宜蘭市', '1991-02-19', '乾爹乾媽', NULL, 'active'),
-(15, 'user15@example.com', 'password15', '周杰倫', '0968901235', '花蓮縣花蓮市', '1989-03-15', '愛心小天使', NULL, 'active'),
-(16, 'user16@example.com', 'password16', '蔡依林', '0979012346', '台東縣台東市', '1993-04-09', '乾爹乾媽', NULL, 'active'),
-(17, 'user17@example.com', 'password17', '五月天阿信', '0980123457', '澎湖縣馬公市', '1994-05-22', '愛心小天使', NULL, 'active'),
-(18, 'user18@example.com', 'password18', '蘇打綠青峰', '0902345678', '連江縣南竿鄉', '1996-06-16', '乾爹乾媽', NULL, 'active'),
-(19, 'user19@example.com', 'password19', '田馥甄', '0914567899', '苗栗縣苗栗市', '1990-07-07', '愛心小天使', NULL, 'active'),
-(20, 'user20@example.com', 'password20', '蕭敬騰', '0925678900', '金門縣金城鎮', '1992-08-01', '乾爹乾媽', NULL, 'active');
+(1, 'user1@example.com', 'password1', '王小明', '0912345671', '台北市中正區', '1990-01-01', '愛心小天使', NULL, '正常'),
+(2, 'user2@example.com', 'password2', '李小美', '0923456782', '台中市西屯區', '1992-02-15', '乾爹乾媽', NULL, '禁言'),
+(3, 'user3@example.com', 'password3', '陳大同', '0934567893', '高雄市苓雅區', '1988-03-20', '愛心小天使', NULL, '正常'),
+(4, 'user4@example.com', 'password4', '林淑芬', '0945678904', '台南市安平區', '1995-04-10', '乾爹乾媽', NULL, '禁言'),
+(5, 'user5@example.com', 'password5', '張志明', '0956789015', '新北市板橋區', '1991-05-25', '愛心小天使', NULL, '正常'),
+(6, 'user6@example.com', 'password6', '黃麗華', '0967890126', '桃園市桃園區', '1989-06-30', '乾爹乾媽', NULL, '禁言'),
+(7, 'user7@example.com', 'password7', '蔡建國', '0978901237', '新竹市東區', '1993-07-05', '愛心小天使', NULL, '正常'),
+(8, 'user8@example.com', 'password8', '楊秀英', '0989012348', '基隆市仁愛區', '1994-08-18', '乾爹乾媽', NULL, '禁言'),
+(9, 'user9@example.com', 'password9', '吳文雄', '0901234569', '嘉義市東區', '1996-09-22', '愛心小天使', NULL, '正常'),
+(10, 'user10@example.com', 'password10', '劉雅婷', '0913456780', '彰化縣彰化市', '1990-10-12', '乾爹乾媽', NULL, '正常'),
+(11, 'user11@example.com', 'password11', '鄭俊傑', '0924567891', '雲林縣斗六市', '1992-11-08', '愛心小天使', NULL, '正常'),
+(12, 'user12@example.com', 'password12', '謝美玲', '0935678902', '南投縣南投市', '1988-12-03', '乾爹乾媽', NULL, '禁言'),
+(13, 'user13@example.com', 'password13', '郭富城', '0946789013', '屏東縣屏東市', '1995-01-28', '愛心小天使', NULL, '正常'),
+(14, 'user14@example.com', 'password14', '林依晨', '0957890124', '宜蘭縣宜蘭市', '1991-02-19', '乾爹乾媽', NULL, '禁言'),
+(15, 'user15@example.com', 'password15', '周杰倫', '0968901235', '花蓮縣花蓮市', '1989-03-15', '愛心小天使', NULL, '正常'),
+(16, 'user16@example.com', 'password16', '蔡依林', '0979012346', '台東縣台東市', '1993-04-09', '乾爹乾媽', NULL, '禁言'),
+(17, 'user17@example.com', 'password17', '五月天阿信', '0980123457', '澎湖縣馬公市', '1994-05-22', '愛心小天使', NULL, '正常'),
+(18, 'user18@example.com', 'password18', '蘇打綠青峰', '0902345678', '連江縣南竿鄉', '1996-06-16', '乾爹乾媽', NULL, '正常'),
+(19, 'user19@example.com', 'password19', '田馥甄', '0914567899', '苗栗縣苗栗市', '1990-07-07', '愛心小天使', NULL, '正常'),
+(20, 'user20@example.com', 'password20', '蕭敬騰', '0925678900', '金門縣金城鎮', '1992-08-01', '乾爹乾媽', NULL, '正常');
 
 -- --------------------------------------------------------
 
