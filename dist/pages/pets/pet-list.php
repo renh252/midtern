@@ -19,9 +19,10 @@ $where = 'WHERE 1';
 if (isset($_GET['keyword']) && !empty($keyword)) {
   $keyword = trim($_GET['keyword']); // 去除首尾空白
   $keyword = trim($keyword, '"'); // 去除可能已存在的引號
+  $keyword_exact = $pdo->quote($keyword); // 用於精確匹配id
   $keyword = '"' . $keyword . '"'; // 添加新的引號
   $keyword_ = $pdo->quote("%" . $keyword . "%"); // 字串加上%之後跳脫引號，避免SQL注入
-  $where .= " AND (name LIKE $keyword_ OR species LIKE $keyword OR variety LIKE $keyword)";
+  $where .= " AND (id = $keyword_exact OR name LIKE $keyword_ OR species LIKE $keyword OR variety LIKE $keyword)";
 }
 
 if (!empty($birth_begin)) {
@@ -136,8 +137,8 @@ $qs = array_filter($_GET); #去除值為空的項目
         <!--begin::Container-->
         <div class="container-fluid">
           <!-- 這裡是內容 -->
-          <div class="row">
-            <div class="col-4">
+          <div class="row align-items-end">
+          <div class="col-8">
               <ul class="pagination">
                 <li class="page-item <?= $page === 1 ? 'disabled' : '' ?>">
                   <a class="page-link "
@@ -184,8 +185,7 @@ $qs = array_filter($_GET); #去除值為空的項目
                 </li>
               </ul>
             </div>
-
-            <div class="col-6">
+            <div class="col-4 mb-2">
               <form role="search" method="GET">
                 <div class="d-flex mb-2">
                   <input class="form-control me-2" name="keyword"
@@ -195,11 +195,11 @@ $qs = array_filter($_GET); #去除值為空的項目
                     <i class="fa-solid fa-magnifying-glass"></i>
                   </button>
                   <button class="btn btn-outline-secondary ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#advancedSearch" aria-expanded="false" aria-controls="advancedSearch">
-                  <i class="fa-solid fa-filter"></i>
+                    <i class="fa-solid fa-filter"></i>
                   </button>
                 </div>
 
-                <div class="collapse fade  mt-3" id="advancedSearch">
+                <div class="collapse mt-3" id="advancedSearch">
                   <div class="card card-body">
                     <div class="mb-3">
                       <label for="birth_begin" class="form-label">出生日期（起始）</label>
@@ -216,6 +216,7 @@ $qs = array_filter($_GET); #去除值為空的項目
                 </div>
               </form>
             </div>
+            
           </div>
           <div class="row">
             <div class="col-sm-12">

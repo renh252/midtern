@@ -197,7 +197,7 @@ if (empty($r)) {
                     </div>
                     <div class="card-footer">
                       <button type="submit" class="btn btn-warning">修改</button>
-                      <button type="submit" class="btn btn-light float-end">取消</button>
+                      <button type="button" class="btn btn-light float-end" onclick="goBack()">取消</button>
                     </div>
                 </form>
                 <!--end::Form-->
@@ -329,6 +329,10 @@ if (empty($r)) {
           }).catch(console.warn);
       }
 
+    }
+
+    function goBack() {
+      window.history.back();
     }
   </script>
   <!--end::Script-->

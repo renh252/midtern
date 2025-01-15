@@ -8,20 +8,21 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
 <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
 <!--begin::Body-->
 <style>
-    form .mb-3 .form-text {
-        display: none;
-        color: red;
-    }
+  form .mb-3 .form-text {
+    display: none;
+    color: red;
+  }
 
-    form .mb-3.error input.form-control {
-        border: 2px solid red;
-    }
+  form .mb-3.error input.form-control {
+    border: 2px solid red;
+  }
 
-    form .mb-3.error .form-text {
-        display: block;
-        color: red;
-    }
+  form .mb-3.error .form-text {
+    display: block;
+    color: red;
+  }
 </style>
+
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
   <!--begin::App Wrapper 網頁的主要內容在這-->
   <div class="app-wrapper">
@@ -172,7 +173,7 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
                     </div>
                     <div class="card-footer">
                       <button type="submit" class="btn btn-warning">提交</button>
-                      <button type="submit" class="btn btn-light float-end">取消</button>
+                      <button type="button" class="btn btn-light float-end" onclick="goBack()">取消</button>
                     </div>
                 </form>
                 <!--end::Form-->
@@ -304,6 +305,10 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
           }).catch(console.warn);
       }
 
+    }
+
+    function goBack() {
+      window.history.back();
     }
   </script>
   <!--end::Script-->
