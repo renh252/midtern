@@ -97,6 +97,26 @@ $(document).ready(function() {
 });
 </script>
 
+<style>
+  /* ... existing styles ... */
+
+  .sort-icon {
+    display: inline-block;
+    margin-left: 5px;
+    cursor: pointer;
+    color: black;
+    user-select: none;
+  }
+
+  .sort-icon.asc::after {
+    content: '▲';
+  }
+
+  .sort-icon:not(.asc)::after {
+    content: '▼';
+  }
+</style>
+
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
   <div class="app-wrapper">
     <?php include ROOT_PATH . 'dist/pages/parts/navbar.php' ?>
@@ -133,10 +153,12 @@ $(document).ready(function() {
                   <table class="table table-bordered table-striped table-hover">
                     <thead class="table-light">
                       <tr>
-                        <th>ID</th>
-                        <th>暱稱</th>
-                        <th>Email</th>
-                        <th>狀態</th>
+                      <tr>
+    <th>ID <span class="sort-icon" data-column="user_id"></span></th>
+    <th>暱稱 <span class="sort-icon" data-column="user_name"></span></th>
+    <th>Email <span class="sort-icon" data-column="user_email"></span></th>
+    <th>狀態 <span class="sort-icon" data-column="user_status"></span></th>
+  </tr>
                       </tr>
                     </thead>
                     <tbody>
@@ -242,6 +264,46 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'post.php';
       }
     });
+  }
+});
+</script>
+<script>
+// ... existing scripts ...
+
+document.addEventListener('DOMContentLoaded', function() {
+  const sortIcons = document.querySelectorAll('.sort-icon');
+
+  sortIcons.forEach(icon => {
+    icon.addEventListener('click', function() {
+      const column = this.getAttribute('data-column');
+      const isAsc = this.classList.toggle('asc');
+
+      // 重置其他列的排序图标
+      sortIcons.forEach(otherIcon => {
+        if (otherIcon !== this) {
+          otherIcon.classList.remove('asc');
+        }
+      });
+
+      // 构建新的URL
+      const url = new URL(window.location);
+      url.searchParams.set('sort', column);
+      url.searchParams.set('order', isAsc ? 'asc' : 'desc');
+
+      // 重定向到新的URL
+      window.location.href = url.toString();
+    });
+  });
+
+  // 根据当前URL设置初始排序状态
+  const urlParams = new URLSearchParams(window.location.search);
+  const currentSort = urlParams.get('sort');
+  const currentOrder = urlParams.get('order');
+  if (currentSort && currentOrder) {
+    const currentIcon = document.querySelector(`.sort-icon[data-column="${currentSort}"]`);
+    if (currentIcon) {
+      currentIcon.classList.toggle('asc', currentOrder === 'asc');
+    }
   }
 });
 </script>
