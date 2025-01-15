@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/parts/init.php';
+require __DIR__ . '/../parts/init.php'; // 確保資料庫連線已初始化
 $title = "平台支出編輯";
 $pageName = "edit";
 
@@ -13,6 +13,9 @@ if (empty($r)) {
   exit;
 }
 
+// 取得所有 manager_account 作為選項
+$sql_managers = "SELECT id, manager_account FROM manager";
+$managers = $pdo->query($sql_managers)->fetchAll();
 ?>
 <?php include __DIR__ . '/parts/html-head.php' ?>
 <?php include __DIR__ . '/parts/html-navbar.php' ?>
@@ -23,9 +26,8 @@ if (empty($r)) {
       <h2>編輯支出資料</h2>
       <form id="editForm" action="edit_expenses-api.php" method="POST" novalidate>
         <div class="mb-3">
-          <label for="expenses_id" class="form-label">支出編號</label> 
-          <input type="text" class="form-control" id="expenses_id" name="expenses_id" value="<?= $r['id'] ?>"
-            readonly>
+          <label for="expenses_id" class="form-label">支出編號</label>
+          <input type="text" class="form-control" id="expenses_id" name="expenses_id" value="<?= $r['id'] ?>" readonly>
         </div>
         <div class="mb-3">
           <label for="expense_purpose" class="form-label">支出項目</label>
@@ -45,12 +47,13 @@ if (empty($r)) {
         </div>
         <div class="mb-3">
           <label for="expense_date" class="form-label">支出日期</label>
-          <input type="date" class="form-control" id="expense_date" name="expense_date" value="<?= $r['expense_date'] ?>" required>
+          <input type="date" class="form-control" id="expense_date" name="expense_date"
+            value="<?= $r['expense_date'] ?>" required>
         </div>
         <div class="mb-3" id="e_description">
           <label for="e_description" class="form-label">支出描述</label>
-          <textarea class="form-control" id="e_description" name="e_description"
-            value="<?= $r['e_description'] ?>" required><?= $r['e_description'] ?></textarea>
+          <textarea class="form-control" id="e_description" name="e_description" value="<?= $r['e_description'] ?>"
+            required><?= $r['e_description'] ?></textarea>
         </div>
         <div class="mb-3" style="display: none;">
           <label for="refund_id" class="form-label">退款編號</label>
@@ -59,8 +62,16 @@ if (empty($r)) {
         </div>
         <div class="mb-3">
           <label for="created_by" class="form-label">記錄人員</label>
-          <input type="text" class="form-control" id="created_by" name="created_by" value="<?= $r['created_by'] ?>" readonly>
+          <select class="form-select" id="created_by" name="created_by" required>
+            <option value="" disabled selected>選擇記錄人員</option>
+            <?php foreach ($managers as $manager): ?>
+              <option value="<?= $manager['id'] ?>" <?= $r['created_by'] == $manager['id'] ? 'selected' : '' ?>>
+                <?= htmlspecialchars($manager['manager_account']) ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
         </div>
+
         <button type="submit" class="btn btn-primary">更新資料</button>
       </form>
     </div>
@@ -106,8 +117,8 @@ if (empty($r)) {
 
       fetch(`edit_expenses-api.php`, {
           method: 'POST',
-          body: fd
-        })
+        body: fd
+      })
         .then(r => r.json())
         .then(obj => {
           console.log(obj); // 查看伺服器回應

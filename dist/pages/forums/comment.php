@@ -100,11 +100,32 @@ $(document).ready(function() {
 </script>
 
 <style>
+
+.sortable {
+    cursor: pointer;
+    position: relative;
+  }
+  .sort-icon::after {
+    content: '\25BC';
+    position: absolute;
+    right: 8px;
+    color: black;
+  }
+  .sortable.asc .sort-icon::after {
+    content: '\25B2';
+  }
+  .sortable.desc .sort-icon::after {
+    content: '\25BC';
+  }
+  .sortable.asc .sort-icon::after,
+  .sortable.desc .sort-icon::after {
+    color: #333;
+  }
 .custom-pagination-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .custom-pagination .pagination {
@@ -147,7 +168,7 @@ $(document).ready(function() {
 }
 
 .pagination-info {
-    margin-top: 1rem;
+    margin-top: 0rem;
     color: #6c757d;
 }
 
@@ -208,7 +229,12 @@ $(document).ready(function() {
     <!--begin::App Main-->
     <br>
     <main class="app-main pt-5">
-    <div class="container">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+          <div class="col-lg-10 col-xl-16">
+          <div class="card">
+              <div class="card-body">
+                <div class="row mb-3">
   <div class="row mt-2">
     <div class="col-6"></div>
     <div class="col-6">
@@ -275,19 +301,18 @@ $(document).ready(function() {
   <div class="row">
     <div class="col">
       <table class="table table-bordered table-striped">
-        <thead>
-          <tr>
-          <th>#</th>
-            <th>留言內容</th>
-            <th>作者id</th>
-            <th>作者暱稱</th>
-            <th>按讚數</th>
-            <th>建立時間</th>
-            <th>更新時間</th>
-            <th>狀態</th>
-          </tr>
-        </thead>
-        <tbody>
+      <thead>
+  <tr>
+    <th class="sortable" data-column="id">留言ID<span class="sort-icon"></span></th>
+    <th class="sortable" data-column="body">留言內容<span class="sort-icon"></span></th>
+    <th class="sortable" data-column="user_id">作者id<span class="sort-icon"></span></th>
+    <th class="sortable" data-column="user_name">作者暱稱<span class="sort-icon"></span></th>
+    <th class="sortable" data-column="likes_count">按讚數<span class="sort-icon"></span></th>
+    <th class="sortable" data-column="created_at">建立時間<span class="sort-icon"></span></th>
+    <th class="sortable" data-column="updated_at">更新時間<span class="sort-icon"></span></th>
+    <th class="sortable" data-column="status">狀態<span class="sort-icon"></span></th>
+  </tr>
+</thead>
           <?php foreach ($rows as $r): ?>
             <tr>
               <td><?= $r['id'] ?></td>
@@ -308,6 +333,9 @@ $(document).ready(function() {
           <?php endforeach; ?>
         </tbody>
       </table>
+      </div>
+      </div>
+      </div>
     </div>
   </div>
 </div>
@@ -408,6 +436,41 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("排序腳本已加載");
+  const table = document.querySelector('table');
+  const tbody = table.querySelector('tbody');
+  const sortButtons = document.querySelectorAll('.sortable');
+
+  let currentSortColumn = null;
+  let currentSortDirection = 'desc'; // 默認為降序
+
+  sortButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const column = this.dataset.column;
+      console.log("排序按鈕被點擊", column);
+
+      if (column === currentSortColumn) {
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSortDirection = 'desc'; // 新列默認為降序
+      }
+      currentSortColumn = column;
+
+      sortButtons.forEach(btn => {
+        btn.classList.remove('asc', 'desc');
+      });
+      this.classList.add(currentSortDirection);
+
+      // 發送 AJAX 請求到後端
+      fetchSortedData(column, currentSortDirection);
+    });
+  });
+
+  // ... 其餘代碼保持不變 ...
+});
+
 </script>
   <!--end::Script-->
 </body>

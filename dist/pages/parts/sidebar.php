@@ -121,7 +121,9 @@
             </a>
           </li>
           <li class="nav-item">
+
           <a href="<?= ROOT_URL ?>dist/pages/forums/user_status.php" class="nav-link" onclick="return checkPrivilege('post', this)">
+
               <i class="nav-icon bi bi-circle"></i>
               <p>黑名單</p>
             </a>
@@ -578,6 +580,7 @@
 <!--end::Sidebar Wrapper-->
 </aside>
 
+
 <!--end::Sidebar-->
 <!-- Toast container -->
 <div class="toast-container position-fixed bottom-0 start-0 p-3">
@@ -619,4 +622,3 @@ function checkPrivilege(requiredPrivilege, linkElement) {
     return true;
 }
 </script>
-

@@ -9,13 +9,37 @@ if ($page < 1) {
   header('Location: ?page=1'); # 跳轉頁面 (後端), 也稱為 redirect (轉向)
   exit; # 離開 (結束) 程式 (以下的程式都不會執行)
 }
-
+$filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
 $birth_begin = empty($_GET['birth_begin']) ? '' : $_GET['birth_begin'];
 $birth_end = empty($_GET['birth_end']) ? '' : $_GET['birth_end'];
 
 $where = ' WHERE 1 '; # SQL 條件的開頭
 
+if ($keyword) {
+  switch ($filter) {
+      case 'id':
+          $where .= " AND posts.id = " . intval($keyword);
+          break;
+      case 'title':
+          $where .= " AND posts.title LIKE " . $pdo->quote("%{$keyword}%");
+          break;
+      case 'user_id':
+          $where .= " AND posts.user_id = " . intval($keyword);
+          break;
+      case 'user_name':
+          $where .= " AND users.user_name LIKE " . $pdo->quote("%{$keyword}%");
+          break;
+      default:
+          $keyword_ = $pdo->quote("%{$keyword}%");
+          $where .= " AND (posts.id LIKE $keyword_ OR posts.title LIKE $keyword_ OR posts.user_id LIKE $keyword_ OR users.user_name LIKE $keyword_)";
+  }
+}
+
+// 更新 SQL 查詢
+$sql = "SELECT posts.*, users.user_name FROM posts
+      JOIN users ON posts.user_id = users.user_id
+      $where ORDER BY posts.id DESC LIMIT ?, ?";
 if ($keyword) {
   $keyword_ = $pdo->quote("%{$keyword}%"); # 字串內容做 SQL 引號的跳脫, 同時前後標單引號
   $where .= " AND (posts.title LIKE $keyword_ OR users.user_name LIKE $keyword_ OR posts.status LIKE $keyword_) ";
@@ -112,7 +136,7 @@ $(document).ready(function() {
   cursor: pointer;
   padding: 0 5px;
   font-size: 0.8em;
-  color: #007bff;
+  color:rgb(0, 0, 0);
 }
 
 .sort-btn:hover {
@@ -131,7 +155,7 @@ $(document).ready(function() {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .custom-pagination .pagination {
@@ -174,7 +198,7 @@ $(document).ready(function() {
 }
 
 .pagination-info {
-    margin-top: 1rem;
+    margin-top: 0rem;
     color: #6c757d;
 }
 
@@ -238,21 +262,33 @@ $(document).ready(function() {
     <!--begin::App Main-->
     <br>
     <main class="app-main pt-5">
-    <div class="container">
-  <div class="row mt-2">
+      <div class="container-fluid">
+        <div class="row justify-content-center">
+          <div class="col-lg-10 col-xl-16">
+            <div class="card">
+              <div class="card-body">
+
+  <div class="row mt-4">
     <div class="col-6"></div>
     <div class="col-6">
   <form class="d-flex" role="search" id="searchForm">
-    <input class="form-control me-2"
-      id="searchInput"
-      name="keyword"
-      value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>"
-      type="search" placeholder="搜尋文章標題、作者、狀態等" aria-label="Search">
-    <button class="btn btn-outline-primary" type="submit">Search</button>
-  </form>
-</div>
+  <select class="form-select me-2" name="filter" style="width: auto;">
+          <option value="all" <?= $filter == 'all' ? 'selected' : '' ?>>全部</option>
+          <option value="id" <?= $filter == 'id' ? 'selected' : '' ?>>文章ID</option>
+          <option value="title" <?= $filter == 'title' ? 'selected' : '' ?>>標題</option>
+          <option value="user_id" <?= $filter == 'user_id' ? 'selected' : '' ?>>作者ID</option>
+          <option value="user_name" <?= $filter == 'user_name' ? 'selected' : '' ?>>作者暱稱</option>
+        </select>
+        <input class="form-control me-2"
+          id="searchInput"
+          name="keyword"
+          value="<?= htmlentities($keyword) ?>"
+          type="search" placeholder="搜尋文章標題、作者、狀態等..." aria-label="Search">
+        <button class="btn btn-outline-primary" type="submit">search</button>
+      </form>
+    </div>
   </div>
-
+</div>
 <div class="custom-pagination-container">
     <nav aria-label="Page navigation" class="custom-pagination">
         <ul class="pagination">
@@ -303,10 +339,7 @@ $(document).ready(function() {
         第 <?= $page ?> 頁，共 <?= $totalPages ?> 頁
     </div>
 </div>
-
-
-
-
+<div class="table-wrapper p-3">
   <div class="row">
     <div class="col">
       <table class="table table-bordered table-striped">
@@ -348,9 +381,23 @@ $(document).ready(function() {
           <?php endforeach; ?>
         </tbody>
       </table>
-    </div>
-  </div>
+      </div>
+
+
 </div>
+</div>
+
+
+
+
+
+
+
+</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
     <!--end::App Main-->
     <!--begin::Footer-->
@@ -528,7 +575,49 @@ function escapeHtml(unsafe) {
 
 
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('searchInput');
+  const searchForm = document.getElementById('searchForm');
+  const filterSelect = document.querySelector('select[name="filter"]');
 
+  if (searchInput && searchForm) {
+    searchInput.addEventListener('search', function(event) {
+      if (this.value === '') {
+        event.preventDefault();
+        window.location.href = 'post.php';
+      }
+    });
+
+    searchForm.addEventListener('submit', function(event) {
+      if (searchInput.value.trim() === '') {
+        event.preventDefault();
+        window.location.href = 'post.php';
+      }
+    });
+
+    // 當篩選條件改變時更新搜索框的 placeholder
+    filterSelect.addEventListener('change', function() {
+      switch (this.value) {
+        case 'id':
+          searchInput.placeholder = '輸入文章ID...';
+          break;
+        case 'title':
+          searchInput.placeholder = '輸入標題關鍵字...';
+          break;
+        case 'user_id':
+          searchInput.placeholder = '輸入作者ID...';
+          break;
+        case 'user_name':
+          searchInput.placeholder = '輸入作者暱稱...';
+          break;
+        default:
+          searchInput.placeholder = '搜尋文章標題、作者、狀態等...';
+      }
+    });
+  }
+});
+</script>
   <!--end::Script-->
 </body>
 <!--end::Body-->

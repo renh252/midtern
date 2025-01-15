@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/parts/init.php'; // 確保資料庫連線已初始化
+require __DIR__ . '/../parts/init.php'; // 確保資料庫連線已初始化
 
 # 取得指定的捐款 ID
 $dn_id = empty($_GET['id']) ? 0 : intval($_GET['id']);
