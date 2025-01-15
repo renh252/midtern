@@ -1,12 +1,12 @@
 <?php
 // 資料庫連接設定
-$host = "172.23.53.156";
-$db_user = "mfee59";
-$db_pass = "12345";
+$host = "127.0.0.1";
+$db_user = "root";
+$db_pass = "P@ssw0rd";
 $db_name = "membercenter";
 
 // 建立資料庫連接
-$link = mysqli_connect("172.23.53.156","mfee59", "12345","membercenter");
+$link = mysqli_connect($host, $db_user, $db_pass, $db_name);
 if (!$link) {
     die("無法連接資料庫: " . mysqli_connect_error());
 }

@@ -1,12 +1,12 @@
 <?php
 // 設定資料庫連接參數
-$host = "172.23.53.156";       // 或者是你指定的資料庫主機
-$db_user = "mfee59";       // 資料庫使用者名稱
-$db_pass = "12345";        // 資料庫密碼
-$db_name = "membercenter"; // 資料庫名稱
+    $host = "127.0.0.1";
+    $db_user = "root";
+    $db_pass = "P@ssw0rd";
+    $db_name = "membercenter";
 
 // 建立資料庫連接
-$link = mysqli_connect("172.23.53.156","mfee59", "12345","membercenter");
+$link = mysqli_connect($host, $db_user, $db_pass, $db_name);
 
 // 檢查連接是否成功
 if (!$link) {

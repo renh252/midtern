@@ -6,9 +6,9 @@
 </head>
 <body>
 <?php
-$servername = "172.23.53.156";    // 資料庫主機名
-$username = "mfee59";           // MySQL 使用者名稱
-$password = "12345";               // MySQL 密碼（預設是空）
+$servername = "127.0.0.1";    // 資料庫主機名
+$username = "root";           // MySQL 使用者名稱
+$password = "P@ssw0rd";               // MySQL 密碼（預設是空）
 $database = "membercenter"; //輸入指定的資料庫名稱
 session_start();  // 啟用交談期
 $name = "";  $password = "";
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if ($manager_account != "" && $manager_password != "") {
             // 建立MySQL的資料庫連接 
-            $link = mysqli_connect("172.23.53.156","mfee59", "12345","membercenter")
+            $link = mysqli_connect("172.23.53.156", "mfee59", "12345", "membercenter")
                 or die("無法開啟MySQL資料庫連接!<br/>");
 
             // 送出UTF8編碼的MySQL指令
