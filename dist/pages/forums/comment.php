@@ -1,64 +1,93 @@
 <?php require __DIR__ . '/../parts/init.php';
-$title = "通訊錄列表"; // 這個變數可修改，用在<head>的標題
+$title = "留言管理"; // 這個變數可修改，用在<head>的標題
 $pageName = "demo"; // 這個變數可修改，用在sidebar的按鈕active
 
 $perPage = 25; # 每一頁有幾筆
-
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 if ($page < 1) {
-  header('Location: ?page=1'); # 跳轉頁面 (後端), 也稱為 redirect (轉向)
-  exit; # 離開 (結束) 程式 (以下的程式都不會執行)
-  die(); # 同 exit 的功能, 但可以回傳字串或編號
+  header('Location: ?page=1');
+  exit;
 }
 
 $keyword = empty($_GET['keyword']) ? '' : $_GET['keyword'];
-$birth_begin = empty($_GET['birth_begin']) ? '' : $_GET['birth_begin'];
-$birth_end = empty($_GET['birth_end']) ? '' : $_GET['birth_end'];
 
 $where = ' WHERE 1 '; # SQL 條件的開頭
 
 if ($keyword) {
-  $keyword_ = $pdo->quote("%{$keyword}%"); # 字串內容做 SQL 引號的跳脫, 同時前後標單引號
-  $where .= " AND ( name LIKE $keyword_ OR mobile LIKE $keyword_ ) ";
-}
-if ($birth_begin) {
-  $t = strtotime($birth_begin); # 把日期字串轉換成 timestamp
-  if ($t !== false) {
-    $where .= sprintf(" AND birthday >= '%s' ",   date('Y-m-d', $t));
-  }
-}
-if ($birth_end) {
-  $t = strtotime($birth_end); # 把日期字串轉換成 timestamp
-  if ($t !== false) {
-    $where .= sprintf(" AND birthday <= '%s' ",   date('Y-m-d', $t));
-  }
+  $keyword_ = $pdo->quote("%{$keyword}%");
+  $where .= " AND (
+    comments.body LIKE $keyword_ OR
+    users.user_name LIKE $keyword_ OR
+    comments.status LIKE $keyword_ OR
+    comments.created_at LIKE $keyword_ OR
+    comments.updated_at LIKE $keyword_
+  )";
 }
 
-$t_sql = "SELECT COUNT(1) FROM `comments` $where";
+$t_sql = "SELECT COUNT(1) FROM comments
+          JOIN users ON comments.user_id = users.user_id
+          $where";
 
 # 總筆數
 $totalRows = $pdo->query($t_sql)->fetch(PDO::FETCH_NUM)[0];
 # 總頁數
 $totalPages = ceil($totalRows / $perPage);
-$rows = []; # 設定預設值
+
 if ($totalRows > 0) {
   if ($page > $totalPages) {
-    # 用戶要看的頁碼超出範圍, 跳到最後一頁
     header('Location: ?page=' . $totalPages);
     exit;
   }
+
+  # 取得該分頁的評論資料
+  $sql = sprintf("SELECT comments.*, users.user_name
+                  FROM comments
+                  JOIN users ON comments.user_id = users.user_id
+                  %s
+                  ORDER BY comments.created_at DESC, comments.id DESC
+                  LIMIT %s, %s",
+                  $where, ($page - 1) * $perPage, $perPage);
+  $rows = $pdo->query($sql)->fetchAll();
 }
-
-  # 取第一頁的資料
-  $sql = sprintf("SELECT comments.*, users.user_name FROM comments JOIN users ON comments.user_id = users.user_id
-  ORDER BY created_at , id LIMIT %s, %s", ($page - 1) * $perPage,  $perPage);
-$rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
-
-
 
 ?>
 <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
 <!--begin::Body-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('.status-select').change(function() {
+    var select = $(this);
+    var commentId = select.data('comment-id');
+    var newStatus = select.val();
+    var originalStatus = select.data('original-status');
+
+    if (confirm('您確定要更改留言狀態嗎？')) {
+      $.ajax({
+        url: 'update_comment_status.php',
+        method: 'POST',
+        data: { comment_id: commentId, status: newStatus },
+        dataType: 'json',
+        success: function(response) {
+          if (response.status === 'success') {
+            alert('狀態已更新');
+            select.data('original-status', newStatus);
+          } else {
+            alert('更新失敗：' + response.message);
+            select.val(originalStatus);
+          }
+        },
+        error: function() {
+          alert('發生錯誤，請稍後再試');
+          select.val(originalStatus);
+        }
+      });
+    } else {
+      select.val(originalStatus);
+    }
+  });
+});
+</script>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
   <!--begin::App Wrapper 網頁的主要內容在這-->
@@ -76,15 +105,15 @@ $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
   <div class="row mt-2">
     <div class="col-6"></div>
     <div class="col-6">
-      <form class="d-flex" role="search">
-        <input class="form-control me-2"
-          name="keyword"
-          value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>"
-          type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-    </div>
-  </div>
+  <form class="d-flex" role="search" id="searchForm">
+    <input class="form-control me-2"
+      id="searchInput"
+      name="keyword"
+      value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>"
+      type="search" placeholder="搜尋留言內容、作者、狀態等" aria-label="Search">
+    <button class="btn btn-outline-primary" type="submit">Search</button>
+  </form>
+</div>
   <div class="row mt-2">
     <div class="col">
       <?php
@@ -159,7 +188,13 @@ $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
               <td><?= $r['likes_count'] ?></td>
               <td><?= $r['created_at'] ?></td>
               <td><?= $r['updated_at'] ?></td>
-              <td><?= $r['status'] ?></td>
+              <td>
+                <select class="form-select status-select" data-comment-id="<?= $r['id'] ?>" data-original-status="<?= $r['status'] ?>">
+                <option value="已留言" <?= $r['status'] == '已留言' ? 'selected' : '' ?>>已留言</option>
+                <option value="被檢舉" <?= $r['status'] == '被檢舉' ? 'selected' : '' ?>>被檢舉</option>
+                <option value="已刪除" <?= $r['status'] == '已刪除' ? 'selected' : '' ?>>已刪除</option>
+              </select>
+              </td>
             </tr>
           <?php endforeach; ?>
         </tbody>
@@ -221,7 +256,50 @@ $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的文章資料
     });
   </script>
   <!--end::OverlayScrollbars Configure-->
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('searchInput');
+  const searchForm = document.getElementById('searchForm');
 
+  if (searchInput && searchForm) {
+    searchInput.addEventListener('search', function(event) {
+      if (this.value === '') {
+        event.preventDefault();
+        window.location.href = 'comment.php';
+      }
+    });
+
+    searchForm.addEventListener('submit', function(event) {
+      if (searchInput.value.trim() === '') {
+        event.preventDefault();
+        window.location.href = 'comment.php';
+      }
+    });
+  }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('searchInput');
+  const searchForm = document.getElementById('searchForm');
+
+  if (searchInput && searchForm) {
+    searchInput.addEventListener('search', function(event) {
+      if (this.value === '') {
+        event.preventDefault();
+        window.location.href = 'comment.php';
+      }
+    });
+
+    searchForm.addEventListener('submit', function(event) {
+      if (searchInput.value.trim() === '') {
+        event.preventDefault();
+        window.location.href = 'comment.php';
+      }
+    });
+  }
+});
+</script>
   <!--end::Script-->
 </body>
 <!--end::Body-->
