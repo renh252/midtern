@@ -1,6 +1,7 @@
 <?php require __DIR__ . '/../parts/init.php';
-$title = "檢舉列表(貼文)"; // 這個變數可修改，用在<head>的標題
+$title = "檢舉列表(留言)"; // 這個變數可修改，用在<head>的標題
 $pageName = "demo"; // 這個變數可修改，用在sidebar的按鈕active
+
 
 $perPage = 25; # 每一頁有幾筆
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
@@ -16,7 +17,7 @@ $where = ' WHERE 1 '; # SQL 條件的開頭
 if ($keyword) {
   $keyword_ = $pdo->quote("%{$keyword}%");
   $where .= " AND (
-    posts.title LIKE $keyword_ OR
+    comments.body LIKE $keyword_ OR
     users.user_name LIKE $keyword_ OR
     reporters.user_name LIKE $keyword_ OR
     reports.status LIKE $keyword_ OR
@@ -25,8 +26,8 @@ if ($keyword) {
 }
 
 $t_sql = "SELECT COUNT(1) FROM reports
-          JOIN posts ON reports.target_id = posts.id
-          JOIN users ON posts.user_id = users.user_id
+          JOIN comments ON reports.target_id = comments.id
+          JOIN users ON comments.user_id = users.user_id
           JOIN users AS reporters ON reports.reporter_id = reporters.user_id
           $where";
 
@@ -43,10 +44,10 @@ if ($totalRows > 0) {
 
   # 取得該分頁的檢舉資料
   $sql = sprintf(
-    "SELECT reports.*, posts.user_id AS reports_user_id, posts.title AS reports_title, users.user_name AS reports_user_name, reporters.user_name AS target_name
+    "SELECT reports.*, comments.user_id AS reports_user_id, comments.body AS reports_body, users.user_name AS reports_user_name, reporters.user_name AS target_name
     FROM reports
-    JOIN posts ON reports.target_id = posts.id
-    JOIN users ON posts.user_id = users.user_id
+    JOIN comments ON reports.target_id = comments.id
+    JOIN users ON comments.user_id = users.user_id
     JOIN users AS reporters ON reports.reporter_id = reporters.user_id
     %s
     ORDER BY reports.created_at DESC, reports.id DESC
@@ -84,7 +85,7 @@ if ($totalRows > 0) {
       id="searchInput"
       name="keyword"
       value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>"
-      type="search" placeholder="搜尋文章標題、被檢舉人、檢舉人等" aria-label="Search">
+      type="search" placeholder="搜尋留言內容、被檢舉人、檢舉人等" aria-label="Search">
     <button class="btn btn-outline-primary" type="submit">Search</button>
   </form>
 </div>
@@ -134,7 +135,6 @@ if ($totalRows > 0) {
               </a>
             </li>
           </ul>
-
           <!-- 讓按鈕保持在同一行並對齊右側 -->
           <div>
           <div>
@@ -154,7 +154,7 @@ if ($totalRows > 0) {
         <thead>
           <tr>
           <th>#</th>
-            <th>被檢舉文章</th>
+            <th>被檢舉留言</th>
             <th>被檢舉人id</th>
             <th>被檢舉人暱稱</th>
             <th>檢舉人id</th>
@@ -167,7 +167,7 @@ if ($totalRows > 0) {
           <?php foreach ($rows as $r): ?>
             <tr>
               <td><?= $r['id'] ?></td>
-              <td><?= htmlentities($r['reports_title']) ?></td>
+              <td><?= htmlentities($r['reports_body']) ?></td>
               <td><?= htmlentities($r['reports_user_id']) ?></td>
               <td><?= htmlentities($r['reports_user_name']) ?></td>
               <td><?= htmlentities($r['reporter_id']) ?></td>
@@ -235,7 +235,6 @@ if ($totalRows > 0) {
       }
     });
   </script>
-  <!--end::OverlayScrollbars Configure-->
   <script>
 document.addEventListener('DOMContentLoaded', function() {
   const searchInput = document.getElementById('searchInput');
@@ -245,19 +244,21 @@ document.addEventListener('DOMContentLoaded', function() {
     searchInput.addEventListener('search', function(event) {
       if (this.value === '') {
         event.preventDefault();
-        window.location.href = 'report.php';
+        window.location.href = 'report_comment.php';
       }
     });
 
     searchForm.addEventListener('submit', function(event) {
       if (searchInput.value.trim() === '') {
         event.preventDefault();
-        window.location.href = 'report.php';
+        window.location.href = 'report_comment.php';
       }
     });
   }
 });
 </script>
+  <!--end::OverlayScrollbars Configure-->
+
   <!--end::Script-->
 </body>
 <!--end::Body-->

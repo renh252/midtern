@@ -1,0 +1,5 @@
+forign key需要連向別的 database(會員id)
+*目前沒有設外建，之後在加
+# 連向 user_id的表:
+# orders
+# Product_Reviews
