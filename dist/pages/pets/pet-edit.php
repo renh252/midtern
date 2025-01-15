@@ -126,7 +126,7 @@ if (empty($r)) {
                             class="form-check-input"
                             type="radio"
                             id="genderRadios1"
-                            value="male"
+                            value="公"
                             <?= $r['gender'] === '公' ? 'checked' : '' ?> disabled />
                           <label class="form-check-label" for="genderRadios1"> 公 </label>
                         </div>
@@ -137,7 +137,7 @@ if (empty($r)) {
                             class="form-check-input"
                             type="radio"
                             id="genderRadios2"
-                            value="female"
+                            value="母"
                             <?= $r['gender'] === '母' ? 'checked' : '' ?> disabled />
                           <label class="form-check-label" for="genderRadios2"> 母 </label>
                         </div>

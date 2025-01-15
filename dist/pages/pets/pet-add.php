@@ -102,7 +102,7 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
                             type="radio"
                             name="gender"
                             id="genderRadios1"
-                            value="male"
+                            value="公"
                             checked />
                           <label class="form-check-label" for="genderRadios1"> 公 </label>
                         </div>
@@ -114,7 +114,7 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
                             type="radio"
                             name="gender"
                             id="genderRadios2"
-                            value="female" />
+                            value="母" />
                           <label class="form-check-label" for="genderRadios2"> 母 </label>
                         </div>
                       </div>
