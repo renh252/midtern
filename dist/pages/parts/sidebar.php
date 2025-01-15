@@ -120,7 +120,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/forums/blacklist.php" class="nav-link">
+          <a href="<?= ROOT_URL ?>dist/pages/forums/user_status.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
               <p>黑名單</p>
             </a>
