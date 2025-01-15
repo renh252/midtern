@@ -1,14 +1,14 @@
 <?php
 // 先載入初始化檔案
-require __DIR__ . '/../../../parts/init.php';
+require_once __DIR__ . '/../../../parts/init.php';
 
 // 設定標題和頁面名稱
 $title = "通訊錄列表";
 $pageName = "demo";
 
-// 啟動 Session
-session_start();
-ob_start();
+// 啟動 Session init.php已啟動
+// session_start();
+// ob_start();
 
 // 檢查是否已登入
 if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
