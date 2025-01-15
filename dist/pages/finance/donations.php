@@ -123,7 +123,8 @@ if ($totalRows > 0) {
               <td><?= $r['regular_payment_date'] ?></td>
               <td><?= $r['payment_method'] ?></td>
               <td><?= $r['create_datetime'] ?></td>
-              <td><?= $r['reconciliation_status'] ?></td>
+              <td><?= empty($r['reconciliation_status']) ? '未核對' : $r['reconciliation_status'] ?></td>
+
               <td>
                 <?= $r['is_receipt_needed'] == 1 ? '<a href="javascript:void(0);" class="receipt-link" data-receipt_id="' . $r['id'] . '" data-receipt_name="' . htmlentities($r['donor_name']) . '">收據</a>' : '無收據'; ?>
               </td>
