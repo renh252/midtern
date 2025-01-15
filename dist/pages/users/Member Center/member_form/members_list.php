@@ -184,7 +184,6 @@ if (!$result) {
                     <th>生日</th>
                     <th>等級</th>
                     <th>頭像</th>
-                    <th>狀態</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -209,7 +208,7 @@ if (!$result) {
                         echo "<td>無頭像</td>";
                     }
 
-                    echo "<td>" . $row['user_status'] . "</td>";
+
                     echo "<td class='action-links'>";
                     echo "<a href='members_edit.php?user_id=" . $row['user_id'] . "'>編輯</a> | ";
                     echo "<a href='members_list.php?delete_id=" . $row['user_id'] . "' onclick='return confirm(\"確定要刪除此會員嗎？\");'>刪除</a>";
