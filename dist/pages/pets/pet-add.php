@@ -80,9 +80,9 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
                       <label for="species" class="col-sm-2 col-form-label">物種 **</label>
                       <div class="col-sm-10">
                         <select class="form-select" aria-label="select species" name="species">
-                          <option selected>請選擇</option>
-                          <option value="1">狗</option>
-                          <option value="2">貓</option>
+                          <option value="null" selected>請選擇</option>
+                          <option value="狗">狗</option>
+                          <option value="貓">貓</option>
                         </select>
                       </div>
                       <div class="form-text"></div>
@@ -275,7 +275,7 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
 
       if (nameField.value.length < 2) {
         isPass = false;
-        nameField.nextElementSibling.innerHTML = '姓名至少要兩個字';
+        nameField.nextElementSibling.innerHTML = '名字至少要兩個字';
         nameField.closest('.mb-3').classList.add('error');
       }
 
