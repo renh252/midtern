@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/parts/init.php';
+require __DIR__ . '/../parts/init.php';
 $title = "捐款資料修改";
 $pageName = "edit";
 

@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/parts/init.php';
+require __DIR__ . '/../parts/init.php';
 $title = "平台支出管理";
 $pageName = "expenses";
 

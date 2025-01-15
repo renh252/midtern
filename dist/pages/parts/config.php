@@ -4,7 +4,7 @@
 const DB_HOST = '127.0.0.1';
 const DB_USER = 'root';
 const DB_PASS = 'P@ssw0rd';
-const DB_NAME = 'pet_adopt';
+const DB_NAME = 'midterm';
 const DB_PORT = 3306; #若不是使用 3306 需要設定
 
 

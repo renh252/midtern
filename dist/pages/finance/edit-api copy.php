@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/parts/init.php';
+require __DIR__ . '/../parts/init.php';
 header('Content-Type: application/json');
 
 $output = [
