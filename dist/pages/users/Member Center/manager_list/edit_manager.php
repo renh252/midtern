@@ -1,6 +1,6 @@
 <?php
 // 資料庫連接設定
-$host = "localhost";
+$host = "172.23.53.156";
 $db_user = "mfee59";
 $db_pass = "12345";
 $db_name = "membercenter";
