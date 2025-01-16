@@ -194,12 +194,11 @@ $categories = $pdo->query($sql_categories)->fetchAll();
         
         <table class="table table-bordered ">
           <thead>
-            <input class="form-check-input me-2" type="checkbox" id="selectAll">
-            <label for="selectAll">全選</label>
+            
             <tr class="list-title">
               <th>
                 <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="">
+                <input class="form-check-input me-2" type="checkbox" id="selectAll">
                 </div>
               </th>
               <th>編號</th>
