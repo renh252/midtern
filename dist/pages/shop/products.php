@@ -1,833 +1,491 @@
-<!doctype html>
-<html lang="en">
-<!--begin::Head-->
+<?php
+// 先載入初始化檔案
+require __DIR__ . '/../parts/init.php';
 
+// 設定標題和頁面名稱
+$title = "商品列表";
+$pageName = "products";
+
+// 啟動 Session
+// session_start();
+// ob_start();
+
+// 檢查是否已登入
+// if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
+//     header("Location: login.php");  // 如果未登入，跳轉回登入頁面
+//     exit;
+// }
+
+// -------------- php編輯區 ------------------
+
+
+
+$perPage = 5; # 每一頁有幾筆
+
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+if ($page < 1) {
+  header('Location: ?page=1'); # 跳轉頁面 (後端), 也稱為 redirect (轉向)
+  exit; # 離開 (結束) 程式 (以下的程式都不會執行)
+  //die(); # 同 exit 的功能, 但可以回傳字串或編號
+}
+
+$keyword = empty($_GET['keyword']) ? '' : $_GET['keyword'];
+$birth_begin = empty($_GET['birth_begin']) ? '' : $_GET['birth_begin'];
+$birth_end = empty($_GET['birth_end']) ? '' : $_GET['birth_end'];
+
+// 搜尋關鍵字
+$where = ' WHERE is_deleted=false '; # SQL 條件的開頭
+
+if ($keyword) {
+  $keyword_ = $pdo->quote("%{$keyword}%"); # 字串內容做 SQL 引號的跳脫, 同時前後標單引號
+  $where .= " AND ( product_name LIKE $keyword_ OR category_tag LIKE $keyword_ OR product_id LIKE $keyword_  OR product_description LIKE $keyword_ ) ";
+}
+
+
+// if ($birth_begin) {
+//   $t = strtotime($birth_begin); # 把日期字串轉換成 timestamp
+//   if ($t !== false) {
+//     $where .= sprintf(" AND birthday >= '%s' ",   date('Y-m-d', $t));
+//   }
+// }
+// if ($birth_end) {
+//   $t = strtotime($birth_end); # 把日期字串轉換成 timestamp
+//   if ($t !== false) {
+//     $where .= sprintf(" AND birthday <= '%s' ",   date('Y-m-d', $t));
+//   }
+// }
+
+$t_sql = "SELECT COUNT(1) 
+          FROM  
+            Products p
+          JOIN 
+            Categories c
+          ON 
+            c.category_id = p.category_id 
+          $where";
+
+# 總筆數
+$totalRows = $pdo->query($t_sql)->fetch(PDO::FETCH_NUM)[0];
+# 總頁數
+$totalPages = ceil($totalRows / $perPage);
+$rows = []; # 設定預設值
+if ($totalRows > 0) {
+  if ($page > $totalPages) {
+    # 用戶要看的頁碼超出範圍, 跳到最後一頁
+    header('Location: ?page=' . $totalPages);
+    exit;
+  }
+
+  // 排序
+  $orderBy = 'p.product_id DESC';
+  
+  // 定義允許的排序欄位
+  $allowedOrderBy = [
+    'p.product_id DESC',
+    'p.product_id',
+    'p.product_name',
+    'c.category_tag',
+    'p.price DESC',
+    'p.price',
+    'p.updated_at DESC'
+  ];
+  // 驗證 orderBy 是否為允許的選項
+  if (!empty($_GET['orderBy']) && in_array($_GET['orderBy'], $allowedOrderBy)) {
+  $orderBy = $_GET['orderBy'];
+  }
+
+  # 取第一頁的資料
+  # 取第一頁的資料
+  // products
+  $sql = sprintf("SELECT 
+    c.category_id,
+    c.category_tag,
+    p.product_id,
+    p.product_name,
+    p.price AS product_price,
+    p.stock_quantity AS product_stock,
+    p.product_description,
+    p.product_status,
+    p.image_url,
+    p.created_at,
+    p.updated_at
+    FROM 
+        Products p
+    JOIN 
+        Categories c
+    ON 
+        c.category_id = p.category_id
+    %s
+    ORDER BY $orderBy  LIMIT %d, %d
+    "
+    ,
+    $where,
+    ($page - 1) * $perPage,
+    $perPage
+  );
+  $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的資料
+
+  // 變體
+  $sql_v = "SELECT 
+    product_id,
+    variant_id,
+    variant_name,
+    price AS variant_price,
+    stock_quantity AS variant_stock,
+    image_url AS variant_img
+    FROM 
+        Product_Variants
+    WHERE is_deleted=false
+    ORDER BY product_id ";
+  $rows_v = $pdo->query($sql_v)->fetchAll(); # 取得該分頁的資料
+}
+
+
+
+// ----------------- php編輯區END ---------------
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>AdminLTE 4 | Simple Tables</title>
-  <!--begin::Primary Meta Tags-->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="title" content="AdminLTE 4 | Simple Tables" />
-  <meta name="author" content="ColorlibHQ" />
-  <meta name="description"
-    content="AdminLTE is a Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS." />
-  <meta name="keywords"
-    content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard" />
-  <!--end::Primary Meta Tags-->
-  <!--begin::Fonts-->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
-    integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
-  <!--end::Fonts-->
-  <!--begin::Third Party Plugin(OverlayScrollbars)-->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
-    integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
-  <!--end::Third Party Plugin(OverlayScrollbars)-->
-  <!--begin::Third Party Plugin(Bootstrap Icons)-->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
-  <!--end::Third Party Plugin(Bootstrap Icons)-->
-  <!--begin::Required Plugin(AdminLTE)-->
-  <link rel="stylesheet" href="../../../dist/css/adminlte.css" />
-  <!--end::Required Plugin(AdminLTE)-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><?php echo $title; ?></title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
-<!--end::Head-->
+
+<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
 <!--begin::Body-->
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-  <!--begin::App Wrapper-->
-  <div class="app-wrapper">
-    <!--begin::Header-->
-    <nav class="app-header navbar navbar-expand bg-body">
-      <!--begin::Container-->
-      <div class="container-fluid">
-        <!--begin::Start Navbar Links-->
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
-              <i class="bi bi-list"></i>
-            </a>
-          </li>
-          <li class="nav-item d-none d-md-block"><a href="#" class="nav-link">Home</a></li>
-          <li class="nav-item d-none d-md-block"><a href="#" class="nav-link">Contact</a></li>
-        </ul>
-        <!--end::Start Navbar Links-->
-        <!--begin::End Navbar Links-->
-        <ul class="navbar-nav ms-auto">
-          <!--begin::Navbar Search-->
-          <li class="nav-item">
-            <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-              <i class="bi bi-search"></i>
-            </a>
-          </li>
-          <!--end::Navbar Search-->
-          <!--begin::Messages Dropdown Menu-->
-          <li class="nav-item dropdown">
-            <a class="nav-link" data-bs-toggle="dropdown" href="#">
-              <i class="bi bi-chat-text"></i>
-              <span class="navbar-badge badge text-bg-danger">3</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-              <a href="#" class="dropdown-item">
-                <!--begin::Message-->
-                <div class="d-flex">
-                  <div class="flex-shrink-0">
-                    <img src="../../../dist/assets/img/user1-128x128.jpg" alt="User Avatar"
-                      class="img-size-50 rounded-circle me-3" />
-                  </div>
-                  <div class="flex-grow-1">
-                    <h3 class="dropdown-item-title">
-                      Brad Diesel
-                      <span class="float-end fs-7 text-danger"><i class="bi bi-star-fill"></i></span>
-                    </h3>
-                    <p class="fs-7">Call me whenever you can...</p>
-                    <p class="fs-7 text-secondary">
-                      <i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
-                    </p>
-                  </div>
-                </div>
-                <!--end::Message-->
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <!--begin::Message-->
-                <div class="d-flex">
-                  <div class="flex-shrink-0">
-                    <img src="../../../dist/assets/img/user8-128x128.jpg" alt="User Avatar"
-                      class="img-size-50 rounded-circle me-3" />
-                  </div>
-                  <div class="flex-grow-1">
-                    <h3 class="dropdown-item-title">
-                      John Pierce
-                      <span class="float-end fs-7 text-secondary">
-                        <i class="bi bi-star-fill"></i>
-                      </span>
-                    </h3>
-                    <p class="fs-7">I got your message bro</p>
-                    <p class="fs-7 text-secondary">
-                      <i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
-                    </p>
-                  </div>
-                </div>
-                <!--end::Message-->
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <!--begin::Message-->
-                <div class="d-flex">
-                  <div class="flex-shrink-0">
-                    <img src="../../../dist/assets/img/user3-128x128.jpg" alt="User Avatar"
-                      class="img-size-50 rounded-circle me-3" />
-                  </div>
-                  <div class="flex-grow-1">
-                    <h3 class="dropdown-item-title">
-                      Nora Silvester
-                      <span class="float-end fs-7 text-warning">
-                        <i class="bi bi-star-fill"></i>
-                      </span>
-                    </h3>
-                    <p class="fs-7">The subject goes here</p>
-                    <p class="fs-7 text-secondary">
-                      <i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
-                    </p>
-                  </div>
-                </div>
-                <!--end::Message-->
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-            </div>
-          </li>
-          <!--end::Messages Dropdown Menu-->
-          <!--begin::Notifications Dropdown Menu-->
-          <li class="nav-item dropdown">
-            <a class="nav-link" data-bs-toggle="dropdown" href="#">
-              <i class="bi bi-bell-fill"></i>
-              <span class="navbar-badge badge text-bg-warning">15</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-              <span class="dropdown-item dropdown-header">15 Notifications</span>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="bi bi-envelope me-2"></i> 4 new messages
-                <span class="float-end text-secondary fs-7">3 mins</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="bi bi-people-fill me-2"></i> 8 friend requests
-                <span class="float-end text-secondary fs-7">12 hours</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="bi bi-file-earmark-fill me-2"></i> 3 new reports
-                <span class="float-end text-secondary fs-7">2 days</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item dropdown-footer"> See All Notifications </a>
-            </div>
-          </li>
-          <!--end::Notifications Dropdown Menu-->
-          <!--begin::Fullscreen Toggle-->
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
-              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
-              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
-            </a>
-          </li>
-          <!--end::Fullscreen Toggle-->
-          <!--begin::User Menu Dropdown-->
-          <li class="nav-item dropdown user-menu">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-              <img src="../../../dist/assets/img/user2-160x160.jpg" class="user-image rounded-circle shadow"
-                alt="User Image" />
-              <span class="d-none d-md-inline">Alexander Pierce</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-              <!--begin::User Image-->
-              <li class="user-header text-bg-primary">
-                <img src="../../../dist/assets/img/user2-160x160.jpg" class="rounded-circle shadow" alt="User Image" />
-                <p>
-                  Alexander Pierce - Web Developer
-                  <small>Member since Nov. 2023</small>
-                </p>
-              </li>
-              <!--end::User Image-->
-              <!--begin::Menu Body-->
-              <li class="user-body">
-                <!--begin::Row-->
-                <div class="row">
-                  <div class="col-4 text-center"><a href="#">Followers</a></div>
-                  <div class="col-4 text-center"><a href="#">Sales</a></div>
-                  <div class="col-4 text-center"><a href="#">Friends</a></div>
-                </div>
-                <!--end::Row-->
-              </li>
-              <!--end::Menu Body-->
-              <!--begin::Menu Footer-->
-              <li class="user-footer">
-                <a href="#" class="btn btn-default btn-flat">Profile</a>
-                <a href="#" class="btn btn-default btn-flat float-end">Sign out</a>
-              </li>
-              <!--end::Menu Footer-->
-            </ul>
-          </li>
-          <!--end::User Menu Dropdown-->
-        </ul>
-        <!--end::End Navbar Links-->
-      </div>
-      <!--end::Container-->
-    </nav>
-    <!--end::Header-->
-    <!--begin::Sidebar-->
-    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
-      <!--begin::Sidebar Brand-->
-      <div class="sidebar-brand">
-        <!--begin::Brand Link-->
-        <a href="../index.php" class="brand-link">
-          <!--begin::Brand Image-->
-          <img src="../../../dist/assets/img/AdminLTELogo.png" alt="AdminLTE Logo"
-            class="brand-image opacity-75 shadow" />
-          <!--end::Brand Image-->
-          <!--begin::Brand Text-->
-          <span class="brand-text fw-light">AdminLTE 4</span>
-          <!--end::Brand Text-->
-        </a>
-        <!--end::Brand Link-->
-      </div>
-      <!--end::Sidebar Brand-->
-      <!--begin::Sidebar Wrapper-->
-      <div class="sidebar-wrapper">
-        <nav class="mt-2">
-          <!--begin::Sidebar Menu-->
-          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-speedometer"></i>
-                <p>
-                  Dashboard
-                  <i class="nav-arrow bi bi-chevron-right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="../index.php" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Dashboard v1</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../index2.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Dashboard v2</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../index3.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Dashboard v3</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a href="../generate/theme.html" class="nav-link">
-                <i class="nav-icon bi bi-palette"></i>
-                <p>Theme Generate</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-box-seam-fill"></i>
-                <p>
-                  Widgets
-                  <i class="nav-arrow bi bi-chevron-right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="../widgets/small-box.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Small Box</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../widgets/info-box.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>info Box</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../widgets/cards.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Cards</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-clipboard-fill"></i>
-                <p>
-                  Layout Options
-                  <span class="nav-badge badge text-bg-secondary me-3">6</span>
-                  <i class="nav-arrow bi bi-chevron-right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="../layout/unfixed-sidebar.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Default Sidebar</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../layout/fixed-sidebar.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Fixed Sidebar</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../layout/layout-custom-area.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Layout <small>+ Custom Area </small></p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../layout/sidebar-mini.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Sidebar Mini</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../layout/collapsed-sidebar.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Sidebar Mini <small>+ Collapsed</small></p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../layout/logo-switch.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Sidebar Mini <small>+ Logo Switch</small></p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../layout/layout-rtl.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Layout RTL</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-tree-fill"></i>
-                <p>
-                  UI Elements
-                  <i class="nav-arrow bi bi-chevron-right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="../UI/general.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>General</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../UI/icons.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Icons</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../UI/timeline.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Timeline</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-pencil-square"></i>
-                <p>
-                  Forms
-                  <i class="nav-arrow bi bi-chevron-right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="../forms/general.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>General Elements</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item menu-open">
-              <a href="#" class="nav-link active">
-                <i class="nav-icon bi bi-table"></i>
-                <p>
-                  Tables
-                  <i class="nav-arrow bi bi-chevron-right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="../tables/simple.html" class="nav-link active">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Simple Tables</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-header">EXAMPLES</li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-box-arrow-in-right"></i>
-                <p>
-                  Auth
-                  <i class="nav-arrow bi bi-chevron-right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="nav-icon bi bi-box-arrow-in-right"></i>
-                    <p>
-                      Version 1
-                      <i class="nav-arrow bi bi-chevron-right"></i>
-                    </p>
-                  </a>
-                  <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                      <a href="../examples/login.html" class="nav-link">
-                        <i class="nav-icon bi bi-circle"></i>
-                        <p>Login</p>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="../examples/register.html" class="nav-link">
-                        <i class="nav-icon bi bi-circle"></i>
-                        <p>Register</p>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="nav-icon bi bi-box-arrow-in-right"></i>
-                    <p>
-                      Version 2
-                      <i class="nav-arrow bi bi-chevron-right"></i>
-                    </p>
-                  </a>
-                  <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                      <a href="../examples/login-v2.html" class="nav-link">
-                        <i class="nav-icon bi bi-circle"></i>
-                        <p>Login</p>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="../examples/register-v2.html" class="nav-link">
-                        <i class="nav-icon bi bi-circle"></i>
-                        <p>Register</p>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="nav-item">
-                  <a href="../examples/lockscreen.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Lockscreen</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-header">DOCUMENTATIONS</li>
-            <li class="nav-item">
-              <a href="../docs/introduction.html" class="nav-link">
-                <i class="nav-icon bi bi-download"></i>
-                <p>Installation</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="../docs/layout.html" class="nav-link">
-                <i class="nav-icon bi bi-grip-horizontal"></i>
-                <p>Layout</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="../docs/color-mode.html" class="nav-link">
-                <i class="nav-icon bi bi-star-half"></i>
-                <p>Color Mode</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-ui-checks-grid"></i>
-                <p>
-                  Components
-                  <i class="nav-arrow bi bi-chevron-right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="../docs/components/main-header.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Main Header</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../docs/components/main-sidebar.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Main Sidebar</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-filetype-js"></i>
-                <p>
-                  Javascript
-                  <i class="nav-arrow bi bi-chevron-right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="../docs/javascript/treeview.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Treeview</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a href="../docs/browser-support.html" class="nav-link">
-                <i class="nav-icon bi bi-browser-edge"></i>
-                <p>Browser Support</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="../docs/how-to-contribute.html" class="nav-link">
-                <i class="nav-icon bi bi-hand-thumbs-up-fill"></i>
-                <p>How To Contribute</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="../docs/faq.html" class="nav-link">
-                <i class="nav-icon bi bi-question-circle-fill"></i>
-                <p>FAQ</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="../docs/license.html" class="nav-link">
-                <i class="nav-icon bi bi-patch-check-fill"></i>
-                <p>License</p>
-              </a>
-            </li>
-            <li class="nav-header">MULTI LEVEL EXAMPLE</li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-circle-fill"></i>
-                <p>Level 1</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-circle-fill"></i>
-                <p>
-                  Level 1
-                  <i class="nav-arrow bi bi-chevron-right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Level 2</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>
-                      Level 2
-                      <i class="nav-arrow bi bi-chevron-right"></i>
-                    </p>
-                  </a>
-                  <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                      <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-record-circle-fill"></i>
-                        <p>Level 3</p>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-record-circle-fill"></i>
-                        <p>Level 3</p>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-record-circle-fill"></i>
-                        <p>Level 3</p>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Level 2</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-circle-fill"></i>
-                <p>Level 1</p>
-              </a>
-            </li>
-            <li class="nav-header">LABELS</li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-circle text-danger"></i>
-                <p class="text">Important</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-circle text-warning"></i>
-                <p>Warning</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon bi bi-circle text-info"></i>
-                <p>Informational</p>
-              </a>
-            </li>
-          </ul>
-          <!--end::Sidebar Menu-->
-        </nav>
-      </div>
-      <!--end::Sidebar Wrapper-->
-    </aside>
-    <!--end::Sidebar-->
+    <!--begin::App Wrapper 網頁的主要內容在這-->
+    <div class="app-wrapper">
+        <!--begin::Header-->
+        <?php include ROOT_PATH . 'dist/pages/parts/navbar.php' ?>
+        <!--end::Header-->
 
-<!-- ----------------------------------------------- -->
-    <!--begin::App Main-->
-    <main class="app-main">
-      <!--begin::App Content Header-->
-      <div class="app-content-header">
-        <!--begin::Container-->
-        <div class="container-fluid">
-          <!--begin::Row-->
-          <div class="row">
-            <div class="col-sm-6">
-              <h3 class="mb-0">商品列表</h3>
-            </div>
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-end">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">商品列表</li>
-              </ol>
-            </div>
-          </div>
-          <!--end::Row-->
-        </div>
-        <!--end::Container-->
-      </div>
-      <!--end::App Content Header-->
-      <!--begin::App Content-->
-      <div class="app-content">
-        <!--begin::Container-->
-        <div class="container-fluid">
-          <!--begin::Row-->
-          <div class="row">
-            <div class="col">
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Bordered Table</h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th style="width: 10px">#</th>
-                        <th>Task</th>
-                        <th>Progress</th>
-                        <th style="width: 40px">Label</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="align-middle">
-                        <td>1.</td>
-                        <td>Update software</td>
-                        <td>
-                          <div class="progress progress-xs">
-                            <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
-                          </div>
-                        </td>
-                        <td><span class="badge text-bg-danger">55%</span></td>
-                      </tr>
-                      <tr class="align-middle">
-                        <td>2.</td>
-                        <td>Clean database</td>
-                        <td>
-                          <div class="progress progress-xs">
-                            <div class="progress-bar text-bg-warning" style="width: 70%"></div>
-                          </div>
-                        </td>
-                        <td><span class="badge text-bg-warning">70%</span></td>
-                      </tr>
-                      <tr class="align-middle">
-                        <td>3.</td>
-                        <td>Cron job running</td>
-                        <td>
-                          <div class="progress progress-xs progress-striped active">
-                            <div class="progress-bar text-bg-primary" style="width: 30%"></div>
-                          </div>
-                        </td>
-                        <td><span class="badge text-bg-primary">30%</span></td>
-                      </tr>
-                      <tr class="align-middle">
-                        <td>4.</td>
-                        <td>Fix and squish bugs</td>
-                        <td>
-                          <div class="progress progress-xs progress-striped active">
-                            <div class="progress-bar text-bg-success" style="width: 90%"></div>
-                          </div>
-                        </td>
-                        <td><span class="badge text-bg-success">90%</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <!-- /.card-body -->
-                <div class="card-footer clearfix">
-                  <ul class="pagination pagination-sm m-0 float-end">
-                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                  </ul>
-                </div>
-              </div>
-<!---------------------------------------------------- -->
+        <!--begin::Sidebar-->
+        <?php include ROOT_PATH . 'dist/pages/parts/sidebar.php' ?>
+        <!--end::Sidebar-->
 
-            <!-- /.col -->
-          </div>
-          <!--end::Row-->
-        </div>
-        <!--end::Container-->
-      </div>
-      <!--end::App Content-->
-    </main>
-    <!--end::App Main-->
-    <!--begin::Footer-->
-    <footer class="app-footer">
-      <!--begin::To the end-->
-      <div class="float-end d-none d-sm-inline">Anything you want</div>
-      <!--end::To the end-->
-      <!--begin::Copyright-->
-      <strong>
-        Copyright &copy; 2014-2024&nbsp;
-        <a href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
-      </strong>
-      All rights reserved.
-      <!--end::Copyright-->
-    </footer>
-  
-    <!--end::Footer-->
+        <!--begin::App Main-->
+        <main class="app-main pt-5">
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">商品列表</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">商品列表</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <!--end::Row-->
+                </div>
+                <!--end::Container-->
+            </div>
+            <!--end::App Content Header-->
+
+            <!--begin::App Content-->
+            <div class="app-content">
+                <!--begin::Container-->
+<!-- --------- 內容編輯區 --------- -->
+
+<div class="container">
+  <div class="row mt-2 mb-2">
+    <!-- 排序選單 -->
+    
+    <div class="col-6 d-flex">
+      <a href="./add-product.php" class="btn btn-outline-secondary me-3" >新增商品</a>
+      <form action=""  method="GET">
+        <select name="orderBy" id="orderBy" onchange="this.form.submit()" class="form-select">
+          <option value="p.product_id DESC" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.product_id DESC'  ? 'selected':'';?>>最新 (排序)</option>
+          <option value="p.product_id" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.product_id'   ? 'selected':''?>>最舊</option>
+          <option value="p.product_name" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.product_name'   ? 'selected':''?>>名稱</option>
+          <option value="c.category_tag" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='c.category_tag'  ? 'selected':''?>>類別
+          </option>
+          <option value="p.price DESC" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.price DESC'   ? 'selected':''?>>價格(高->低)</option>
+          <option value="p.price" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.price'  ? 'selected':''?>>價格(低->高)</option>
+          <option value="p.updated_at DESC" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.updated_at  DESC'  ? 'selected':''?>>最近更新</option>
+          
+        </select>
+      </form>
+    </div>
+    <!-- 搜尋框 -->
+    <div class="col-6">
+      
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" name="keyword"
+          value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
+          placeholder="編號/名稱/類別/介紹" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
   </div>
-  <!--end::App Wrapper-->
-  <!--begin::Script-->
-  <!--begin::Third Party Plugin(OverlayScrollbars)-->
-  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
-    integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
-  <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-    crossorigin="anonymous"></script>
-  <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-    crossorigin="anonymous"></script>
-  <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
-  <script src="../../../dist/js/adminlte.js"></script>
-  <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
-  <script>
-    const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
-    const Default = {
-      scrollbarTheme: 'os-theme-light',
-      scrollbarAutoHide: 'leave',
-      scrollbarClickScroll: true,
-    };
-    document.addEventListener('DOMContentLoaded', function () {
-      const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
-      if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
-        OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-          scrollbars: {
-            theme: Default.scrollbarTheme,
-            autoHide: Default.scrollbarAutoHide,
-            clickScroll: Default.scrollbarClickScroll,
-          },
+
+
+  <div class="row">
+    <div class="col">
+      <table class="table table-bordered ">
+        <thead>
+          <tr class="list-title">
+            <th><i class="fa-solid fa-trash"></i></th>
+            <th>編號</th>
+            <th>商品</th>
+            <th>規格</th>
+            <th>類別</th>
+            <th>介紹</th>
+            <th>價格</th>
+            <th>庫存</th>
+            <th>狀態</th>
+            <th>照片</th>
+            <!-- <th>照片</th> -->
+            <th>創建時間</th>
+            <th>更新時間</th>
+            <th><i class="fa-solid fa-pen-to-square"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($rows as $r): ?>
+            <tr class="list-product">
+              <td>
+                <a href="javascript:" onclick="deleteOne(event)">
+                  <i class="fa-solid fa-trash"></i>
+                </a>
+              </td>
+              <td><?= $r['product_id'] ?></td>
+              <td><?= htmlentities($r['product_name']) ?></td>
+              <td><a href="add-variant.php?product_id=<?= $r['product_id'] ?>"><i class="fa-solid fa-square-plus"></i></a></td>
+              <td><?= $r['category_tag'] ?></td>
+              <td><?= htmlentities($r['product_description']) ?></td>
+              <td><?= $r['product_price'] ?></td>
+              <td>
+                <?php if (array_filter($rows_v, fn($v) => $v['product_id'] === $r['product_id'])): ?>
+                  --
+                <?php else:
+                  echo $r['product_stock'] ?>
+                <?php endif ?>
+              </td>
+              <td><?= htmlentities($r['product_status']) ?></td>
+              <!-- <td><?= htmlentities($r['image_url']) ?></td> -->
+              <td>
+                <?php if (!empty($r['image_url'])): ?>
+                  <img src="<?= $r['image_url'] ?>" alt="" width="100px">
+                <?php endif; ?>
+              </td>
+              
+              <td><?= $r['created_at'] ?></td>
+              <td><?= $r['updated_at'] ?></td>
+              <td>
+                <a href="edit-product.php?product_id=<?= $r['product_id'] ?>">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </a>
+              </td>
+            </tr>
+            
+            <!-- 變體 -->
+            <?php foreach ($rows_v as $v):
+              if ($v['product_id'] === $r['product_id']): ?>
+                <tr class="list-variant">
+                  <td>
+                    <a href="javascript:" onclick="deleteVariant(event)">
+                      <i class="fa-solid fa-trash text-warning"></i>
+                    </a>
+                  </td>
+                  <td hidden><?= $r['product_name'] ?></td>
+                  <td hidden><?= $v['variant_id'] ?></td>
+                  <td></td>
+                  <td></td>
+                  <td><?= htmlentities($v['variant_name']) ?></td>
+                  <td></td>
+                  <td></td>
+                  <td><?= $v['variant_price'] ?></td>
+                  <td><?= $v['variant_stock'] ?></td>
+                  <td></td>
+                  <?php if (!empty($v['variant_img'])): ?>
+                    <td>
+                      <img src="<?= $v['variant_img'] ?>" alt="" width="100px">
+                    </td>
+                  <?php endif; ?>
+                  <td></td>
+                  <td></td>
+                  <td>
+                    <a href="edit-variant.php?variant_id=<?= $v['variant_id'] ?>">
+                      <i class="fa-solid fa-pen-to-square text-warning"></i>
+                    </a>
+                  </td>
+                </tr>
+              <?php endif; endforeach; ?>
+
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+    <!-- 頁碼 -->
+  <div class="row mt-2">
+    <div class="col"></div>
+    <div class="col">
+      <?php
+      $qs = array_filter($_GET); # 去除值是空字串的項目
+      ?>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
+            <a class="page-link" href="?<?php $qs['page'] = 1;
+            echo http_build_query($qs) ?>">
+              <i class="fa-solid fa-angles-left"></i>
+            </a>
+          </li>
+          <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
+            <a class="page-link" href="?<?php $qs['page'] = $page - 1;
+            echo http_build_query($qs) ?>">
+              <i class="fa-solid fa-angle-left"></i>
+            </a>
+          </li>
+
+          <?php for ($i = $page - 5; $i <= $page + 5; $i++):
+            if ($i >= 1 and $i <= $totalPages):
+              # $qs = array_filter($_GET); # 去除值是空字串的項目
+              $qs['page'] = $i;
+              ?>
+              <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                <a class="page-link" href="?<?= http_build_query($qs) ?>"><?= $i ?></a>
+              </li>
+            <?php endif;
+          endfor; ?>
+
+          <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
+            <a class="page-link" href="?<?php $qs['page'] = $page + 1;
+            echo http_build_query($qs) ?>">
+              <i class="fa-solid fa-angle-right"></i>
+            </a>
+          </li>
+          <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
+            <a class="page-link" href="?<?php $qs['page'] = $totalPages;
+            echo http_build_query($qs) ?>">
+              <i class="fa-solid fa-angles-right"></i>
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+</div>
+
+<!-- --------- 內容編輯區END --------- -->
+                <!--end::Container-->
+            </div>
+            <!--end::App Content-->
+        </main>
+        <!--end::App Main-->
+
+        <!--begin::Footer-->
+        <?php include ROOT_PATH . 'dist/pages/parts/footer.php' ?>
+        <!--end::Footer-->
+    </div>
+    <!--end::App Wrapper-->
+
+    <!--begin::Script-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarWrapper = document.querySelector('.sidebar-wrapper');
+            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+                    scrollbars: {
+                        theme: 'os-theme-light',
+                        autoHide: 'leave',
+                        clickScroll: true,
+                    },
+                });
+            }
         });
-      }
-    });
-  </script>
-  <!--end::OverlayScrollbars Configure-->
-  <!--end::Script-->
+
+/*------------script編輯區--------------*/
+
+const deleteOne = e => {
+    e.preventDefault(); // 沒有要連到某處
+    const tr = e.target.closest('tr');
+    const [
+      ,
+      td_product_id,
+      td_product_name,
+      td_add_variant,
+      td_category_tag,
+      td_product_intro,
+      td_product_price,
+      td_product_stock,
+      td_product_status,
+      ,
+      ,
+      ,
+    ] = tr.querySelectorAll('td');
+    const product_id = td_product_id.innerHTML;
+    const product_name = td_product_name.innerHTML;
+    const category_tag = td_category_tag.innerHTML;
+    console.log([td_product_id.innerHTML, product_name.innerHTML]);
+    if (confirm(`是否要刪除編號 ${product_id} 的商品【 ${product_name} 】?`)) {
+      // 使用 JS 做跳轉頁面
+      location.href = `del.php?product_id=${product_id}`;
+    }
+  }
+  const deleteVariant = e => {
+    e.preventDefault(); // 沒有要連到某處
+
+
+    const tr = e.target.closest('tr');
+    const [
+      , //delete
+      td_product_name,
+      td_variant_id,
+      ,
+      ,
+      td_variant_name,
+      ,
+      ,
+      td_variant_price,
+      td_variant_stock,
+      td_variant_img,
+      ,
+      ,
+      ,
+      , //edit 
+    ] = tr.querySelectorAll('td');
+    const product_name = td_product_name.innerHTML;
+    const variant_id = td_variant_id.innerHTML;
+    const variant_name = td_variant_name.innerHTML;
+    if (confirm(`是否要刪除商品 ${product_name} 的規格 【 ${variant_name} 】 ?`)) {
+      // 使用 JS 做跳轉頁面
+      location.href = `del.php?variant_id=${variant_id}`;
+    }
+  }
+  /*
+  const deleteOne = ab_id => {
+    if (confirm(`是否要刪除編號為 ${ab_id} 的資料?`)) {
+      // 使用 JS 做跳轉頁面
+      location.href = `del.php?ab_id=${ab_id}`;
+    }
+  }
+  */
+
+/*------------script編輯區END--------------*/
+
+    </script>
+    <!--end::Script-->
 </body>
 <!--end::Body-->
 
 </html>
-
-<!--  -->

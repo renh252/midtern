@@ -79,9 +79,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/shop/return.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/shop/category.php" class="nav-link">
               <i class="nav-icon bi bi-circle"></i>
-              <p>退貨審核</p>
+              <p>商品類別</p>
             </a>
           </li>
           <li class="nav-item">
