@@ -212,6 +212,7 @@ const promotionNameField = document.querySelector('#promotion_name ');
     descriptionField.closest('.mb-3').classList.remove('error');
     startDateField.closest('.mb-3').classList.remove('error');
     endDateField.closest('.mb-3').classList.remove('error');
+    discountField.closest('.mb-3').classList.remove('error');
 
     let isPass = true; // 有沒有通過檢查, 預設值是 true
     // TODO: 資料欄位的檢查
