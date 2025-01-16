@@ -377,7 +377,7 @@ $qs = array_filter($_GET); #去除值為空的項目
   if (isset($_SESSION['show_alert']) && $_SESSION['show_alert']) {
     echo "<script>
             window.onload = function() {
-                alert('已刪除 ' + {$_SESSION['deleted_id']} + ' ' + '{$_SESSION['deleted_name']}');
+                alert('已刪除編號: ' + {$_SESSION['deleted_id']} + ' ' + '{$_SESSION['deleted_name']}');
             }
           </script>";
     unset($_SESSION['show_alert']); // 使用後清除標誌

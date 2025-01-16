@@ -63,7 +63,8 @@ if (empty($r)) {
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-end">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="./../index.php">Home</a></li>
+                <li class="breadcrumb-item"><a href="pet-list.php">寵物列表</a></li>
                 <li class="breadcrumb-item active" aria-current="page">修改寵物資訊</li>
               </ol>
             </div>
