@@ -31,7 +31,7 @@ mysqli_close($link);
 require __DIR__ . '/../../../parts/init.php';
 
 // 設定標題和頁面名稱
-$title = "會員列表";
+$title = "管理員列表";
 $pageName = "demo";
 
 // 啟動 Session
