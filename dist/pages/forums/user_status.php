@@ -52,9 +52,13 @@ if ($totalRows > 0) {
   }
 
   # 取得該分頁的用戶資料
-  $sql = sprintf("SELECT user_id, user_name, user_email, user_status FROM users
+  $sql = sprintf(
+    "SELECT user_id, user_name, user_email, user_status FROM users
   %s ORDER BY user_id LIMIT %s, %s",
-  $where, ($page - 1) * $perPage, $perPage);
+    $where,
+    ($page - 1) * $perPage,
+    $perPage
+  );
   $rows = $pdo->query($sql)->fetchAll();
 }
 
@@ -63,38 +67,41 @@ if ($totalRows > 0) {
 <!--begin::Body-->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-$(document).ready(function() {
-  $('.status-select').change(function() {
-    var select = $(this);
-    var userId = select.data('user-id');
-    var newStatus = select.val();
-    var originalStatus = select.data('original-status');
+  $(document).ready(function() {
+    $('.status-select').change(function() {
+      var select = $(this);
+      var userId = select.data('user-id');
+      var newStatus = select.val();
+      var originalStatus = select.data('original-status');
 
-    if (confirm('您確定要更改用戶狀態嗎？')) {
-      $.ajax({
-        url: 'update_user_status.php',
-        method: 'POST',
-        data: { user_id: userId, status: newStatus },
-        dataType: 'json',
-        success: function(response) {
-          if (response.status === 'success') {
-            alert('狀態已更新');
-            select.data('original-status', newStatus);
-          } else {
-            alert('更新失敗：' + response.message);
+      if (confirm('您確定要更改用戶狀態嗎？')) {
+        $.ajax({
+          url: 'update_user_status.php',
+          method: 'POST',
+          data: {
+            user_id: userId,
+            status: newStatus
+          },
+          dataType: 'json',
+          success: function(response) {
+            if (response.status === 'success') {
+              alert('狀態已更新');
+              select.data('original-status', newStatus);
+            } else {
+              alert('更新失敗：' + response.message);
+              select.val(originalStatus);
+            }
+          },
+          error: function() {
+            alert('發生錯誤，請稍後再試');
             select.val(originalStatus);
           }
-        },
-        error: function() {
-          alert('發生錯誤，請稍後再試');
-          select.val(originalStatus);
-        }
-      });
-    } else {
-      select.val(originalStatus);
-    }
+        });
+      } else {
+        select.val(originalStatus);
+      }
+    });
   });
-});
 </script>
 
 <style>
@@ -154,27 +161,27 @@ $(document).ready(function() {
                     <thead class="table-light">
                       <tr>
                       <tr>
-    <th>ID <span class="sort-icon" data-column="user_id"></span></th>
-    <th>暱稱 <span class="sort-icon" data-column="user_name"></span></th>
-    <th>Email <span class="sort-icon" data-column="user_email"></span></th>
-    <th>狀態 <span class="sort-icon" data-column="user_status"></span></th>
-  </tr>
+                        <th>ID <span class="sort-icon" data-column="user_id"></span></th>
+                        <th>暱稱 <span class="sort-icon" data-column="user_name"></span></th>
+                        <th>Email <span class="sort-icon" data-column="user_email"></span></th>
+                        <th>狀態 <span class="sort-icon" data-column="user_status"></span></th>
+                      </tr>
                       </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($rows as $r): ?>
-                      <tr>
-                        <td><?= $r['user_id'] ?></td>
-                        <td><?= htmlentities($r['user_name']) ?></td>
-                        <td><?= htmlentities($r['user_email']) ?></td>
-                        <td>
-                          <select class="form-select form-select-sm status-select" data-user-id="<?= $r['user_id'] ?>" data-original-status="<?= $r['user_status'] ?>">
-                            <option value="正常" <?= $r['user_status'] == '正常' ? 'selected' : '' ?>>正常</option>
-                            <option value="禁言" <?= $r['user_status'] == '禁言' ? 'selected' : '' ?>>禁言</option>
-                          </select>
-                        </td>
-                      </tr>
-                    <?php endforeach; ?>
+                      <?php foreach ($rows as $r): ?>
+                        <tr>
+                          <td><?= $r['user_id'] ?></td>
+                          <td><?= htmlentities($r['user_name']) ?></td>
+                          <td><?= htmlentities($r['user_email']) ?></td>
+                          <td>
+                            <select class="form-select form-select-sm status-select" data-user-id="<?= $r['user_id'] ?>" data-original-status="<?= $r['user_status'] ?>">
+                              <option value="正常" <?= $r['user_status'] == '正常' ? 'selected' : '' ?>>正常</option>
+                              <option value="禁言" <?= $r['user_status'] == '禁言' ? 'selected' : '' ?>>禁言</option>
+                            </select>
+                          </td>
+                        </tr>
+                      <?php endforeach; ?>
                     </tbody>
                   </table>
                 </div>
@@ -246,67 +253,67 @@ $(document).ready(function() {
   </script>
   <!--end::OverlayScrollbars Configure-->
   <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const searchInput = document.getElementById('searchInput');
-  const searchForm = document.getElementById('searchForm');
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('searchInput');
+      const searchForm = document.getElementById('searchForm');
 
-  if (searchInput && searchForm) {
-    searchInput.addEventListener('search', function(event) {
-      if (this.value === '') {
-        event.preventDefault();
-        window.location.href = 'post.php';
+      if (searchInput && searchForm) {
+        searchInput.addEventListener('search', function(event) {
+          if (this.value === '') {
+            event.preventDefault();
+            window.location.href = 'post.php';
+          }
+        });
+
+        searchForm.addEventListener('submit', function(event) {
+          if (searchInput.value.trim() === '') {
+            event.preventDefault();
+            window.location.href = 'post.php';
+          }
+        });
       }
     });
+  </script>
+  <script>
+    // ... existing scripts ...
 
-    searchForm.addEventListener('submit', function(event) {
-      if (searchInput.value.trim() === '') {
-        event.preventDefault();
-        window.location.href = 'post.php';
-      }
-    });
-  }
-});
-</script>
-<script>
-// ... existing scripts ...
+    document.addEventListener('DOMContentLoaded', function() {
+      const sortIcons = document.querySelectorAll('.sort-icon');
 
-document.addEventListener('DOMContentLoaded', function() {
-  const sortIcons = document.querySelectorAll('.sort-icon');
+      sortIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+          const column = this.getAttribute('data-column');
+          const isAsc = this.classList.toggle('asc');
 
-  sortIcons.forEach(icon => {
-    icon.addEventListener('click', function() {
-      const column = this.getAttribute('data-column');
-      const isAsc = this.classList.toggle('asc');
+          // 重置其他列的排序图标
+          sortIcons.forEach(otherIcon => {
+            if (otherIcon !== this) {
+              otherIcon.classList.remove('asc');
+            }
+          });
 
-      // 重置其他列的排序图标
-      sortIcons.forEach(otherIcon => {
-        if (otherIcon !== this) {
-          otherIcon.classList.remove('asc');
-        }
+          // 构建新的URL
+          const url = new URL(window.location);
+          url.searchParams.set('sort', column);
+          url.searchParams.set('order', isAsc ? 'asc' : 'desc');
+
+          // 重定向到新的URL
+          window.location.href = url.toString();
+        });
       });
 
-      // 构建新的URL
-      const url = new URL(window.location);
-      url.searchParams.set('sort', column);
-      url.searchParams.set('order', isAsc ? 'asc' : 'desc');
-
-      // 重定向到新的URL
-      window.location.href = url.toString();
+      // 根据当前URL设置初始排序状态
+      const urlParams = new URLSearchParams(window.location.search);
+      const currentSort = urlParams.get('sort');
+      const currentOrder = urlParams.get('order');
+      if (currentSort && currentOrder) {
+        const currentIcon = document.querySelector(`.sort-icon[data-column="${currentSort}"]`);
+        if (currentIcon) {
+          currentIcon.classList.toggle('asc', currentOrder === 'asc');
+        }
+      }
     });
-  });
-
-  // 根据当前URL设置初始排序状态
-  const urlParams = new URLSearchParams(window.location.search);
-  const currentSort = urlParams.get('sort');
-  const currentOrder = urlParams.get('order');
-  if (currentSort && currentOrder) {
-    const currentIcon = document.querySelector(`.sort-icon[data-column="${currentSort}"]`);
-    if (currentIcon) {
-      currentIcon.classList.toggle('asc', currentOrder === 'asc');
-    }
-  }
-});
-</script>
+  </script>
 
   <!--end::Script-->
 </body>
