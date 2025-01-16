@@ -37,14 +37,14 @@ if (isset($_GET['user_id'])) {
 
         // 更新會員資料的 SQL 語句
         $update_sql = "UPDATE users SET 
-                       user_email='$user_email', 
-                       user_name='$user_name',
-                       user_number='$user_number',
-                       user_address='$user_address',
-                       user_birthday='$user_birthday',
-                       user_level='$user_level',
-                       user_status='$user_status'
-                       WHERE user_id=$user_id";
+                    user_email='$user_email', 
+                    user_name='$user_name',
+                    user_number='$user_number',
+                    user_address='$user_address',
+                    user_birthday='$user_birthday',
+                    user_level='$user_level',
+                    user_status='$user_status'
+                    WHERE user_id=$user_id";
 
         if (mysqli_query($link, $update_sql)) {
             echo "<script>alert('會員資料更新成功'); window.location.href='members_list.php';</script>";
