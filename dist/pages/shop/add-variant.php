@@ -122,7 +122,7 @@ if (empty($r)) {
               <img src="" alt="" class="photo" width="200px">
               <input type="hidden" name="photo" value="">
               <!-- 表單裡面 button 如果沒有設定 type 會視為 submit button -->
-              <button type="button" class="btn btn-warning" onclick="document.upload_form.photo.click()">上傳圖片</button>
+              <!-- <button type="button" class="btn btn-warning" onclick="document.upload_form.photo.click()">上傳圖片</button> -->
             </div>
             <input type="hidden" name="product_id" value="<?= $r['product_id'] ?>">
             <div class="mb-3">
