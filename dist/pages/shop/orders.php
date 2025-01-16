@@ -36,7 +36,7 @@ $where = ' WHERE 1 '; # SQL 條件的開頭
 
 if ($keyword) {
   $keyword_ = $pdo->quote("%{$keyword}%"); # 字串內容做 SQL 引號的跳脫, 同時前後標單引號
-  $where .= " AND ( product_name LIKE $keyword_ OR category_tag LIKE $keyword_ OR product_id LIKE $keyword_  OR product_description LIKE $keyword_ ) ";
+  $where .= " AND ( order_id  LIKE $keyword_ OR u.user_name LIKE $keyword_) ";
 }
 
 
@@ -55,7 +55,11 @@ if ($keyword) {
 
 $t_sql = "SELECT COUNT(1) 
           FROM  
-            orders 
+            orders o
+          JOIN
+          users u
+          ON
+          o.user_id=u.user_id
           $where";
 
 # 總筆數
@@ -157,10 +161,12 @@ if ($totalRows > 0) {
                             <h3 class="mb-0">訂單列表</h3>
                         </div>
                         <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-end">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">訂單列表</li>
-                            </ol>
+                        <form class="d-flex" role="search">
+        <input class="form-control me-2" name="keyword"
+          value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
+          placeholder="訂單編號" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
                         </div>
                     </div>
                     <!--end::Row-->
@@ -180,12 +186,7 @@ if ($totalRows > 0) {
     <!-- 搜尋框 -->
     <div class="col-6">
       
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" name="keyword"
-          value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
-          placeholder="編號/名稱/類別/介紹" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+      
     </div>
   </div>
 
