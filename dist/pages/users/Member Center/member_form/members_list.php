@@ -106,7 +106,7 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
-            /* padding: 20px; */
+            
         }
         h1 {
             color: #333;
@@ -116,7 +116,7 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
             width: 80%;
             margin: 0 auto;
             background: #fff;
-            padding: 20px;
+            /* padding: 20px; */
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
