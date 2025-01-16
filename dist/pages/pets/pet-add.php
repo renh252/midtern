@@ -45,7 +45,8 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-end">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="./../index.php">Home</a></li>
+                <li class="breadcrumb-item"><a href="./pet-list.php">寵物列表</a></li>
                 <li class="breadcrumb-item active" aria-current="page">新增寵物資訊</li>
               </ol>
             </div>
@@ -68,7 +69,7 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
                 </div>
                 <!--end::Header-->
                 <!--begin::Form-->
-                <form onsubmit="sendData(event)">
+                <form onsubmit="sendData(event)" enctype="multipart/form-data">
                   <div class="card-body">
                     <div class="row mb-3 align-items-center">
                       <label for="name" class="col-sm-2 col-form-label">名字 **</label>
@@ -166,9 +167,9 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
                       </div>
                     </div>
                     <div class="row mb-3 align-items-center">
-                      <label for="adopted-date" class="col-sm-2 col-form-label">待確認</label>
+                      <label for="avatar" class="col-sm-2 col-form-label">大頭貼</label>
                       <div class="col-sm-10">
-                        是否還有新增欄位?
+                        <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
                       </div>
                     </div>
                     <div class="card-footer">

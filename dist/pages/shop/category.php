@@ -3,8 +3,8 @@
 require __DIR__ . '/../parts/init.php';
 
 // 設定標題和頁面名稱
-$title = "商品列表";
-$pageName = "products";
+$title = "商品類別";
+$pageName = "category";
 
 // 啟動 Session
 // session_start();
@@ -19,7 +19,6 @@ $pageName = "products";
 // -------------- php編輯區 ------------------
 
 
-
 $perPage = 5; # 每一頁有幾筆
 
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
@@ -30,38 +29,21 @@ if ($page < 1) {
 }
 
 $keyword = empty($_GET['keyword']) ? '' : $_GET['keyword'];
-$birth_begin = empty($_GET['birth_begin']) ? '' : $_GET['birth_begin'];
-$birth_end = empty($_GET['birth_end']) ? '' : $_GET['birth_end'];
+// $birth_begin = empty($_GET['birth_begin']) ? '' : $_GET['birth_begin'];
+// $birth_end = empty($_GET['birth_end']) ? '' : $_GET['birth_end'];
 
-// 搜尋關鍵字
-$where = ' WHERE is_deleted=false '; # SQL 條件的開頭
+/***************** 搜尋關鍵字 ****************/
+$where = ' WHERE parent_id IS NULL '; # SQL 條件的開頭
 
 if ($keyword) {
   $keyword_ = $pdo->quote("%{$keyword}%"); # 字串內容做 SQL 引號的跳脫, 同時前後標單引號
   $where .= " AND ( product_name LIKE $keyword_ OR category_tag LIKE $keyword_ OR product_id LIKE $keyword_  OR product_description LIKE $keyword_ ) ";
 }
 
-
-// if ($birth_begin) {
-//   $t = strtotime($birth_begin); # 把日期字串轉換成 timestamp
-//   if ($t !== false) {
-//     $where .= sprintf(" AND birthday >= '%s' ",   date('Y-m-d', $t));
-//   }
-// }
-// if ($birth_end) {
-//   $t = strtotime($birth_end); # 把日期字串轉換成 timestamp
-//   if ($t !== false) {
-//     $where .= sprintf(" AND birthday <= '%s' ",   date('Y-m-d', $t));
-//   }
-// }
-
+# 查詢總筆數
 $t_sql = "SELECT COUNT(1) 
           FROM  
-            Products p
-          JOIN 
-            Categories c
-          ON 
-            c.category_id = p.category_id 
+            Categories 
           $where";
 
 # 總筆數
@@ -76,68 +58,23 @@ if ($totalRows > 0) {
     exit;
   }
 
-  // 排序
-  $orderBy = 'p.product_id DESC';
-  
-  // 定義允許的排序欄位
-  $allowedOrderBy = [
-    'p.product_id DESC',
-    'p.product_id',
-    'p.product_name',
-    'c.category_tag',
-    'p.price DESC',
-    'p.price',
-    'p.updated_at DESC'
-  ];
-  // 驗證 orderBy 是否為允許的選項
-  if (!empty($_GET['orderBy']) && in_array($_GET['orderBy'], $allowedOrderBy)) {
-  $orderBy = $_GET['orderBy'];
-  }
-
   # 取第一頁的資料
-  # 取第一頁的資料
-  // products
-  $sql = sprintf("SELECT 
-    c.category_id,
-    c.category_tag,
-    p.product_id,
-    p.product_name,
-    p.price AS product_price,
-    p.stock_quantity AS product_stock,
-    p.product_description,
-    p.product_status,
-    p.image_url,
-    p.created_at,
-    p.updated_at
-    FROM 
-        Products p
-    JOIN 
-        Categories c
-    ON 
-        c.category_id = p.category_id
-    %s
-    ORDER BY $orderBy  LIMIT %d, %d
-    "
-    ,
+  // Categories
+  $sql = sprintf("SELECT  * FROM Categories 
+    %s ORDER BY	category_id  DESC LIMIT %d, %d",
     $where,
     ($page - 1) * $perPage,
     $perPage
   );
   $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的資料
 
-  // 變體
-  $sql_v = "SELECT 
-    product_id,
-    variant_id,
-    variant_name,
-    price AS variant_price,
-    stock_quantity AS variant_stock,
-    image_url AS variant_img
-    FROM 
-        Product_Variants
-    WHERE is_deleted=false
-    ORDER BY product_id ";
-  $rows_v = $pdo->query($sql_v)->fetchAll(); # 取得該分頁的資料
+
+  // Categories-child
+  $sql_child = "SELECT  * FROM Categories 
+    WHERE parent_id IS NOT NULL ORDER BY	category_id  DESC "
+  ;
+  $rows_child = $pdo->query($sql_child)->fetchAll(); # 取得該分頁的資料
+
 }
 
 
@@ -179,12 +116,12 @@ if ($totalRows > 0) {
                     <!--begin::Row-->
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="mb-0">商品列表</h3>
+                            <h3 class="mb-0">商品類別</h3>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-end">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">商品列表</li>
+                                <li class="breadcrumb-item active" aria-current="page">商品類別</li>
                             </ol>
                         </div>
                     </div>
@@ -201,27 +138,11 @@ if ($totalRows > 0) {
 
 <div class="container">
   <div class="row mt-2 mb-2">
-    <!-- 排序選單 -->
-    
-    <div class="col-6 d-flex">
-      <a href="./add-product.php" class="btn btn-outline-secondary me-3" >新增商品</a>
-      <form action=""  method="GET">
-        <select name="orderBy" id="orderBy" onchange="this.form.submit()" class="form-select">
-          <option value="p.product_id DESC" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.product_id DESC'  ? 'selected':'';?>>最新 (排序)</option>
-          <option value="p.product_id" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.product_id'   ? 'selected':''?>>最舊</option>
-          <option value="p.product_name" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.product_name'   ? 'selected':''?>>名稱</option>
-          <option value="c.category_tag" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='c.category_tag'  ? 'selected':''?>>類別
-          </option>
-          <option value="p.price DESC" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.price DESC'   ? 'selected':''?>>價格(高->低)</option>
-          <option value="p.price" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.price'  ? 'selected':''?>>價格(低->高)</option>
-          <option value="p.updated_at DESC" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.updated_at  DESC'  ? 'selected':''?>>最近更新</option>
-          
-        </select>
-      </form>
+    <div class="col-6">
+      <a href="./add-category.php" class="btn btn-outline-secondary" >新增類別</a>
     </div>
     <!-- 搜尋框 -->
     <div class="col-6">
-      
       <form class="d-flex" role="search">
         <input class="form-control me-2" name="keyword"
           value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
@@ -230,7 +151,7 @@ if ($totalRows > 0) {
       </form>
     </div>
   </div>
-
+  
 
   <div class="row">
     <div class="col">
@@ -238,87 +159,69 @@ if ($totalRows > 0) {
         <thead>
           <tr class="list-title">
             <th><i class="fa-solid fa-trash"></i></th>
-            <th>編號</th>
-            <th>商品</th>
-            <th>規格</th>
+            <th>類別編號</th>
             <th>類別</th>
-            <th>介紹</th>
-            <th>價格</th>
-            <th>庫存</th>
-            <th>狀態</th>
-            <!-- <th>照片</th> -->
-            <!-- <th>照片</th> -->
-            <th>創建時間</th>
-            <th>更新時間</th>
+            <td hidden></td>
+            <td hidden></td>
+            <th>子類別</th>
+            <th>tag</th>
+            <th>描述</th>
             <th><i class="fa-solid fa-pen-to-square"></i></th>
           </tr>
         </thead>
         <tbody>
           <?php foreach ($rows as $r): ?>
             <tr class="list-product">
+              <!-- 1 -->
               <td>
-                <a href="javascript:" onclick="deleteOne(event)">
+                <a href="javascript:" onclick="deleteCategory(event)">
                   <i class="fa-solid fa-trash"></i>
                 </a>
               </td>
-              <td><?= $r['product_id'] ?></td>
-              <td><?= htmlentities($r['product_name']) ?></td>
-              <td><a href="add-variant.php?product_id=<?= $r['product_id'] ?>"><i class="fa-solid fa-square-plus"></i></a></td>
-              <td><?= $r['category_tag'] ?></td>
-              <td><?= htmlentities($r['product_description']) ?></td>
-              <td><?= $r['product_price'] ?></td>
+              <!-- 2 -->
+              <td><?= $r['category_id'] ?></td>
+              <!-- 3 -->
+              <td><?= htmlentities($r['category_name']) ?></td>
+              <td hidden></td>
+              <td hidden></td>
+              <!-- 5 -->
+              <td><a href="add-childCategory.php?parent_id=<?= $r['category_id'] ?>"><i class="fa-solid fa-square-plus"></i></a></td>
+              <!-- 6 -->
+              <td><?= htmlentities($r['category_tag']) ?></td>
+              <!-- 7 -->
+              <td><?= htmlentities($r['category_description']) ?></td>
+              <!-- 8 -->
               <td>
-                <?php if (array_filter($rows_v, fn($v) => $v['product_id'] === $r['product_id'])): ?>
-                  --
-                <?php else:
-                  echo $r['product_stock'] ?>
-                <?php endif ?>
-              </td>
-              <td><?= htmlentities($r['product_status']) ?></td>
-              <!-- <td><?= htmlentities($r['image_url']) ?></td> -->
-              <!-- <td>
-                <?php if (!empty($r['image_url'])): ?>
-                  <img src="<?= $r['image_url'] ?>" alt="" width="100px">
-                <?php endif; ?>
-              </td> -->
-              
-              <td><?= $r['created_at'] ?></td>
-              <td><?= $r['updated_at'] ?></td>
-              <td>
-                <a href="edit-product.php?product_id=<?= $r['product_id'] ?>">
+                <a href="edit-category.php?category_id=<?= $r['category_id'] ?>">
                   <i class="fa-solid fa-pen-to-square"></i>
                 </a>
               </td>
-            </tr>
-            
-            <!-- 變體 -->
-            <?php foreach ($rows_v as $v):
-              if ($v['product_id'] === $r['product_id']): ?>
-                <tr class="list-variant">
+
+            <!-- 子類別 -->
+            <?php foreach ($rows_child as $r_child):
+              if ($r_child['parent_id'] === $r['category_id']): ?>
+                <tr class="list-child">
+                  <!-- 1 -->
                   <td>
-                    <a href="javascript:" onclick="deleteVariant(event)">
+                    <a href="javascript:" onclick="deleteCategory(event)">
                       <i class="fa-solid fa-trash text-warning"></i>
                     </a>
                   </td>
-                  <td hidden><?= $r['product_name'] ?></td>
-                  <td hidden><?= $v['variant_id'] ?></td>
+                  <!-- 2 -->
+                  <td>( <?= $r_child['category_id'] ?> )</td>
+                  <!-- 3 -->
                   <td></td>
-                  <td></td>
-                  <td><?= htmlentities($v['variant_name']) ?></td>
-                  <td></td>
-                  <td></td>
-                  <td><?= $v['variant_price'] ?></td>
-                  <td><?= $v['variant_stock'] ?></td>
-                  <td></td>
-                  <?php if (!empty($v['variant_img'])): ?>
-                    <!-- <td>
-                      <img src="<?= $v['variant_img'] ?>" alt="" width="100px">
-                    </td> -->
-                  <?php endif; ?>
-                  <td></td>
-                  <td></td>
+                  <!-- hidden -->
+                  <td hidden><?= $r_child['parent_id'] ?></td>
+                  <td hidden><?= $r['category_name'] ?></td>
+                  <!-- 5 -->
+                  <td><?= htmlentities($r_child['category_name']) ?></td>
+                  <!-- 6 -->
+                  <td><?= htmlentities($r_child['category_tag']) ?></td>
+                  <!-- 7 -->
+                  <td><?= htmlentities($r_child['category_description']) ?></td>
                   <td>
-                    <a href="edit-variant.php?variant_id=<?= $v['variant_id'] ?>">
+                    <a href="edit-childCategory.php?parent_name=<?= $r['category_name'] ?>&category_id=<?= $r_child['category_id'] ?>">
                       <i class="fa-solid fa-pen-to-square text-warning"></i>
                     </a>
                   </td>
@@ -331,9 +234,8 @@ if ($totalRows > 0) {
     </div>
   </div>
 
-    <!-- 頁碼 -->
+  <!-- 頁碼 -->
   <div class="row mt-2">
-    <div class="col"></div>
     <div class="col">
       <?php
       $qs = array_filter($_GET); # 去除值是空字串的項目
@@ -382,7 +284,8 @@ if ($totalRows > 0) {
     </div>
   </div>
 
-</div>
+</div> <!-- end container -->
+
 
 <!-- --------- 內容編輯區END --------- -->
                 <!--end::Container-->
@@ -416,70 +319,72 @@ if ($totalRows > 0) {
 
 /*------------script編輯區--------------*/
 
-const deleteOne = e => {
+const deleteCategory = e => {
     e.preventDefault(); // 沒有要連到某處
     const tr = e.target.closest('tr');
     const [
       ,
-      td_product_id,
-      td_product_name,
-      td_add_variant,
+      td_category_id ,
+      td_category_name,
+      td_parent_id_hidden,
+      td_parent_name_hidden,
+      td_category_child_name,
       td_category_tag,
-      td_product_intro,
-      td_product_price,
-      td_product_stock,
-      td_product_status,
-      ,
-      ,
-      ,
+      td_category_description,
+      
     ] = tr.querySelectorAll('td');
-    const product_id = td_product_id.innerHTML;
-    const product_name = td_product_name.innerHTML;
-    const category_tag = td_category_tag.innerHTML;
-    console.log([td_product_id.innerHTML, product_name.innerHTML]);
-    if (confirm(`是否要刪除編號 ${product_id} 的商品【 ${product_name} 】?`)) {
+    const category_id = td_category_id.innerHTML.match(/\d+/)[0];
+    const category_name = td_category_name.innerHTML;
+    const child_name = td_category_child_name.innerHTML;
+    const parent_name = td_parent_name_hidden.innerHTML;
+    const parent_id = td_parent_id_hidden.innerHTML;
+    // console.log([td_product_id.innerHTML, product_name.innerHTML]);
+    //------------刪除類別---------------------
+    if(category_name){
+      if (confirm(`是否要刪除類別 : 編號 ${category_id}【 ${category_name} 】?`)) {
       // 使用 JS 做跳轉頁面
-      location.href = `del.php?product_id=${product_id}`;
-    }
-  }
-  const deleteVariant = e => {
-    e.preventDefault(); // 沒有要連到某處
+      // location.href = `del.php?category_id=${category_id}`;
+      fetch(`del.php?category_id=${category_id}`, {
+        method: 'GET'
+      }).then(r => r.json())
+        .then(obj => {
+          console.log(obj);
+          if (obj.success) {
+            alert('資料已刪除') // 呈現 modal
+            location.reload(true);
+          } else {
+            alert(obj.message)
+          }
 
+        }).catch(err => console.error(err));
+      }
+    }
+    // ------------刪除子類別---------------------
+    else if(child_name){
+      if (confirm(`是否要刪除 ${parent_id}. ${parent_name} 的子類別 : ${category_id}  【${child_name}】 ?`)) {
+      // 使用 JS 做跳轉頁面
+      // location.href = `del.php?category_id=${category_id}`;
+        fetch(`del.php?category_id=${category_id}`, {
+          method: 'GET'
+        }).then(r => r.json())
+          .then(obj => {
+            console.log(obj);
+            if (obj.success) {
+              // 成功刪除              
+              alert(obj.message) ;
+              location.reload(true);
+            } else {
+              // 刪除失敗
+              alert(obj.message);
+              location.reload(true);
+            }
 
-    const tr = e.target.closest('tr');
-    const [
-      , //delete
-      td_product_name,
-      td_variant_id,
-      ,
-      ,
-      td_variant_name,
-      ,
-      ,
-      td_variant_price,
-      td_variant_stock,
-      td_variant_img,
-      ,
-      ,
-      ,
-      , //edit 
-    ] = tr.querySelectorAll('td');
-    const product_name = td_product_name.innerHTML;
-    const variant_id = td_variant_id.innerHTML;
-    const variant_name = td_variant_name.innerHTML;
-    if (confirm(`是否要刪除商品 ${product_name} 的規格 【 ${variant_name} 】 ?`)) {
-      // 使用 JS 做跳轉頁面
-      location.href = `del.php?variant_id=${variant_id}`;
+          }).catch(err => console.error(err));
+
+      }
     }
+    
   }
-  /*
-  const deleteOne = ab_id => {
-    if (confirm(`是否要刪除編號為 ${ab_id} 的資料?`)) {
-      // 使用 JS 做跳轉頁面
-      location.href = `del.php?ab_id=${ab_id}`;
-    }
-  }
-  */
 
 /*------------script編輯區END--------------*/
 

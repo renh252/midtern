@@ -2,6 +2,7 @@
 if (!isset($_SESSION)) {
     // 如果尚未啟動 session 的功能, 就啟動
    session_start();
+   ob_start();
 }
 require __DIR__. '/db-connect.php'; 
 
@@ -23,4 +24,27 @@ define('ROOT_URL', '/midtern/');
 <a href="<?= ROOT_URL ?>/dist/pages/pets/pet_info.php">到寵物資訊</a>
 <script src="<?=ROOT_URL?>dist/js/adminlte.js"></script>
 */
+
+// 驗證登入
+function checkLogin() {
+    if (!isset($_SESSION['manager_account'])) {
+        header("Location: " . ROOT_URL . "dist/pages/users/Member%20Center/mager_login/login.php");
+        exit();
+    }
+}
+// 獲取用戶權限
+function getUserPrivileges() {
+    global $pdo;
+    $account = $_SESSION['manager_account'];
+    $sql = "SELECT manager_privileges FROM manager WHERE manager_account = :account";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['account' => $account]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result ? $result['manager_privileges'] : '';
+}
+// 執行登入檢查
+checkLogin();
+
+// 獲取並存儲用戶權限
+$_SESSION['manager_privileges'] = getUserPrivileges();
 ?>

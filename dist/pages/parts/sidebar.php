@@ -1,3 +1,4 @@
+
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
 <!--begin::Sidebar Brand-->
 <div class="sidebar-brand">
@@ -38,19 +39,19 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/finance/donations.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/finance/donations.php" class="nav-link" onclick="return checkPrivilege('donation', this)">
               <i class="nav-icon bi bi-circle"></i>
               <p>捐款明細</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/finance/incomes.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/finance/incomes.php" class="nav-link" onclick="return checkPrivilege('donation', this)">
               <i class="nav-icon bi bi-circle"></i>
               <p>收入表</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/finance/expenses.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/finance/expenses.php" class="nav-link" onclick="return checkPrivilege('donation', this)">
               <i class="nav-icon bi bi-circle"></i>
               <p>支出表</p>
             </a>
@@ -67,25 +68,25 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/shop/orders.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/shop/orders.php" class="nav-link" onclick="return checkPrivilege('shop', this)">
               <i class="nav-icon bi bi-circle"></i>
               <p>訂單</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/shop/products.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/shop/products.php" class="nav-link" onclick="return checkPrivilege('shop', this)">
               <i class="nav-icon bi bi-circle"></i>
               <p>商品列表</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/shop/return.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/shop/category.php" class="nav-link" onclick="return checkPrivilege('shop', this)">
               <i class="nav-icon bi bi-circle"></i>
-              <p>退貨審核</p>
+              <p>商品類別</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/shop/promotions.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/shop/promotions.php" class="nav-link" onclick="return checkPrivilege('shop', this)">
               <i class="nav-icon bi bi-circle"></i>
               <p>促銷活動</p>
             </a>
@@ -102,43 +103,64 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/forums/post.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/forums/post.php" class="nav-link" onclick="return checkPrivilege('post', this)">
               <i class="nav-icon bi bi-circle"></i>
               <p>文章</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/forums/comment.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/forums/comment.php" class="nav-link" onclick="return checkPrivilege('post', this)">
               <i class="nav-icon bi bi-circle"></i>
               <p>留言列表</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/forums/report.php" class="nav-link">
+            <a href="<?= ROOT_URL ?>dist/pages/forums/report.php" class="nav-link" onclick="return checkPrivilege('post', this)">
               <i class="nav-icon bi bi-circle"></i>
               <p>檢舉列表</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/forums/user_status.php" class="nav-link">
+
+          <a href="<?= ROOT_URL ?>dist/pages/forums/user_status.php" class="nav-link" onclick="return checkPrivilege('post', this)">
+
               <i class="nav-icon bi bi-circle"></i>
               <p>黑名單</p>
             </a>
           </li>
         </ul>
       </li>
-      <li class="nav-item">
-        <a href="<?= ROOT_URL ?>dist/pages/users/user.php" class="nav-link">
-          <i class="nav-icon bi bi-person"></i>
-          <p>會員列表</p>
+
+      <li class="nav-item menu">
+        <a href="#" class="nav-link">
+          <i class="nav-icon far fa-smile"></i>
+          <p>
+            會員管理
+            <i class="nav-arrow bi bi-chevron-right"></i>
+          </p>
         </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="<?= ROOT_URL ?>dist/pages/users/Member Center/member_form/members_list.php" class="nav-link" onclick="return checkPrivilege('member', this)">
+            <i class="nav-icon bi bi-people"></i>
+            <p>會員列表</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= ROOT_URL ?>dist/pages/users/Member Center/manager_list/manager_list.php" class="nav-link" onclick="return checkPrivilege('member', this)">
+            <i class="nav-icon bi bi-person"></i>
+            <p>管理員列表</p>
+            </a>
+          </li>
+        </ul>
       </li>
       <li class="nav-item">
-        <a href="<?= ROOT_URL ?>dist/pages/admin/admin.php" class="nav-link">
-          <i class="nav-icon bi bi-people"></i>
-          <p>管理員列表</p>
-        </a>
-      </li>
+            <a href="<?= ROOT_URL ?>dist/pages/pets/pet-list.php" class="nav-link" onclick="return checkPrivilege('pet', this)">
+            <i class="nav-icon fas fa-paw"></i>
+            <p>寵物列表</p>
+            </a>
+          </li>
+      <li class="nav-header">雜項</li>
       <li class="nav-item menu">
         <a href="#" class="nav-link">
           <i class="nav-icon bi bi-speedometer"></i>
@@ -168,7 +190,6 @@
           </li>
         </ul>
       </li>
-      <li class="nav-header">雜項</li>
       <li class="nav-item">
         <a href="#" class="nav-link">
           <i class="nav-icon bi bi-box-seam-fill"></i>
@@ -558,3 +579,46 @@
 </div>
 <!--end::Sidebar Wrapper-->
 </aside>
+
+
+<!--end::Sidebar-->
+<!-- Toast container -->
+<div class="toast-container position-fixed bottom-0 start-0 p-3">
+    <div id="privilegeToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header  bg-primary text-white">
+            <strong class="me-auto">權限提示</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            您沒有權限訪問此頁面
+        </div>
+    </div>
+</div>
+
+<script>
+function checkPrivilege(requiredPrivilege, linkElement) {
+    var managerPrivileges = "<?php echo $_SESSION['manager_privileges']; ?>".split(',');
+    if (!managerPrivileges.includes(requiredPrivilege)) {
+        event.preventDefault();
+        var toast = new bootstrap.Toast(document.getElementById('privilegeToast'));
+        toast.show();
+        return false;
+    }
+    return true;
+}
+</script>
+
+
+<!-- check Privilege-->
+<script>
+function checkPrivilege(requiredPrivilege, linkElement) {
+    var managerPrivileges = "<?php echo $_SESSION['manager_privileges']; ?>".split(',');
+    if (!managerPrivileges.includes(requiredPrivilege)) {
+        event.preventDefault();
+        var toast = new bootstrap.Toast(document.getElementById('privilegeToast'));
+        toast.show();
+        return false;
+    }
+    return true;
+}
+</script>
