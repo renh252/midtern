@@ -21,7 +21,7 @@
                     $host = "127.0.0.1";
                     $db_username = "root";
                     $db_password = "P@ssw0rd";
-                    $database = "membercenter";
+                    $database = "pet_proj";
 
                     session_start();  // 啟用交談期
                     $manager_account = "";  
@@ -54,9 +54,10 @@
                             // 檢查是否有查詢到該帳號
                             if ($manager) {
                                 // 驗證輸入的密碼是否正確
-                                if (password_verify($manager_password, $manager['manager_password'])) {
+                                if ($manager_password== $manager['manager_password']) {
                                     // 成功登入，指定Session變數
                                     $_SESSION["login_session"] = true;
+                                    $_SESSION["manager_account"] = $manager_account; // 添加當前登入的帳戶到SESSION，用來驗證權限
                                     header("Location: index_.php");  // 導向登入後的頁面
                                 } else {
                                     // 密碼錯誤

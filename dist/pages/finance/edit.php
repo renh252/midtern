@@ -1,11 +1,13 @@
 <?php
-require __DIR__ . '/parts/init.php';
+require __DIR__ . '/../parts/init.php'; // 確保資料庫連線已初始化
 $title = "捐款資料修改";
 $pageName = "edit";
 
 // 讀取該筆資料
 $dn_id = isset($_GET['dn_id']) ? intval($_GET['dn_id']) : 0;
-$sql = "SELECT * FROM donations WHERE id=$dn_id";
+$sql = "SELECT donations.*, bank_transfer_details.reconciliation_status
+  FROM donations
+  LEFT JOIN bank_transfer_details ON donations.id = bank_transfer_details.donation_id WHERE donations.id=$dn_id";
 $r = $pdo->query($sql)->fetch();
 if (empty($r)) {
   // 如果沒有對應的資料，就跳走
@@ -18,7 +20,11 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([$dn_id]);
 $receipt = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// 查詢所有寵物的 ID
+$petSql = "SELECT `id`, `name` FROM pets";
+$pets = $pdo->query($petSql)->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <?php include __DIR__ . '/parts/html-head.php' ?>
 <?php include __DIR__ . '/parts/html-navbar.php' ?>
 
@@ -59,9 +65,14 @@ $receipt = $stmt->fetch(PDO::FETCH_ASSOC);
             <option value="捐予平台" <?= $r['donation_type'] == '捐予平台' ? 'selected' : '' ?>>捐予平台</option>
           </select>
         </div>
-        <div class="mb-3" id="pet-id-container" style="display: none;">
-          <label for="pet_id" class="form-label">寵物 ID</label>
-          <input type="number" class="form-control" id="pet_id" name="pet_id" value="<?= $r['pet_id'] ?? '' ?>">
+          <div class="mb-3" id="pet-id-container" style="display: none;">
+          <label for="pet_id" class="form-label">認養寵物</label>
+          <select class="form-select" id="pet_id" name="pet_id">
+            <option value="">選擇寵物</option>
+            <?php foreach ($pets as $pet): ?>
+              <option value="<?= $pet['id'] ?>" <?= $r['pet_id'] == $pet['id'] ? 'selected' : '' ?>><?= $pet['name']?></option>
+            <?php endforeach; ?>
+          </select>
         </div>
 
         <div class="mb-3">
@@ -75,7 +86,7 @@ $receipt = $stmt->fetch(PDO::FETCH_ASSOC);
         <div class="mb-3" id="paymentdate" style="display:none;">
           <label for="regular_payment_date" class="form-label">扣款日期</label>
           <input type="date" class="form-control" id="regular_payment_date" name="regular_payment_date"
-            value="<?= $r['regular_payment_date'] ?>" required>
+            value="<?= $r['regular_payment_date'] ?>">
         </div>
 
         <div class="mb-3">
@@ -85,14 +96,11 @@ $receipt = $stmt->fetch(PDO::FETCH_ASSOC);
             <option value="銀行轉帳" <?= $r['payment_method'] == '銀行轉帳' ? 'selected' : '' ?>>銀行轉帳</option>
             <option value="郵政劃撥" <?= $r['payment_method'] == '郵政劃撥' ? 'selected' : '' ?>>郵政劃撥</option>
           </select>
-
         </div>
         <div class="mb-3">
           <label for="reconciliation_status" class="form-label">對帳狀態</label>
-          <select class="form-select" id="reconciliation_status" name="reconciliation_status" required>
-            <option value="已完成" <?= $r['reconciliation_status'] == '已完成' ? 'selected' : '' ?>>已完成</option>
-            <option value="未完成" <?= $r['reconciliation_status'] == '未完成' ? 'selected' : '' ?>>未完成</option>
-          </select>
+          <input type="text" class="form-control" id="reconciliation_status" name="reconciliation_status"
+          value="<?= $r['reconciliation_status'] ?>" required disabled>
         </div>
         <div class="form-check">
           <input class="form-check-input" type="radio" name="is_receipt_needed" value="1" id="status1"

@@ -1,6 +1,6 @@
 <?php
 // 先載入初始化檔案
-require __DIR__ . '/../parts/init.php';
+require_once __DIR__ . '/../parts/init.php';
 
 // 設定標題和頁面名稱
 $title = "通訊錄列表";
