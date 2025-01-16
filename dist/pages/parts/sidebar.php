@@ -41,19 +41,19 @@
           <li class="nav-item">
             <a href="<?= ROOT_URL ?>dist/pages/finance/donations.php" class="nav-link" onclick="return checkPrivilege('donation', this)">
               <i class="nav-icon bi bi-circle"></i>
-              <p>捐款明細</p>
+              <p>捐款管理</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/finance/incomes.php" class="nav-link" onclick="return checkPrivilege('donation', this)">
+            <a href="<?= ROOT_URL ?>dist/pages/finance/bank.php" class="nav-link" onclick="return checkPrivilege('donation', this)">
               <i class="nav-icon bi bi-circle"></i>
-              <p>收入表</p>
+              <p>對帳管理</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="<?= ROOT_URL ?>dist/pages/finance/expenses.php" class="nav-link" onclick="return checkPrivilege('donation', this)">
               <i class="nav-icon bi bi-circle"></i>
-              <p>支出表</p>
+              <p>支出管理</p>
             </a>
           </li>
         </ul>
