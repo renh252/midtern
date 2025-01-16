@@ -313,65 +313,55 @@ if (!empty($_POST['variant_name']) || !empty($_POST['category']) || !empty($_POS
 
 
   /************** 編輯促銷活動商品 **********************************************/
-  if (
-    isset($_POST['promotion_id']) &&
-    (isset($_POST['product_ids']) || isset($_POST['variant_ids']))
-  ) {
+  // 編輯促銷活動商品
+if (
+  isset($_POST['promotion_id']) &&
+  (isset($_POST['product_ids']) || isset($_POST['variant_ids']))
+) {
+  $promotion_id = intval($_POST['promotion_id']);
 
-    $promotion_id = intval($_POST['promotion_id']);
+  $product_ids = $_POST['product_ids'] ?? '[]';
+  $variant_ids = $_POST['variant_ids'] ?? '[]';
 
+  $selectedProducts = json_decode($product_ids, true);
+  $selectedVariants = json_decode($variant_ids, true);
 
-    if (empty($product_ids))
-      $product_ids = '[]';
-    if (empty($variant_ids))
-      $variant_ids = '[]';
+  if (!is_array($selectedProducts)) $selectedProducts = [];
+  if (!is_array($selectedVariants)) $selectedVariants = [];
 
-    $selectedProducts = json_decode($product_ids, true);
-    $selectedVariants = json_decode($variant_ids, true);
-
-    if (!is_array($selectedProducts))
-      $selectedProducts = [];
-    if (!is_array($selectedVariants))
-      $selectedVariants = [];
-
-    $sql_delete = "DELETE FROM Promotion_Products WHERE promotion_id = ?";
-    $stmt = $pdo->prepare($sql_delete);
-    $stmt->execute([$promotion_id]);
-
-    $sql = "INSERT INTO Promotion_Products (promotion_id, product_id, variant_id) VALUES (?, ?, ?)";
-    $stmt = $pdo->prepare($sql);
-
-    try {
+  try {
       $pdo->beginTransaction();
 
-    foreach ($selectedProducts as $product_id) {
-        $stmt->execute([$promotion_id, $product_id, null]);
-        error_log("Inserted product_id: $product_id");
-    }
+      // 刪除舊的關聯
+      $sql_delete = "DELETE FROM Promotion_Products WHERE promotion_id = ?";
+      $stmt = $pdo->prepare($sql_delete);
+      $stmt->execute([$promotion_id]);
 
-    foreach ($selectedVariants as $variant_id) {
-        $stmt->execute([$promotion_id, null, $variant_id]);
-        error_log("Inserted variant_id: $variant_id");
-    }
+      // 插入新的關聯
+      $sql = "INSERT INTO Promotion_Products (promotion_id, product_id, variant_id) VALUES (?, ?, ?)";
+      $stmt = $pdo->prepare($sql);
 
-    $pdo->commit();
-    $output['success'] = true;
-    $output['message'] = '促銷活動商品編輯成功';
-} catch (PDOException $e) {
-    $pdo->rollBack();
-    $output['success'] = false;
-    $output['error'] = '資料庫錯誤: ' . $e->getMessage();
-    } catch (PDOException $e) {
+      foreach ($selectedProducts as $product_id) {
+          $stmt->execute([$promotion_id, $product_id, null]);
+      }
+
+      foreach ($selectedVariants as $variant_id) {
+          $stmt->execute([$promotion_id, null, $variant_id]);
+      }
+
+      $pdo->commit();
+      $output['success'] = true;
+      $output['message'] = '促銷活動商品編輯成功';
+      $output['lastInsertId'] = $pdo->lastInsertId();
+  } catch (PDOException $e) {
       $pdo->rollBack();
       $output['success'] = false;
       $output['error'] = '資料庫錯誤: ' . $e->getMessage();
-    }
-    $output['lastInsertId'] = $pdo->lastInsertId(); # 最新拿到的 PK
-  } else {
-    $output['success'] = false;
-    $output['error'] = '缺少必要參數';
-    $output['lastInsertId'] = $pdo->lastInsertId(); # 最新拿到的 PK
   }
+} else {
+  $output['success'] = false;
+  $output['error'] = '缺少必要參數';
+}
 
   $output['success'] = !!$stmt->rowCount(); # 修改了幾筆, 轉布林值
 
