@@ -76,7 +76,7 @@
 
     <div class="d-flex justify-content-center">
         <!-- 這裡的 href 指向 demo.php -->
-        <a href="/midtern/dist/pages/examples/demo.php" class="btn">進入管理首頁</a>
+        <a href="/midtern/dist/pages/index.php" class="btn">進入管理首頁</a>
     </div>
 
     <div class="d-flex justify-content-center mt-3">

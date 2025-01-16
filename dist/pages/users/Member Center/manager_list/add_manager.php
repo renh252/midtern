@@ -56,14 +56,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <?php
 // 先載入初始化檔案
-require __DIR__ . '/../parts/init.php';
+require __DIR__ . '/../../../parts/init.php';
 
 // 設定標題和頁面名稱
-$title = "通訊錄列表";
+$title = "管理員列表";
 $pageName = "demo";
 
 // 啟動 Session
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 ob_start();
 
 // 檢查是否已登入
@@ -73,8 +75,134 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
 }
 ?>
 
-<a href="logout.php" class="btn btn-danger">登出</a>
-                    <p>這裡是內容</p>
+<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
+<!--begin::Body-->
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: block;
+        }
+        input[type="text"], input[type="password"], input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <!--begin::App Wrapper 網頁的主要內容在這-->
+    <div class="app-wrapper">
+        <!--begin::Header-->
+        <?php include ROOT_PATH . 'dist/pages/parts/navbar.php' ?>
+        <!--end::Header-->
+
+        <!--begin::Sidebar-->
+        <?php include ROOT_PATH . 'dist/pages/parts/sidebar.php' ?>
+        <!--end::Sidebar-->
+
+        <!--begin::App Main-->
+        <main class="app-main pt-5">
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">breadcrumb</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <!--end::Row-->
+                </div>
+                <!--end::Container-->
+            </div>
+            <!--end::App Content Header-->
+
+            <!--begin::App Content-->
+            <div class="app-content">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <h1>歡迎來到管理頁面！</h1>
+                    <a href="logout.php" class="btn btn-danger">登出</a>
+                    <div class="container">
+    <h1>新增管理者</h1>
+
+    <form action="add_manager.php" method="POST">
+        <label for="manager_account">管理者帳號:</label>
+        <input type="text" name="manager_account" id="manager_account" required><br>
+
+        <label for="manager_privileges">管理者權限:</label>
+        <input type="text" name="manager_privileges" id="manager_privileges" required><br>
+
+        <label for="manager_password">管理者密碼:</label>
+        <input type="password" name="manager_password" id="manager_password" required><br>
+
+        <label for="confirm_password">確認密碼:</label>
+        <input type="password" name="confirm_password" id="confirm_password" required><br>
+
+        <input type="submit" value="新增管理者">
+    </form>
+</div>
                 </div>
                 <!--end::Container-->
             </div>
@@ -110,6 +238,7 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
 <!--end::Body-->
 
 </html>
+
 
 <!--
 <!DOCTYPE html>
