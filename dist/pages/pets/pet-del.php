@@ -5,7 +5,7 @@ require __DIR__ . '/../parts/init.php';
 
 // 如果網址列有id就轉換成整數(避免SQL注入)
 $id = empty($_GET['id']) ? 0 : intval($_GET['id']);
-
+$name = empty($_GET['name']) ?'': $_GET['name'];
 $result = [
   'status' => 'error',
   'message' => '發生錯誤',
@@ -14,7 +14,6 @@ if ($id) {
   if ($id > 0) {
     $stmt = $pdo->prepare("DELETE FROM pets WHERE id = ?");
     $stmt->execute([$id]);
-
     $affected_rows = $stmt->rowCount(); // 取得受影響的列數，用來判斷是否有刪到資料
     if ($affected_rows > 0) {
       $result['status'] = 'success';

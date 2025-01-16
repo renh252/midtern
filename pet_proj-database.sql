@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2025-01-16 09:29:35
+-- 產生時間： 2025-01-16 11:08:54
 -- 伺服器版本： 8.0.40
 -- PHP 版本： 8.2.12
 
@@ -151,6 +151,17 @@ CREATE TABLE `categories` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 傾印資料表的資料 `categories`
+--
+
+INSERT INTO `categories` (`category_id`, `category_name`, `category_tag`, `category_description`, `parent_id`, `created_at`, `updated_at`) VALUES
+(1, '電子產品', 'ELEC', '電子產品及設備', NULL, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(2, '時尚', 'FASH', '服裝及配件', NULL, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(3, '智能手機', 'PHON', '最新智能手機', 1, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(4, '筆記型電腦', 'LAP', '便攜式電腦', 1, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(5, '鞋類', 'SHOE', '各種鞋類', 2, '2025-01-16 03:08:30', '2025-01-16 03:08:30');
 
 -- --------------------------------------------------------
 
@@ -870,6 +881,17 @@ CREATE TABLE `orders` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- 傾印資料表的資料 `orders`
+--
+
+INSERT INTO `orders` (`order_id`, `user_id`, `total_price`, `order_status`, `payment_method`, `payment_status`, `invoice_method`, `invoice`, `mobile_barcode`, `taxID_number`, `recipient_name`, `recipient_phone`, `recipient_email`, `remark`, `shipping_method`, `shipping_address`, `tracking_number`, `shipped_at`, `created_at`, `finish_at`, `updated_at`) VALUES
+('ORD00001', 1, 500, '待出貨', 'linePay', '已付款', '紙本', 'INV12345', NULL, '12345678', '王小明', 912345678, 'li.dahua@example.com', '請於上午配送', '宅配', '台北市信義區XX路XX號', 'TRACK001', NULL, '2025-01-16 03:08:30', NULL, '2025-01-16 03:08:30'),
+('ORD00002', 2, 300, '已出貨', '信用卡', '已付款', '載具', 'INV67890', '/ABCD123', NULL, '李大華', 911223344, 'li.dahua@example.com', '門市取貨後聯繫', '7-11', '7-11門市', 'TRACK002', '2025-01-16 03:08:30', '2025-01-16 03:08:30', NULL, '2025-01-16 03:08:30'),
+('ORD00003', 3, 1200, '已完成', '信用卡', '已付款', '統編', 'INV11223', NULL, '87654321', '陳美麗', 987654321, 'li.dahua@example.com', '感謝服務，請保持聯繫', '全家', '全家門市', 'TRACK003', '2025-01-16 03:08:30', '2025-01-16 03:08:30', '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+('ORD00004', 4, 800, '待出貨', '信用卡', '已付款', '紙本', 'INV33445', '/XYZ9876', NULL, '黃俊傑', 911223344, 'li.dahua@example.com', '請提前通知配送時間', '宅配', '新竹市東區XX路XX號', 'TRACK004', NULL, '2025-01-16 03:08:30', NULL, '2025-01-16 03:08:30'),
+('ORD00005', 5, 450, '已出貨', '轉帳', '已付款', '統編', 'INV55667', NULL, '56781234', '林佩真', 911223344, 'pei.zhen@example.com', '門市領取後無需聯繫', '7-11', '7-11門市', 'TRACK005', '2025-01-16 03:08:30', '2025-01-16 03:08:30', NULL, '2025-01-16 03:08:30');
+
 -- --------------------------------------------------------
 
 --
@@ -886,6 +908,37 @@ CREATE TABLE `order_items` (
   `return_status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `returned_quantity` int DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 傾印資料表的資料 `order_items`
+--
+
+INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `variant_id`, `quantity`, `price`, `return_status`, `returned_quantity`) VALUES
+(1, 'ORD00001', 1, 1, 2, 1000, NULL, 0),
+(2, 'ORD00001', 2, 2, 2, 1500, NULL, 0),
+(3, 'ORD00001', 3, 3, 1, 500, NULL, 0),
+(4, 'ORD00001', 4, 4, 1, 1000, NULL, 0),
+(5, 'ORD00001', 5, 5, 1, 1000, NULL, 0),
+(6, 'ORD00002', 6, 6, 2, 1200, NULL, 0),
+(7, 'ORD00002', 7, 7, 1, 800, NULL, 0),
+(8, 'ORD00002', 8, 8, 1, 1000, NULL, 0),
+(9, 'ORD00002', 9, 9, 1, 800, NULL, 0),
+(10, 'ORD00002', 10, 10, 1, 700, NULL, 0),
+(11, 'ORD00003', 1, 1, 3, 900, NULL, 0),
+(12, 'ORD00003', 2, 2, 1, 700, NULL, 0),
+(13, 'ORD00003', 3, 3, 2, 800, NULL, 0),
+(14, 'ORD00003', 4, 4, 1, 400, NULL, 0),
+(15, 'ORD00003', 5, 5, 1, 400, NULL, 0),
+(16, 'ORD00004', 6, 6, 1, 2000, NULL, 0),
+(17, 'ORD00004', 7, 7, 1, 1500, NULL, 0),
+(18, 'ORD00004', 8, 8, 2, 1200, NULL, 0),
+(19, 'ORD00004', 9, 9, 1, 800, NULL, 0),
+(20, 'ORD00004', 1, 10, 1, 700, NULL, 0),
+(21, 'ORD00005', 1, 1, 1, 500, NULL, 0),
+(22, 'ORD00005', 2, 2, 1, 400, NULL, 0),
+(23, 'ORD00005', 3, 3, 2, 600, NULL, 0),
+(24, 'ORD00005', 4, 4, 1, 300, NULL, 0),
+(25, 'ORD00005', 5, 5, 1, 300, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -1443,6 +1496,22 @@ CREATE TABLE `products` (
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- 傾印資料表的資料 `products`
+--
+
+INSERT INTO `products` (`product_id`, `product_name`, `product_description`, `price`, `category_id`, `created_at`, `updated_at`, `product_status`, `image_url`, `stock_quantity`, `is_deleted`) VALUES
+(1, '電子產品 1', '電子產品 1 的描述', 100, 1, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 50, 0),
+(2, '電子產品 2', '電子產品 2 的描述', 150, 1, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 30, 0),
+(3, '時尚商品 1', '時尚商品 1 的描述', 80, 2, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 70, 0),
+(4, '時尚商品 2', '時尚商品 2 的描述', 120, 2, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 40, 0),
+(5, '智能手機 1', '智能手機 1 的描述', 200, 3, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 20, 0),
+(6, '智能手機 2', '智能手機 2 的描述', 250, 3, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 25, 0),
+(7, '筆記型電腦 1', '筆記型電腦 1 的描述', 500, 4, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 10, 0),
+(8, '筆記型電腦 2', '筆記型電腦 2 的描述', 550, 4, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 15, 0),
+(9, '鞋子 1', '鞋子 1 的描述', 60, 5, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 80, 0),
+(10, '鞋子 2', '鞋子 2 的描述', 70, 5, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 90, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -1479,6 +1548,22 @@ CREATE TABLE `product_variants` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- 傾印資料表的資料 `product_variants`
+--
+
+INSERT INTO `product_variants` (`variant_id`, `product_id`, `variant_name`, `price`, `stock_quantity`, `variant_status`, `image_url`, `is_deleted`, `created_at`, `updated_at`) VALUES
+(1, 1, '電子產品 1 - 變體 A', 110, 20, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(2, 2, '電子產品 2 - 變體 A', 130, 25, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(3, 3, '時尚商品 1 - 變體 A', 90, 50, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(4, 4, '時尚商品 2 - 變體 A', 110, 30, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(5, 5, '時尚商品 3 - 變體 A', 130, 20, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(6, 6, '時尚商品 4 - 變體 A', 150, 20, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(7, 7, '時尚商品 5 - 變體 A', 170, 15, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(8, 8, '時尚商品 6 - 變體 A', 190, 30, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(9, 9, '時尚商品 7 - 變體 A', 210, 30, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(10, 10, '時尚商品 8 - 變體 A', 230, 25, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30');
+
 -- --------------------------------------------------------
 
 --
@@ -1494,6 +1579,17 @@ CREATE TABLE `promotions` (
   `discount_percentage` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- 傾印資料表的資料 `promotions`
+--
+
+INSERT INTO `promotions` (`promotion_id`, `promotion_name`, `promotion_description`, `start_date`, `end_date`, `discount_percentage`) VALUES
+(1, '夏季大促銷', '享受高達30%的折扣，適用於所有電子產品，包含手機、電腦等', '2025-06-01', '2025-06-30', 30),
+(2, '時尚商品折扣', '時尚商品系列大放送，買一送一，適用於所有鞋款和服裝', '2025-07-01', '2025-07-15', 50),
+(3, '新品限時優惠', '所有新品首次購買可享20%折扣，包含各類電子產品和時尚商品', '2025-08-01', '2025-08-31', 20),
+(4, '全館滿額折扣', '全館消費滿500元可享受額外10%的折扣，適用於所有商品與變體', '2025-09-01', '2025-09-30', 10),
+(5, '雙11折扣季', '雙11期間所有商品享有30%折扣，特別推薦電子產品與時尚商品', '2025-11-01', '2025-11-11', 30);
+
 -- --------------------------------------------------------
 
 --
@@ -1507,6 +1603,30 @@ CREATE TABLE `promotion_products` (
   `variant_id` int DEFAULT NULL,
   `category_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 傾印資料表的資料 `promotion_products`
+--
+
+INSERT INTO `promotion_products` (`promotion_product_id`, `promotion_id`, `product_id`, `variant_id`, `category_id`) VALUES
+(1, 1, 1, NULL, NULL),
+(2, 1, 2, NULL, NULL),
+(3, 1, NULL, NULL, 1),
+(4, 2, 5, NULL, NULL),
+(5, 2, 6, NULL, NULL),
+(6, 2, NULL, NULL, 2),
+(7, 3, 3, NULL, NULL),
+(8, 3, 4, NULL, NULL),
+(9, 3, NULL, NULL, 1),
+(10, 4, 1, NULL, NULL),
+(11, 4, 2, NULL, NULL),
+(12, 4, 5, NULL, NULL),
+(13, 4, 6, NULL, NULL),
+(14, 4, NULL, NULL, NULL),
+(15, 5, 1, NULL, NULL),
+(16, 5, 3, NULL, NULL),
+(17, 5, NULL, NULL, 2),
+(18, 5, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -1932,7 +2052,7 @@ ALTER TABLE `bookmarks`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `category_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `category_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `comments`
@@ -1968,7 +2088,7 @@ ALTER TABLE `manager`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `order_item_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `pets`
@@ -2016,7 +2136,7 @@ ALTER TABLE `posts_likes`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `product_reviews`
@@ -2028,19 +2148,19 @@ ALTER TABLE `product_reviews`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `product_variants`
 --
 ALTER TABLE `product_variants`
-  MODIFY `variant_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `variant_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `promotions`
 --
 ALTER TABLE `promotions`
-  MODIFY `promotion_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `promotion_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `promotion_products`
 --
 ALTER TABLE `promotion_products`
-  MODIFY `promotion_product_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `promotion_product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `receipts`
