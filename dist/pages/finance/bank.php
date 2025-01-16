@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/../parts/init.php';
-$title = "捐款明細";
+$title = "對帳管理";
 $pageName = "bank";
 
 $perPage = 25; # 每一頁有幾筆
@@ -35,130 +35,190 @@ if ($totalRows > 0) {
 
   # 取第一頁的資料
   $sql = sprintf("SELECT * FROM bank_transfer_details %s
-  LIMIT %d, %d", $where,($page - 1) * $perPage, $perPage);
+  LIMIT %d, %d", $where, ($page - 1) * $perPage, $perPage);
   $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的資料
 }
 
 
 ?>
-<?php include __DIR__ . '/parts/html-head.php' ?>
-<?php include __DIR__ . '/parts/html-navbar.php' ?>
+<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
 
-<div class="container">
-  <div class="row mt-4 align-items-center">
-  <div class="row mt-2">
-      <div class="col-9"></div>
-      <div class="col-3">
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" name="keyword"
-            value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
-            placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+
+    <?php include ROOT_PATH . 'dist/pages/parts/navbar.php' ?>
+    <?php include ROOT_PATH . 'dist/pages/parts/sidebar.php' ?>
+    <main class="app-main pt-5">
+      <div class="app-content-header">
+        <div class="row">
+          <div class="col-sm-6">
+            <h3 class="mb-0">對帳管理</h3>
+          </div>
+          <div class="col-sm-6">
+            <div class="row mt-2">
+              <div class="col"></div>
+              <div class="col-9">
+                <form class="d-flex" role="search">
+                  <input class="form-control me-2" name="keyword"
+                    value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
+                    placeholder="搜尋匯款人姓名、對帳狀態" aria-label="Search">
+                  <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+              </div>
+            </div>
+            </ol>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="col-11">
-      <?php
-      $qs = array_filter($_GET); # 去除值是空字串的項目
-      ?>
-      <nav aria-label="Page navigation">
-        <ul class="pagination">
-          <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
-            <a class="page-link" href="?<?php $qs['page'] = 1;
-            echo http_build_query($qs) ?>">
-              <i class="fa-solid fa-angles-left"></i>
-            </a>
-          </li>
-          <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
-            <a class="page-link" href="?<?php $qs['page'] = $page - 1;
-            echo http_build_query($qs) ?>">
-              <i class="fa-solid fa-angle-left"></i>
-            </a>
-          </li>
+      <div class="app-content">
+        <div class="container-fluid">
 
-          <?php for ($i = $page - 5; $i <= $page + 5; $i++):
-            if ($i >= 1 and $i <= $totalPages):
-              #$qs = array_filter($_GET); # 去除值是空字串的項目
-              $qs['page'] = $i;
+          <div class="row mt-4 align-items-center">
+
+            <div class="col-11">
+              <?php
+              $qs = array_filter($_GET); # 去除值是空字串的項目
               ?>
-              <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                <a class="page-link" href="?<?= http_build_query($qs) ?>"><?= $i ?></a>
-              </li>
-            <?php endif;
-          endfor; ?>
+              <nav aria-label="Page navigation">
+                <ul class="pagination">
+                  <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?<?php $qs['page'] = 1;
+                    echo http_build_query($qs) ?>">
+                      <i class="fa-solid fa-angles-left"></i>
+                    </a>
+                  </li>
+                  <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?<?php $qs['page'] = $page - 1;
+                    echo http_build_query($qs) ?>">
+                      <i class="fa-solid fa-angle-left"></i>
+                    </a>
+                  </li>
 
-          <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
-            <a class="page-link" href="?<?php $qs['page'] = $page + 1;
-            echo http_build_query($qs) ?>">
-              <i class="fa-solid fa-angle-right"></i>
-            </a>
-          </li>
-          <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
-            <a class="page-link" href="?<?php $qs['page'] = $totalPages;
-            echo http_build_query($qs) ?>">
-              <i class="fa-solid fa-angles-right"></i>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-    <div class="col mb-0" style="display:none;">
-      <a href="add_bank.php"><i class="fa-solid fa-plus " style="border:1px solid black; padding:3px"></i></a>
-    </div>
+                  <?php for ($i = $page - 5; $i <= $page + 5; $i++):
+                    if ($i >= 1 and $i <= $totalPages):
+                      #$qs = array_filter($_GET); # 去除值是空字串的項目
+                      $qs['page'] = $i;
+                      ?>
+                      <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                        <a class="page-link" href="?<?= http_build_query($qs) ?>"><?= $i ?></a>
+                      </li>
+                    <?php endif;
+                  endfor; ?>
+
+                  <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?<?php $qs['page'] = $page + 1;
+                    echo http_build_query($qs) ?>">
+                      <i class="fa-solid fa-angle-right"></i>
+                    </a>
+                  </li>
+                  <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?<?php $qs['page'] = $totalPages;
+                    echo http_build_query($qs) ?>">
+                      <i class="fa-solid fa-angles-right"></i>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th><i class="fa-solid fa-trash"></i></th>
+                    <th>捐款編號</th>
+                    <th>捐款人姓名</th>
+                    <th>捐款金額</th>
+                    <th>匯款日期</th>
+                    <th>帳號末五碼</th>
+                    <th>對帳狀態</th>
+                    <th><i class="fa-solid fa-pen-to-square"></i></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($rows as $r): ?>
+                    <tr>
+                      <td><a href="javascript:" onclick="deleteOne(event)">
+                          <i class="fa-solid fa-trash"></i>
+                        </a></td>
+                      <td style="display:none"><?= $r['id'] ?></td>
+                      <td><?= $r['donation_id'] ?></td>
+                      <td><?= $r['donor_name'] ?></td>
+                      <td><?= $r['transfer_amount'] ?></td>
+                      <td><?= $r['transfer_date'] ?></td>
+                      <td><?= $r['account_last_5'] ?></td>
+                      <td><?= $r['reconciliation_status'] ?></td>
+                      <td><a href="edit_bank.php?bn_id=<?= $r['id'] ?>">
+                          <i class="fa-solid fa-pen-to-square"></i>
+                        </a></td>
+
+                    </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div style="display:flex;  justify-content: end;">
+            <a href="add_bank.php" class="btn btn-outline-primary"><i class="fa-solid fa-plus p-2"></i>新增資料</a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <?php include ROOT_PATH . 'dist/pages/parts/footer.php' ?>
   </div>
-  <div class="row">
-    <div class="col">
-      <table class="table table-bordered table-striped">
-        <thead>
-          <tr>
-            <th><i class="fa-solid fa-trash"></i></th>
-            <th>捐款編號</th>
-            <th>捐款人姓名</th>
-            <th>捐款金額</th>
-            <th>匯款日期</th>
-            <th>帳號末五碼</th>
-            <th>對帳狀態</th>
-            <th><i class="fa-solid fa-pen-to-square"></i></th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($rows as $r): ?>
-            <tr>
-              <td><a href="javascript:" onclick="deleteOne(event)">
-                  <i class="fa-solid fa-trash"></i>
-                </a></td>
-              <td style="display:none"><?= $r['id'] ?></td>
-              <td><?= $r['donation_id'] ?></td>
-              <td><?= $r['donor_name'] ?></td>
-              <td><?= $r['transfer_amount'] ?></td>
-              <td><?= $r['transfer_date'] ?></td>
-              <td><?= $r['account_last_5'] ?></td>
-              <td><?= $r['reconciliation_status'] ?></td>
-              <td><a href="edit_bank.php?bn_id=<?= $r['id'] ?>">
-                  <i class="fa-solid fa-pen-to-square"></i>
-                </a></td>
+  <?php include __DIR__ . '/parts/html-scripts.php' ?>
+  <div class="m-5"></div>
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+    integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <!--end::Third Party Plugin(OverlayScrollbars)-->
+  <!--begin::Required Plugin(Bootstrap 5)-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!--end::Required Plugin(Bootstrap 5)-->
+  <!--begin::Required Plugin(AdminLTE)-->
+  <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
+  <!--end::Required Plugin(AdminLTE)-->
+  <!--begin::OverlayScrollbars Configure 設定滾動條-->
+  <script>
+    const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+    const Default = {
+      // 當鼠標離開滾動區域時，滾動條會自動隱藏；允許用戶通過點擊滾動條來進行滾動
+      scrollbarTheme: 'os-theme-light',
+      scrollbarAutoHide: 'leave',
+      scrollbarClickScroll: true,
+    };
+    // DOMContentLoaded確保在DOM完全加載後執行代碼
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+      if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+        // 初始化滾動條，並傳遞配置選項，如主題和自動隱藏行為
+        OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+          scrollbars: {
+            theme: Default.scrollbarTheme,
+            autoHide: Default.scrollbarAutoHide,
+            clickScroll: Default.scrollbarClickScroll,
+          },
+        });
+      }
+    });
+  </script>
+  <!--end::OverlayScrollbars Configure-->
 
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-<?php include __DIR__ . '/parts/html-scripts.php' ?>
-
+  <!--end::Script-->
+</body>
 <script>
   const deleteOne = e => {
     e.preventDefault(); // 沒有要連到某處
     const tr = e.target.closest('tr');
-    const [, , td_id, td_name, , , , ] = tr.querySelectorAll('td');
+    const [, , td_id, td_name, , , ,] = tr.querySelectorAll('td');
     const bn_id = td_id.innerHTML.trim();
     const bn_name = td_name.innerHTML;
     console.log([bn_name.innerHTML]);
-    if (confirm(`是否要刪除捐款人id為 ${bn_id} ，姓名為 ${bn_name} 的捐款紀錄?`)) {
+    if (confirm(`是否要刪除捐款人id為 ${bn_id} ，姓名為 ${bn_name} 的對帳紀錄?`)) {
       // 使用 JS 做跳轉頁面
       location.href = `del.php?id=${bn_id}`;
     }
   };
 </script>
-<?php include __DIR__ . '/parts/html-tail.php' ?>
+
+</html>

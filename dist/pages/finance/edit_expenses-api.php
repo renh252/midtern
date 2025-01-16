@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../parts/init.php'; // 確保資料庫連線已初始化
+require __DIR__ . '/../parts/init.php';
 header('Content-Type: application/json');
 
 $output = [
