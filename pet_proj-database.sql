@@ -1566,7 +1566,7 @@ CREATE TABLE `reports` (
   `target_id` int NOT NULL,
   `reporter_id` int NOT NULL,
   `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `status` enum('待審核','resolved') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '待審核',
+  `status` enum('待審核','審核通過','審核駁回') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '待審核',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

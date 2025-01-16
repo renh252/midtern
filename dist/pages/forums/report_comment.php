@@ -197,7 +197,7 @@ if ($endPage < $totalPages) {
     <main class="app-main pt-5">
       <div class="container-fluid">
         <div class="row justify-content-center">
-          <div class="col-lg-10 col-xl-8">
+          <div class="col-lg-11 col-xl-11">
             <div class="card">
               <div class="card-body">
                 <div class="row mb-3">
@@ -218,7 +218,38 @@ if ($endPage < $totalPages) {
                     </form>
                   </div>
                 </div>
-
+                <div class="d-flex justify-content-center mt-3">
+                  <nav aria-label="Page navigation" class="custom-pagination">
+                    <ul class="pagination">
+                      <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
+                        <a class="page-link" href="?<?php $qs['page'] = 1;
+                                                    echo http_build_query($qs); ?>" aria-label="First">第一頁</a>
+                      </li>
+                      <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
+                        <a class="page-link prev-page" href="?<?php $qs['page'] = max(1, $page - 1);
+                                                              echo http_build_query($qs); ?>" aria-label="Previous">
+                          <span class="triangle-left"></span>
+                        </a>
+                      </li>
+                      <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
+                        <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                          <a class="page-link" href="?<?php $qs['page'] = $i;
+                                                      echo http_build_query($qs); ?>"><?= $i ?></a>
+                        </li>
+                      <?php endfor; ?>
+                      <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
+                        <a class="page-link next-page" href="?<?php $qs['page'] = min($totalPages, $page + 1);
+                                                              echo http_build_query($qs); ?>" aria-label="Next">
+                          <span class="triangle-right"></span>
+                        </a>
+                      </li>
+                      <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
+                        <a class="page-link" href="?<?php $qs['page'] = $totalPages;
+                                                    echo http_build_query($qs); ?>" aria-label="Last">最後一頁</a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
                 <div class="table-responsive">
                   <table class="table table-bordered table-striped table-hover">
                     <thead class="table-light">
@@ -229,6 +260,7 @@ if ($endPage < $totalPages) {
                         <th>被檢舉人暱稱<span class="sort-icon" data-column="reports_user_name"></span></th>
                         <th>檢舉人id<span class="sort-icon" data-column="reporter_id"></span></th>
                         <th>檢舉人暱稱<span class="sort-icon" data-column="target_name"></span></th>
+                        <th>檢舉理由<span class="sort-icon"></span></th>
                         <th>檢舉時間<span class="sort-icon" data-column="created_at"></span></th>
                         <th>狀態<span class="sort-icon" data-column="status"></span></th>
                       </tr>
@@ -242,8 +274,15 @@ if ($endPage < $totalPages) {
                           <td><?= htmlentities($r['reports_user_name']) ?></td>
                           <td><?= htmlentities($r['reporter_id']) ?></td>
                           <td><?= htmlentities($r['target_name']) ?></td>
+                          <td><?= htmlentities($r['reason']) ?></td>
                           <td><?= htmlentities($r['created_at']) ?></td>
-                          <td><?= htmlentities($r['status']) ?></td>
+                          <td>
+                            <select class="form-select status-select" data-id="<?= $r['id'] ?>">
+                              <option value="待審核" <?= $r['status'] == '待審核' ? 'selected' : '' ?>>待審核</option>
+                              <option value="審核通過" <?= $r['status'] == '審核通過' ? 'selected' : '' ?>>審核通過</option>
+                              <option value="審核駁回" <?= $r['status'] == '審核駁回' ? 'selected' : '' ?>>審核駁回</option>
+                            </select>
+                          </td>
                         </tr>
                       <?php endforeach; ?>
                     </tbody>
@@ -398,6 +437,53 @@ if ($endPage < $totalPages) {
   });
   </script>
   <!--end::OverlayScrollbars Configure-->
+
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const statusSelects = document.querySelectorAll('.status-select');
+  statusSelects.forEach(select => {
+    select.addEventListener('change', function() {
+      const id = this.dataset.id;
+      const status = this.value;
+      updateStatus(id, status);
+    });
+  });
+
+  function updateStatus(id, status) {
+    console.log('Updating status:', id, status);
+    fetch('update_report_status.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `id=${id}&status=${status}`
+    })
+    .then(response => {
+      console.log('Response:', response);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Data:', data);
+      if (data.success) {
+        alert('已成功審核該筆檢舉');
+        if (status === '審核通過' || status === '審核駁回') {
+          const row = document.querySelector(`select[data-id="${id}"]`).closest('tr');
+          row.remove();
+        }
+      } else {
+        alert('檢舉審核失敗：' + (data.message || '出錯了'));
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('发生错误，请稍后再试。错误详情：' + error.message);
+    });
+  }
+});
+</script>
 
   <!--end::Script-->
 </body>
