@@ -41,6 +41,7 @@ if ($totalRows > 0) {
   $sql = sprintf("SELECT donations.*, bank_transfer_details.reconciliation_status
   FROM donations 
   LEFT JOIN bank_transfer_details ON donations.id = bank_transfer_details.donation_id %s
+  ORDER BY donations.id DESC
   LIMIT %d, %d",
     $where,
     ($page - 1) * $perPage,
@@ -85,7 +86,7 @@ if ($totalRows > 0) {
 
           <div class="row mt-4 align-items-center">
 
-            <div class="col-11">
+          <div class="col-6">
               <?php
               $qs = array_filter($_GET); # 去除值是空字串的項目
               ?>
@@ -130,6 +131,9 @@ if ($totalRows > 0) {
                 </ul>
               </nav>
             </div>
+            <div class="col-6 mb-3" style="display:flex;  justify-content: end;">
+            <a href="add.php" class="btn btn-outline-primary"><i class="fa-solid fa-plus p-2"></i>新增資料</a>
+          </div>
           </div>
           <div class="row">
             <div class="col">
@@ -186,9 +190,6 @@ if ($totalRows > 0) {
                 </tbody>
               </table>
             </div>
-          </div>
-          <div style="display:flex;  justify-content: end;">
-            <a href="add.php" class="btn btn-outline-primary"><i class="fa-solid fa-plus p-2"></i>新增資料</a>
           </div>
         </div>
       </div>

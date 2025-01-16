@@ -39,19 +39,23 @@ if (empty($r)) {
           <label for="donor_name" class="form-label">捐款人姓名</label>
           <input type="text" class="form-control" id="donor_name" name="donor_name" value="<?= $r['donor_name'] ?>"
             required>
+            <div id="error-message"></div>
         </div>
         <div class="mb-3">
           <label for="transfer_amount" class="form-label">捐款金額</label>
           <input type="number" class="form-control" id="transfer_amount" name="transfer_amount" value="<?= $r['transfer_amount'] ?>" required>
+          <div id="error-message"></div>
         </div>
         <div class="mb-3">
           <label for="transfer_date" class="form-label">匯款日期</label>
           <input type="date" class="form-control" id="transfer_date" name="transfer_date" value="<?= $r['transfer_date'] ?>" required>
+          <div id="error-message"></div>
         </div>
         <div class="mb-3" id="account_last_5">
           <label for="account_last_5" class="form-label">帳號末五碼</label>
           <input type="text" class="form-control" id="account_last_5" name="account_last_5"
             value="<?= $r['account_last_5'] ?>" required>
+            <div id="error-message"></div>
         </div>
         <div class="mb-3">
           <label for="reconciliation_status" class="form-label">對帳狀態</label>

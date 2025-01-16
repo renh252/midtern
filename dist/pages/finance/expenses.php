@@ -39,7 +39,8 @@ if ($totalRows > 0) {
   # 取第一頁的資料
   $sql = sprintf("SELECT expenses.*, manager.id AS manager_id, manager.manager_account
 FROM expenses
-JOIN manager ON expenses.created_by = manager.id %s 
+JOIN manager ON expenses.created_by = manager.id %s
+ORDER BY expenses.id DESC 
   LIMIT %d, %d", $where, ($page - 1) * $perPage, $perPage);
   $rows = $pdo->query($sql)->fetchAll(); # 取得該分頁的資料
 }
@@ -80,7 +81,7 @@ JOIN manager ON expenses.created_by = manager.id %s
 
           <div class="row mt-4 align-items-center">
 
-            <div class="col-11">
+            <div class="col-6">
               <?php
               $qs = array_filter($_GET); # 去除值是空字串的項目
               ?>
@@ -125,6 +126,9 @@ JOIN manager ON expenses.created_by = manager.id %s
                 </ul>
               </nav>
             </div>
+            <div class="col-6 mb-3" style="display:flex;  justify-content: end;">
+            <a href="add_expenses.php" class="btn btn-outline-primary"><i class="fa-solid fa-plus p-2"></i>新增資料</a>
+          </div>
           </div>
           <div class="row">
             <div class="col">
@@ -164,9 +168,6 @@ JOIN manager ON expenses.created_by = manager.id %s
                 </tbody>
               </table>
             </div>
-          </div>
-          <div style="display:flex;  justify-content: end;">
-            <a href="add_expenses.php" class="btn btn-outline-primary"><i class="fa-solid fa-plus p-2"></i>新增資料</a>
           </div>
         </div>
       </div>
