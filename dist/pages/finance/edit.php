@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../parts/init.php'; // 確保資料庫連線已初始化
+require __DIR__ . '/../parts/init.php';
 $title = "捐款資料修改";
 $pageName = "edit";
 
@@ -24,11 +24,16 @@ $receipt = $stmt->fetch(PDO::FETCH_ASSOC);
 $petSql = "SELECT `id`, `name` FROM pets";
 $pets = $pdo->query($petSql)->fetchAll(PDO::FETCH_ASSOC);
 ?>
+<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
 
-<?php include __DIR__ . '/parts/html-head.php' ?>
-<?php include __DIR__ . '/parts/html-navbar.php' ?>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <?php include ROOT_PATH . 'dist/pages/parts/navbar.php' ?>
+    <?php include ROOT_PATH . 'dist/pages/parts/sidebar.php' ?>
+    <main class="app-main pt-5">
+      <div class="app-content-header">
 
-<div class="container">
+        <div class="container-fluid">
   <div class="row mt-4">
     <div class="col-6">
       <h2>修改捐款資料</h2>
@@ -64,7 +69,6 @@ $pets = $pdo->query($petSql)->fetchAll(PDO::FETCH_ASSOC);
             <option value="線上認養" <?= $r['donation_type'] == '線上認養' ? 'selected' : '' ?>>線上認養</option>
             <option value="捐予平台" <?= $r['donation_type'] == '捐予平台' ? 'selected' : '' ?>>捐予平台</option>
           </select>
-        </div>
           <div class="mb-3" id="pet-id-container" style="display: none;">
           <label for="pet_id" class="form-label">認養寵物</label>
           <select class="form-select" id="pet_id" name="pet_id">
@@ -140,6 +144,11 @@ $pets = $pdo->query($petSql)->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </div>
 </div>
+</div>
+</main>
+<?php include ROOT_PATH . 'dist/pages/parts/footer.php' ?>
+
+</div>
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -161,7 +170,40 @@ $pets = $pdo->query($petSql)->fetchAll(PDO::FETCH_ASSOC);
   </div>
 </div>
 <?php include __DIR__ . '/parts/html-scripts.php' ?>
-
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+    integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <!--end::Third Party Plugin(OverlayScrollbars)-->
+  <!--begin::Required Plugin(Bootstrap 5)-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!--end::Required Plugin(Bootstrap 5)-->
+  <!--begin::Required Plugin(AdminLTE)-->
+  <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
+  <!--end::Required Plugin(AdminLTE)-->
+  <!--begin::OverlayScrollbars Configure 設定滾動條-->
+  <script>
+    const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+    const Default = {
+      // 當鼠標離開滾動區域時，滾動條會自動隱藏；允許用戶通過點擊滾動條來進行滾動
+      scrollbarTheme: 'os-theme-light',
+      scrollbarAutoHide: 'leave',
+      scrollbarClickScroll: true,
+    };
+    // DOMContentLoaded確保在DOM完全加載後執行代碼
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+      if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+        // 初始化滾動條，並傳遞配置選項，如主題和自動隱藏行為
+        OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+          scrollbars: {
+            theme: Default.scrollbarTheme,
+            autoHide: Default.scrollbarAutoHide,
+            clickScroll: Default.scrollbarClickScroll,
+          },
+        });
+      }
+    });
+  </script>
+</body>
 <script>
   const myModal = new bootstrap.Modal('#exampleModal');
   // 收據明細區
@@ -271,4 +313,4 @@ $pets = $pdo->query($petSql)->fetchAll(PDO::FETCH_ASSOC);
   const form = document.getElementById('editForm');
   form.addEventListener('submit', sendData);
 </script>
-<?php include __DIR__ . '/parts/html-tail.php' ?>
+</html>

@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../parts/init.php'; // 確保資料庫連線已初始化
+require __DIR__ . '/../parts/init.php';
 
 // 確保獲得正確的 ID 參數
 $donationId = isset($_GET['id']) ? intval($_GET['id']) : 0;
