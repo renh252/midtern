@@ -146,7 +146,7 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
                 <!--begin::Container-->
                 <div class="container-fluid">
                     <h1>歡迎來到管理頁面！</h1>
-                    <a href="logout.php" class="btn btn-danger">登出</a>
+                    
                     
 <h1>管理者名單</h1>
 

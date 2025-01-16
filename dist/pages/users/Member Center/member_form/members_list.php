@@ -116,7 +116,7 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
             width: 80%;
             margin: 0 auto;
             background: #fff;
-            /* padding: 20px; */
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -170,6 +170,7 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
         .action-links a:hover {
             text-decoration: underline;
         }
+        
     </style>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -209,7 +210,6 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
                 <!--begin::Container-->
                 <div class="container-fluid">
                     <h1>歡迎來到管理頁面！</h1>
-                    <a href="logout.php" class="btn btn-danger">登出</a>
                     <h1>會員列表</h1>
 
     <div class="container">
