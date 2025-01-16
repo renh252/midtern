@@ -1,19 +1,30 @@
 <?php
-/************** 修改商品頁面 ****************/
+// 先載入初始化檔案
+require __DIR__ . '/../parts/init.php';
 
-#管理者才可看到這頁面
-// require __DIR__ . '/parts/admin-required.php';
+// 設定標題和頁面名稱
+$title = "修改子類別";
+$pageName = "edit_childCategory";
 
-require __DIR__ . '/parts/init.php';
-$title = "修改商品類別";
-$pageName = "edit-category";
+// 啟動 Session
+// session_start();
+// ob_start();
+
+// 檢查是否已登入
+// if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
+//     header("Location: login.php");  // 如果未登入，跳轉回登入頁面
+//     exit;
+// }
+
+// -------------- php編輯區 ------------------
+
 
 # 取得指定的 PK
 $category_id = empty($_GET['category_id']) ? 0 : intval($_GET['category_id']);
 $parent_name = empty($_GET['parent_name']) ? 0 : ($_GET['parent_name']);
 
 if (empty($category_id ) || empty($parent_name)) {
-  header('Location: list.php');
+  header('Location: category.php');
   exit;
 }
 
@@ -26,14 +37,25 @@ $sql = "SELECT
 $r = $pdo->query($sql)->fetch();
 if (empty($r)) {
   # 如果沒有對應的資料, 就跳走
-  header('Location: list.php');
+  header('Location: category.php');
   exit;
 }
 
+
+
+// ----------------- php編輯區END ---------------
+
 ?>
-<?php include __DIR__ . '/parts/html-head.php' ?>
-<?php include __DIR__ . '/parts/html-navbar.php' ?>
-<style>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><?php echo $title; ?></title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
   form .mb-3 .form-text {
     display: none;
     /* color: red; */
@@ -48,13 +70,58 @@ if (empty($r)) {
     color: red;
   }
 </style>
+</head>
+
+<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
+<!--begin::Body-->
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <!--begin::App Wrapper 網頁的主要內容在這-->
+    <div class="app-wrapper">
+        <!--begin::Header-->
+        <?php include ROOT_PATH . 'dist/pages/parts/navbar.php' ?>
+        <!--end::Header-->
+
+        <!--begin::Sidebar-->
+        <?php include ROOT_PATH . 'dist/pages/parts/sidebar.php' ?>
+        <!--end::Sidebar-->
+
+        <!--begin::App Main-->
+        <main class="app-main pt-5">
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">編輯子類別</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item"><a href="category.php">商品類別</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">編輯子類別</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <!--end::Row-->
+                </div>
+                <!--end::Container-->
+            </div>
+            <!--end::App Content Header-->
+
+            <!--begin::App Content-->
+            <div class="app-content">
+                <!--begin::Container-->
+<!-- --------- 內容編輯區 --------- -->
+
 <div class="container">
   <div class="row">
     <div class="col-6">
       <div class="card">
 
         <div class="card-body">
-          <h5 class="card-title">修改子類別</h5>
+          
           <form onsubmit="sendData(event)">
           <div class="mb-3">
               <label for="parent_name" class="form-label">類別</label>
@@ -115,14 +182,45 @@ if (empty($r)) {
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-        <a class="btn btn-primary" href="list.php">回到列表頁</a>
+        <a class="btn btn-primary" href="category.php">回到列表頁</a>
       </div>
     </div>
   </div>
 </div>
-<?php include __DIR__ . '/parts/html-scripts.php' ?>
-<script>
-  const categoryNameField = document.querySelector('#category_name');
+
+<!-- --------- 內容編輯區END --------- -->
+                <!--end::Container-->
+            </div>
+            <!--end::App Content-->
+        </main>
+        <!--end::App Main-->
+
+        <!--begin::Footer-->
+        <?php include ROOT_PATH . 'dist/pages/parts/footer.php' ?>
+        <!--end::Footer-->
+    </div>
+    <!--end::App Wrapper-->
+
+    <!--begin::Script-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarWrapper = document.querySelector('.sidebar-wrapper');
+            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+                    scrollbars: {
+                        theme: 'os-theme-light',
+                        autoHide: 'leave',
+                        clickScroll: true,
+                    },
+                });
+            }
+        });
+
+/*------------script編輯區--------------*/
+
+const categoryNameField = document.querySelector('#category_name');
   const categoryTagField = document.querySelector('#category_tag');
   const descriptionField = document.querySelector('#description');
   const myModal = new bootstrap.Modal('#exampleModal');
@@ -171,6 +269,11 @@ if (empty($r)) {
 
   }
 
+/*------------script編輯區END--------------*/
 
-</script>
-<?php include __DIR__ . '/parts/html-tail.php' ?>
+    </script>
+    <!--end::Script-->
+</body>
+<!--end::Body-->
+
+</html>

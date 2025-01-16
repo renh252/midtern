@@ -2,7 +2,11 @@
 /***************** 新增上傳api ******************/
 # 要是管理者才可以看到這個頁面
 // require __DIR__ . '/parts/admin-required.php';
-require __DIR__ . '/parts/init.php';
+require __DIR__ . '/../parts/init.php';
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 
 
@@ -40,7 +44,7 @@ if (isset($_GET['category_name_check'])) {
 
 /*********************** 新增上傳 ***************************** */
 
-if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_POST['category']) || isset($_POST['promotion_name']) ){
+if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_POST['category']) || isset($_POST['promotion_name'])  || isset($_POST['promotion_id'])  ){
 
   /************** 新增產品類別 *****************/ 
   
@@ -102,7 +106,7 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
   
   /************** 新增產品類別 *****************/ 
   
-  if(!empty($_POST['category_name']) && empty($_POST['parent_id'])){
+  else if(!empty($_POST['category_name']) && empty($_POST['parent_id'])){
     $sql = "INSERT INTO `categories` ( 
       `category_name`, 
       `category_tag`, 
@@ -333,6 +337,53 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
     ]);
   
   }
+  
+  
+  
+  /************** 新增促銷活動商品 **********************************************/ 
+  if (isset($_POST['promotion_id']) && 
+    (isset($_POST['product_ids']) || isset($_POST['variant_ids']))) {
+
+    $promotion_id = intval($_POST['promotion_id']);
+    $selectedProducts = json_decode($_POST['product_ids'] ?? '[]', true);
+    $selectedVariants = json_decode($_POST['variant_ids'] ?? '[]', true);
+
+    $sql = "INSERT INTO Promotion_Products (promotion_id, product_id, variant_id) VALUES (?, ?, ?)";
+    $stmt = $pdo->prepare($sql);
+
+    try {
+        $pdo->beginTransaction();
+
+        // 插入商品
+        foreach ($selectedProducts as $product_id) {
+            $stmt->execute([$promotion_id, $product_id, null]);
+        }
+
+        // 插入變體
+        foreach ($selectedVariants as $variant_id) {
+            $stmt->execute([$promotion_id, null, $variant_id]);
+        }
+
+        $pdo->commit();
+        $output['success'] = true;
+        $output['message'] = '促銷活動商品新增成功';
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        $output['success'] = false;
+        $output['error'] = '資料庫錯誤: ' . $e->getMessage();
+    }
+} else {
+    $output['success'] = false;
+    $output['error'] = '缺少必要參數';
+}
+
+
+
+
+
+
+
+
   
   $output['success'] = !! $stmt->rowCount(); # 新增了幾筆, 轉布林值
   $output['lastInsertId'] = $pdo->lastInsertId(); # 最新拿到的 PK
