@@ -82,7 +82,7 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
             margin: 0;
-            padding: 20px;
+            
         }
         h1 {
             text-align: center;

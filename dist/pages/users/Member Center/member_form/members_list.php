@@ -106,7 +106,7 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
-            /* padding: 20px; */
+            
         }
         h1 {
             color: #333;
@@ -170,6 +170,7 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
         .action-links a:hover {
             text-decoration: underline;
         }
+        
     </style>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -192,9 +193,6 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
                     <!--begin::Row-->
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="mb-0">這裡是標題</h3>
-                        </div>
-                        <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-end">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">breadcrumb</li>
@@ -212,7 +210,6 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
                 <!--begin::Container-->
                 <div class="container-fluid">
                     <h1>歡迎來到管理頁面！</h1>
-                    <a href="logout.php" class="btn btn-danger">登出</a>
                     <h1>會員列表</h1>
 
     <div class="container">

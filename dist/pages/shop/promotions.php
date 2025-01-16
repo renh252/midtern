@@ -221,12 +221,6 @@ foreach ($rows as $r) {
                         <div class="col-sm-6">
                             <h3 class="mb-0">促銷活動列表</h3>
                         </div>
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-end">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">促銷活動</li>
-                            </ol>
-                        </div>
                     </div>
                     <!--end::Row-->
                 </div>

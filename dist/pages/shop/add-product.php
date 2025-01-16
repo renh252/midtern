@@ -110,8 +110,8 @@ $rows_category = $pdo->query($sql_category)->fetchAll();
               <img src="" alt="" class="photo" width="200px">
               <input type="hidden" name="photo" value="">
               <!-- 表單裡面 button 如果沒有設定 type 會視為 submit button -->
-              <button type="button"
-                class="btn btn-warning" onclick="document.upload_form.photo.click()">上傳圖片</button>
+              <!-- <button type="button"
+                class="btn btn-warning" onclick="document.upload_form.photo.click()">上傳圖片</button> -->
             </div>
             <div class="mb-3">
               <label for="product_name" class="form-label">商品名稱**</label>

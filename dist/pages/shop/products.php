@@ -246,7 +246,7 @@ if ($totalRows > 0) {
             <th>價格</th>
             <th>庫存</th>
             <th>狀態</th>
-            <th>照片</th>
+            <!-- <th>照片</th> -->
             <!-- <th>照片</th> -->
             <th>創建時間</th>
             <th>更新時間</th>
@@ -276,11 +276,11 @@ if ($totalRows > 0) {
               </td>
               <td><?= htmlentities($r['product_status']) ?></td>
               <!-- <td><?= htmlentities($r['image_url']) ?></td> -->
-              <td>
+              <!-- <td>
                 <?php if (!empty($r['image_url'])): ?>
                   <img src="<?= $r['image_url'] ?>" alt="" width="100px">
                 <?php endif; ?>
-              </td>
+              </td> -->
               
               <td><?= $r['created_at'] ?></td>
               <td><?= $r['updated_at'] ?></td>
@@ -311,9 +311,9 @@ if ($totalRows > 0) {
                   <td><?= $v['variant_stock'] ?></td>
                   <td></td>
                   <?php if (!empty($v['variant_img'])): ?>
-                    <td>
+                    <!-- <td>
                       <img src="<?= $v['variant_img'] ?>" alt="" width="100px">
-                    </td>
+                    </td> -->
                   <?php endif; ?>
                   <td></td>
                   <td></td>

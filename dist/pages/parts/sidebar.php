@@ -80,7 +80,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/shop/return.php" class="nav-link" onclick="return checkPrivilege('shop', this)">
+            <a href="<?= ROOT_URL ?>dist/pages/shop/category.php" class="nav-link" onclick="return checkPrivilege('shop', this)">
               <i class="nav-icon bi bi-circle"></i>
               <p>商品類別</p>
             </a>
@@ -141,13 +141,13 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/users/user.php" class="nav-link" onclick="return checkPrivilege('member', this)">
+            <a href="<?= ROOT_URL ?>dist/pages/users/Member Center/member_form/members_list.php" class="nav-link" onclick="return checkPrivilege('member', this)">
             <i class="nav-icon bi bi-people"></i>
             <p>會員列表</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= ROOT_URL ?>dist/pages/admin/admin.php" class="nav-link" onclick="return checkPrivilege('member', this)">
+            <a href="<?= ROOT_URL ?>dist/pages/users/Member Center/manager_list/manager_list.php" class="nav-link" onclick="return checkPrivilege('member', this)">
             <i class="nav-icon bi bi-person"></i>
             <p>管理員列表</p>
             </a>
