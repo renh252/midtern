@@ -16,23 +16,22 @@ $birth_begin = empty($_GET['birth_begin']) ? '' : $_GET['birth_begin'];
 $birth_end = empty($_GET['birth_end']) ? '' : $_GET['birth_end'];
 
 $where = 'WHERE 1';
-if (isset($_GET['keyword']) && !empty($keyword)) {
+if (isset($_GET['keyword']) && !empty($_GET['keyword'])) {
   $keyword = trim($_GET['keyword']); // 去除首尾空白
   $keyword = trim($keyword, '"'); // 去除可能已存在的引號
   $keyword_exact = $pdo->quote($keyword); // 用於精確匹配id
-  $keyword = '"' . $keyword . '"'; // 添加新的引號
   $keyword_ = $pdo->quote("%" . $keyword . "%"); // 字串加上%之後跳脫引號，避免SQL注入
-  $where .= " AND (id = $keyword_exact OR name LIKE $keyword_ OR species LIKE $keyword OR variety LIKE $keyword)";
+  $where .= " AND (id = $keyword_exact OR name LIKE $keyword_ OR species LIKE $keyword_ OR variety LIKE $keyword_)";
 }
 
-if (!empty($birth_begin)) {
-  $t = strtotime($birth_begin); #將字串轉換成時間戳記
+if (!empty($_GET['birth_begin'])) {
+  $t = strtotime($_GET['birth_begin']);
   if ($t !== false) {
     $where .= sprintf(" AND birthday >= '%s' ", date('Y-m-d', $t));
   }
 }
-if (!empty($birth_end)) {
-  $t = strtotime($birth_end); #將字串轉換成時間戳記
+if (!empty($_GET['birth_end'])) {
+  $t = strtotime($_GET['birth_end']);
   if ($t !== false) {
     $where .= sprintf(" AND birthday <= '%s' ", date('Y-m-d', $t));
   }
@@ -118,197 +117,203 @@ $qs = array_filter($_GET); #去除值為空的項目
           <!--begin::Row-->
           <div class="row">
             <div class="col-sm-6">
-              <h3 class="mb-0">這裡是標題</h3>
+              <h3 class="mb-0">寵物管理</h3>
+              <div class="btn-group my-2" role="group" aria-label="寵物操作">
+                <a href="pet-list.php" class="btn btn-outline-primary">寵物列表</a>
+                <a href="pet-add.php" class="btn btn-outline-success">新增寵物</a>
+              </div>
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-end">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">breadcrumb</li>
+                <li class="breadcrumb-item"><a href="/midtern/dist/pages/index.php">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">寵物列表</li>
               </ol>
             </div>
+            <!--end::Row-->
           </div>
-          <!--end::Row-->
+          <!--end::Container-->
         </div>
-        <!--end::Container-->
-      </div>
-      <!--end::App Content Header-->
-      <!--begin::App Content-->
-      <div class="app-content">
-        <!--begin::Container-->
-        <div class="container-fluid">
-          <!-- 這裡是內容 -->
-          <div class="row align-items-end">
-          <div class="col-8">
-              <ul class="pagination">
-                <li class="page-item <?= $page === 1 ? 'disabled' : '' ?>">
-                  <a class="page-link "
-                    href="?<?= $qs['page'] = 1;
-                            echo http_build_query($qs) ?>">
-                    <i class="fa-solid fa-angles-left"></i>
-                  </a>
-                </li>
-                <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
-                  <a class="page-link" href="?<?php $qs['page'] = $page - 1;
-                                              echo http_build_query($qs) ?>">
-                    <i class="fa-solid fa-angle-left"></i>
-                  </a>
-                </li>
-                <!-- for迴圈產生按鈕 -->
-                <?php for (
-                  $i = ($page >= ($totalPages - 1)) ?
-                    (($page == $totalPages - 1) ? $page - 3 : $page - 4) : ($page - 2);
-                  $i <= (($page <= 2) ? 5 : ($page + 2));
-                  $i++
-                ):
-                  // 限制分頁按鈕的邊界
-                  if ($i >= 1 and $i <= $totalPages):
-                    $qs = array_filter($_GET); #去除值為空的項目
-                    $qs['page'] = $i;
-                ?>
-                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                      <a class="page-link" href="?<?= http_build_query($qs) ?>"><?= $i ?></a>
-                    </li>
-                <?php endif;
-                endfor; ?>
-                <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
-                  <a class="page-link" href="?<?php $qs['page'] = $page + 1;
-                                              echo http_build_query($qs) ?>">
-                    <i class="fa-solid fa-angle-right"></i>
-                  </a>
-                </li>
-                <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
-                  <a class="page-link" href="?
+        <!--end::App Content Header-->
+        <!--begin::App Content-->
+        <div class="app-content">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!-- 這裡是內容 -->
+            <div class="row align-items-end">
+              <div class="col-8">
+                <ul class="pagination">
+                  <li class="page-item <?= $page === 1 ? 'disabled' : '' ?>">
+                    <a class="page-link "
+                      href="?<?= $qs['page'] = 1;
+                              echo http_build_query($qs) ?>">
+                      <i class="fa-solid fa-angles-left"></i>
+                    </a>
+                  </li>
+                  <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?<?php $qs['page'] = $page - 1;
+                                                echo http_build_query($qs) ?>">
+                      <i class="fa-solid fa-angle-left"></i>
+                    </a>
+                  </li>
+                  <!-- for迴圈產生按鈕 -->
+                  <?php for (
+                    $i = ($page >= ($totalPages - 1)) ?
+                      (($page == $totalPages - 1) ? $page - 3 : $page - 4) : ($page - 2);
+                    $i <= (($page <= 2) ? 5 : ($page + 2));
+                    $i++
+                  ):
+                    // 限制分頁按鈕的邊界
+                    if ($i >= 1 and $i <= $totalPages):
+                      $qs = array_filter($_GET); #去除值為空的項目
+                      $qs['page'] = $i;
+                  ?>
+                      <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                        <a class="page-link" href="?<?= http_build_query($qs) ?>"><?= $i ?></a>
+                      </li>
+                  <?php endif;
+                  endfor; ?>
+                  <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?<?php $qs['page'] = $page + 1;
+                                                echo http_build_query($qs) ?>">
+                      <i class="fa-solid fa-angle-right"></i>
+                    </a>
+                  </li>
+                  <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?
                             <?php $qs['page'] = $totalPages;
                             echo http_build_query($qs) ?>">
-                    <i class="fa-solid fa-angles-right"></i>
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div class="col-4 mb-2">
-              <form role="search" method="GET">
-                <div class="d-flex mb-2">
-                  <input class="form-control me-2" name="keyword"
-                    value="<?= isset($_GET['keyword']) ? htmlspecialchars(trim($_GET['keyword'], '"')) : '' ?>"
-                    type="search" placeholder="搜尋" aria-label="Search">
-                  <button class="btn btn-outline-primary" type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                  </button>
-                  <button class="btn btn-outline-secondary ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#advancedSearch" aria-expanded="false" aria-controls="advancedSearch">
-                    <i class="fa-solid fa-filter"></i>
-                  </button>
-                </div>
-
-                <div class="collapse mt-3" id="advancedSearch">
-                  <div class="card card-body">
-                    <div class="mb-3">
-                      <label for="birth_begin" class="form-label">出生日期（起始）</label>
-                      <input type="date" class="form-control" id="birth_begin" name="birth_begin"
-                        value="<?= isset($_GET['birth_begin']) ? htmlspecialchars($_GET['birth_begin']) : '' ?>">
-                    </div>
-                    <div class="mb-3">
-                      <label for="birth_end" class="form-label">出生日期（結束）</label>
-                      <input type="date" class="form-control" id="birth_end" name="birth_end"
-                        value="<?= isset($_GET['birth_end']) ? htmlspecialchars($_GET['birth_end']) : '' ?>">
-                    </div>
-                    <button type="submit" class="btn btn-primary">搜索</button>
-                  </div>
-                </div>
-              </form>
-            </div>
-            
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <table id="pet-info" class="table table-bordered table-hover">
-                <thead>
-                  <tr>
-                    <th><i class="fa-regular fa-trash-can"></i></th>
-                    <?php
-                    $columns = ['id', 'name', 'species', 'variety', 'gender', 'birthday', 'weight', 'chip_number', 'is_adopted'];
-                    $currentSort = isset($_GET['sort']) ? $_GET['sort'] : '';
-                    $currentOrder = isset($_GET['order']) ? $_GET['order'] : '';
-
-                    foreach ($columns as $col) {
-                      $sortClass = 'fa-arrows-up-down';
-                      $linkClass = '';
-                      $nextOrder = 'desc';
-
-                      if ($currentSort === $col) {
-                        $linkClass = 'text-primary';
-                        if ($currentOrder === 'desc') {
-                          $sortClass = 'fa-arrow-down-wide-short';
-                          $nextOrder = 'asc'; // 如果當前是降序，下一個就是升序
-                        } else {
-                          $sortClass = 'fa-arrow-up-short-wide';
-                          $nextOrder = 'desc'; // 如果當前是升序，下一個就是降序
-                        }
-                      }
-
-                      echo "<th>
-              <div class='d-flex justify-content-between align-items-center'>
-                $col
-                <a href='?sort=$col&order=$nextOrder' class='$linkClass'>
-                  <i class='fa-solid $sortClass'></i>
-                </a>
+                      <i class="fa-solid fa-angles-right"></i>
+                    </a>
+                  </li>
+                </ul>
               </div>
-            </th>";
-                    }
-                    ?>
-                    <th><i class="fa-regular fa-pen-to-square"></i></th>
-                    <th>main_photo</th>
-                  </tr>
+              <div class="col-4 mb-2">
+                <form role="search" method="GET" id="searchForm">
+                  <div class="d-flex mb-2">
+                    <input class="form-control me-2" name="keyword"
+                      value="<?= isset($_GET['keyword']) ? htmlspecialchars(trim($_GET['keyword'], '"')) : '' ?>"
+                      type="search" placeholder="搜尋" aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">
+                      <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#advancedSearch" aria-expanded="false" aria-controls="advancedSearch">
+                      <i class="fa-solid fa-filter"></i>
+                    </button>
+                    <a class="btn btn-outline-secondary ms-2" type="button" href="pet-list.php">
+                      <i class="fa-solid fa-xmark"></i>
+                    </a>
+                  </div>
 
-                </thead>
-                <tbody>
-                  <?php
-                  foreach ($rows as $r):
-                  ?>
+                  <div class="collapse mt-3" id="advancedSearch">
+                    <div class="card card-body">
+                      <div class="mb-3">
+                        <label for="birth_begin" class="form-label">出生日期（起始）</label>
+                        <input type="date" class="form-control" id="birth_begin" name="birth_begin"
+                          value="<?= isset($_GET['birth_begin']) ? htmlspecialchars($_GET['birth_begin']) : '' ?>">
+                      </div>
+                      <div class="mb-3">
+                        <label for="birth_end" class="form-label">出生日期（結束）</label>
+                        <input type="date" class="form-control" id="birth_end" name="birth_end"
+                          value="<?= isset($_GET['birth_end']) ? htmlspecialchars($_GET['birth_end']) : '' ?>">
+                      </div>
+                      <button type="submit" class="btn btn-primary">搜索</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <table id="pet-info" class="table table-bordered table-hover">
+                  <thead>
                     <tr>
-                      <td><a href="javascript:" onclick="deleteOne(event)">
-                          <i class="fa-regular fa-trash-can"></i>
-                        </a></td>
-                      <td><?= $r['id'] ?></td>
-                      <td><?= $r['name'] ?></td>
-                      <td><?= $r['species'] ?></td>
-                      <td><?= $r['variety'] ?></td>
-                      <td><?= $r['gender'] ?></td>
-                      <td><?= $r['birthday'] ?></td>
-                      <td><?= $r['weight'] ?></td>
-                      <td><?= $r['chip_number'] ?></td>
-                      <td><?= $r['is_adopted'] ?></td>
-                      <td><a href="pet-edit.php?id=<?= $r['id'] ?>"><i class="fa-regular fa-pen-to-square"></i></a></td>
-                      <th><?php if (!empty($r['main_photo'])):
-                          ?>
-                          <img src="./pets_photo/<?= $r['main_photo'] ?>" alt="" width="100px">
-                        <?php endif; ?>
-                      </th>
+                      <th><i class="fa-regular fa-trash-can"></i></th>
+                      <?php
+                      $columns = ['id', 'name', 'species', 'variety', 'gender', 'birthday', 'weight', 'chip_number', 'is_adopted'];
+                      $currentSort = isset($_GET['sort']) ? $_GET['sort'] : '';
+                      $currentOrder = isset($_GET['order']) ? $_GET['order'] : '';
+
+                      foreach ($columns as $col) {
+                        $sortClass = 'fa-arrows-up-down';
+                        $linkClass = '';
+                        $nextOrder = 'desc';
+
+                        if ($currentSort === $col) {
+                          $linkClass = 'text-primary';
+                          if ($currentOrder === 'desc') {
+                            $sortClass = 'fa-arrow-down-wide-short';
+                            $nextOrder = 'asc'; // 如果當前是降序，下一個就是升序
+                          } else {
+                            $sortClass = 'fa-arrow-up-short-wide';
+                            $nextOrder = 'desc'; // 如果當前是升序，下一個就是降序
+                          }
+                        }
+
+                        echo "<th>
+                          <div class='d-flex justify-content-between align-items-center'>
+                            $col
+                            <a href='?sort=$col&order=$nextOrder' class='$linkClass'>
+                              <i class='fa-solid $sortClass'></i>
+                            </a>
+                          </div>
+                        </th>";
+                      }
+                      ?>
+                      <th><i class="fa-regular fa-pen-to-square"></i></th>
+                      <!-- <th>main_photo</th> -->
                     </tr>
-                  <?php endforeach; ?>
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <th><i class="fa-regular fa-trash-can"></i></th>
-                    <th>id</th>
-                    <th>name</th>
-                    <th>species</th>
-                    <th>variety</th>
-                    <th>gender</th>
-                    <th>birthday</th>
-                    <th>weight</th>
-                    <th>chip_number</th>
-                    <th>is_adopted</th>
-                    <th><i class="fa-regular fa-pen-to-square"></i></th>
-                    <th>main_photo</th>
-                  </tr>
-                </tfoot>
-              </table>
+
+                  </thead>
+                  <tbody>
+                    <?php
+                    foreach ($rows as $r):
+                    ?>
+                      <tr>
+                        <td><a href="javascript:" onclick="deleteOne(event)">
+                            <i class="fa-regular fa-trash-can"></i>
+                          </a></td>
+                        <td><?= $r['id'] ?></td>
+                        <td><?= $r['name'] ?></td>
+                        <td><?= $r['species'] ?></td>
+                        <td><?= $r['variety'] ?></td>
+                        <td><?= $r['gender'] ?></td>
+                        <td><?= $r['birthday'] ?></td>
+                        <td><?= $r['weight'] ?></td>
+                        <td><?= $r['chip_number'] ?></td>
+                        <td><?= $r['is_adopted'] ?></td>
+                        <td><a href="pet-edit.php?id=<?= $r['id'] ?>"><i class="fa-regular fa-pen-to-square"></i></a></td>
+                        <!-- <td>
+                          <?php if (!empty($r['main_photo'])): ?>
+                            <img src="<?=ROOT_URL .'dist/pages/pets'. $r['main_photo']?>" alt="寵物照片" width="100px">
+                          <?php endif; ?>
+                        </td> -->
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th><i class="fa-regular fa-trash-can"></i></th>
+                      <th>id</th>
+                      <th>name</th>
+                      <th>species</th>
+                      <th>variety</th>
+                      <th>gender</th>
+                      <th>birthday</th>
+                      <th>weight</th>
+                      <th>chip_number</th>
+                      <th>is_adopted</th>
+                      <th><i class="fa-regular fa-pen-to-square"></i></th>
+                      <!-- <th>main_photo</th> -->
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
             </div>
           </div>
+          <!--end::Container-->
         </div>
-        <!--end::Container-->
-      </div>
-      <!--end::App Content-->
+        <!--end::App Content-->
     </main>
     <!--end::App Main-->
     <!--begin::Footer-->
@@ -411,7 +416,22 @@ $qs = array_filter($_GET); #去除值為空的項目
       });
     });
   </script>
+  <script>
+    document.getElementById('searchForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var formData = new FormData(this);
+      var searchParams = new URLSearchParams();
 
+      for (var pair of formData.entries()) {
+        if (pair[1].trim() !== '') {
+          searchParams.append(pair[0], pair[1]);
+        }
+      }
+
+      var queryString = searchParams.toString();
+      window.location.href = window.location.pathname + (queryString ? '?' + queryString : '');
+    });
+  </script>
   <!--end::Script-->
 </body>
 <!--end::Body-->

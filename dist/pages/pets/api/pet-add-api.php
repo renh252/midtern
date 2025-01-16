@@ -14,11 +14,32 @@ $output = [
     'error' => '', #回應給前端的錯誤訊息
     'lastInsertId' => 0 #最新拿到的primaryKey
 ];
+
+// 處理上傳
+$main_photo = null;
+if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+    $uploadDir = __DIR__ . '/../../uploads/pet_avatars/'; // 确保这个目录存在并可写
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+    $fileExtension = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
+    $newFileName = uniqid() . '.' . $fileExtension;
+    $uploadFile = $uploadDir . $newFileName;
+
+    if (move_uploaded_file($_FILES['avatar']['tmp_name'], $uploadFile)) {
+        $main_photo = '/uploads/pet_avatars/' . $newFileName; // 儲存路徑
+    } else {
+        $output['error'] = '上傳失敗';
+        echo json_encode($output, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+}
+
 //避免SQL注入 用?佔位符號
 $sql = "INSERT INTO `pets` 
   ( `name`, `species`,
-    `variety`, `gender`, `birthday`, `weight`, `chip_number`, `is_adopted`)
-    VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+    `variety`, `gender`, `birthday`, `weight`, `chip_number`, `is_adopted`, `main_photo`)
+    VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 # TODO: 欄位檢查 mobile birthday address
 
@@ -57,7 +78,8 @@ $stmt->execute([
     $_POST['birthday'],
     $_POST['weight'],
     $_POST['chip'],
-    $_POST['is-adopted']
+    $_POST['is-adopted'],
+    $main_photo // 添加 main_photo
 ]);
 
 $output['success'] = !! $stmt->rowCount(); #新增幾筆，轉換成bool
