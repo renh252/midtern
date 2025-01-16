@@ -8,3 +8,4 @@ const DB_NAME = 'pet_proj';
 const DB_PORT = 3306; #若不是使用 3306 需要設定
 
 const PATH_BASE = '/midtern/';
+

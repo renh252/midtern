@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/parts/init.php';
+require __DIR__ . '/../parts/init.php'; // 確保資料庫連線已初始化
 $title = "捐款資料修改";
 $pageName = "edit";
 
