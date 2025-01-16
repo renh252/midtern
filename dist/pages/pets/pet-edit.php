@@ -63,7 +63,8 @@ if (empty($r)) {
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-end">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="./../index.php">Home</a></li>
+                <li class="breadcrumb-item"><a href="pet-list.php">寵物列表</a></li>
                 <li class="breadcrumb-item active" aria-current="page">修改寵物資訊</li>
               </ol>
             </div>
@@ -86,7 +87,7 @@ if (empty($r)) {
                 </div>
                 <!--end::Header-->
                 <!--begin::Form-->
-                <form onsubmit="sendData(event)">
+                <form onsubmit="sendData(event)" enctype="multipart/form-data">
                   <div class="card-body">
                     <div class="row mb-3 align-items-center">
                       <input type="hidden" name="id" value="<?= $r['id'] ?>">
@@ -190,9 +191,14 @@ if (empty($r)) {
                       </div>
                     </div>
                     <div class="row mb-3 align-items-center">
-                      <label for="adopted-date" class="col-sm-2 col-form-label">待確認</label>
+                      <label for="avatar" class="col-sm-2 col-form-label">大頭貼</label>
                       <div class="col-sm-10">
-                        是否還有新增欄位?
+                        <?php if (!empty($row['main_photo'])): ?>
+                          <img src="<?= $row['main_photo'] ?>" alt="Current Avatar" style="max-width: 200px; margin-bottom: 10px;">
+                        <?php endif; ?>
+                        <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+                        <input type="hidden" name="old_avatar" value="<?= $row['main_photo'] ?>">
+                        <small class="form-text text-muted">上傳新照片將覆蓋原有照片</small>
                       </div>
                     </div>
                     <div class="card-footer">
