@@ -37,7 +37,7 @@ $where = ' WHERE parent_id IS NULL '; # SQL 條件的開頭
 
 if ($keyword) {
   $keyword_ = $pdo->quote("%{$keyword}%"); # 字串內容做 SQL 引號的跳脫, 同時前後標單引號
-  $where .= " AND ( category_id  LIKE $keyword_ OR category_name LIKE $keyword_ OR category_tag LIKE $keyword_  OR product_description LIKE $keyword_ ) ";
+  $where .= " AND ( category_id  LIKE $keyword_ OR category_name LIKE $keyword_ OR category_tag LIKE $keyword_  ) ";
 }
 
 # 查詢總筆數
@@ -141,7 +141,7 @@ if ($totalRows > 0) {
       <form class="d-flex" role="search">
         <input class="form-control me-2" name="keyword"
           value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
-          placeholder="編號/名稱/類別/介紹" aria-label="Search">
+          placeholder="類別名稱/標籤" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
     </div>
@@ -159,7 +159,7 @@ if ($totalRows > 0) {
             <td hidden></td>
             <td hidden></td>
             <th>子類別</th>
-            <th>tag</th>
+            <th>標籤</th>
             <th>描述</th>
             <th><i class="fa-solid fa-pen-to-square"></i></th>
           </tr>
