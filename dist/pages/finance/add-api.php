@@ -20,6 +20,7 @@ foreach ($required_fields as $field) {
     exit;
   }
 }
+$pet_id = $_POST['pet_id'] ?? null;
 
 // 驗證 email 格式
 $email = filter_var($_POST['donor_email'], FILTER_VALIDATE_EMAIL);
@@ -48,6 +49,7 @@ if (!is_numeric($_POST['amount']) || $_POST['amount'] <= 0) {
 }
 $amount = intval($_POST['amount']); // 轉為整數
 
+
 // 取得其他 POST 資料
 $donor_name = $_POST['donor_name'];
 $donor_phone = $_POST['donor_phone'] ?? '';
@@ -60,7 +62,6 @@ $regular_payment_date = $_POST['regular_payment_date'] ?? null;
 $payment_method = $_POST['payment_method'];
 $is_receipt_needed = $_POST['is_receipt_needed'] ?? '否';
 
-// 根據條件處理 nullable 欄位
 if ($donation_type != '線上認養') {
   $pet_id = null;
 }
@@ -70,7 +71,7 @@ if ($donation_mode != '定期捐款') {
 
 // 資料庫新增 SQL
 $sql = "INSERT INTO `donations` 
-    (`donor_name`, `donor_phone`, `donor_email`, `amount`, `donation_type`, `pet_id`, `donation_mode`, `regular_payment_date`, `payment_method`, `is_receipt_needed`, `create_datetime`) 
+        (`donor_name`, `donor_phone`, `donor_email`, `amount`, `donation_type`, `pet_id`, `donation_mode`, `regular_payment_date`, `payment_method`, `is_receipt_needed`, `create_datetime`) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
 $stmt = $pdo->prepare($sql);
@@ -93,14 +94,13 @@ if ($stmt->rowCount() > 0) {
 
   // 新增 Bank_Transfer_Details 的資料
   $transfer_sql = "INSERT INTO `bank_transfer_details` 
-    (`donation_id`, `transfer_amount`, `transfer_date`, id_or_tax_id_number, `account_last_5`, `reconciliation_status`, `donor_name`) 
-    VALUES (?, ?, CURDATE(),?, ?, ?, ?)";
+    (`donation_id`, `transfer_amount`, `transfer_date`, `account_last_5`, `reconciliation_status`, `donor_name`) 
+    VALUES (?, ?, CURDATE(), ?, ?, ?)";
 
   $transfer_stmt = $pdo->prepare($transfer_sql);
   $transfer_stmt->execute([
     $donation_id,
     $amount,
-    '未核定',
     '未核定',
     '未核定',
     $donor_name

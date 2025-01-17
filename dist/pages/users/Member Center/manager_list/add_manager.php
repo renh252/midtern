@@ -82,7 +82,7 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
             margin: 0;
-            padding: 20px;
+            
         }
         h1 {
             text-align: center;
@@ -183,7 +183,7 @@ if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
                 <!--begin::Container-->
                 <div class="container-fluid">
                     <h1>歡迎來到管理頁面！</h1>
-                    <a href="logout.php" class="btn btn-danger">登出</a>
+                    
                     <div class="container">
     <h1>新增管理者</h1>
 

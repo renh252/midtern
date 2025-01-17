@@ -147,9 +147,7 @@ if (isset($_GET['user_id'])) {
         <label for="user_level">等級:</label>
         <input type="text" name="user_level" id="user_level" value="<?php echo $user['user_level']; ?>" required>
 
-        <label for="user_status">狀態:</label>
-        <input type="text" name="user_status" id="user_status" value="<?php echo $user['user_status']; ?>" required>
-
+        
         <input type="submit" value="更新資料">
     </form>
 </div>

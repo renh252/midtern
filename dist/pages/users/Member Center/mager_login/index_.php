@@ -10,7 +10,7 @@
             background-color: #f4f4f9;
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            
         }
         .container {
             max-width: 800px;

@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../parts/init.php'; // 確保資料庫連線已初始化
+require __DIR__ . '/../parts/init.php';
 $title = "捐款資料修改";
 $pageName = "edit";
 
@@ -14,10 +14,16 @@ if (empty($r)) {
 }
 
 ?>
-<?php include __DIR__ . '/parts/html-head.php' ?>
-<?php include __DIR__ . '/parts/html-navbar.php' ?>
+<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
 
-<div class="container">
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <?php include ROOT_PATH . 'dist/pages/parts/navbar.php' ?>
+    <?php include ROOT_PATH . 'dist/pages/parts/sidebar.php' ?>
+    <main class="app-main pt-5">
+      <div class="app-content-header">
+
+        <div class="container-fluid">
   <div class="row mt-4">
     <div class="col-6">
       <h2>審核轉帳資料</h2>
@@ -33,19 +39,23 @@ if (empty($r)) {
           <label for="donor_name" class="form-label">捐款人姓名</label>
           <input type="text" class="form-control" id="donor_name" name="donor_name" value="<?= $r['donor_name'] ?>"
             required>
+            <div id="error-message"></div>
         </div>
         <div class="mb-3">
           <label for="transfer_amount" class="form-label">捐款金額</label>
           <input type="number" class="form-control" id="transfer_amount" name="transfer_amount" value="<?= $r['transfer_amount'] ?>" required>
+          <div id="error-message"></div>
         </div>
         <div class="mb-3">
           <label for="transfer_date" class="form-label">匯款日期</label>
           <input type="date" class="form-control" id="transfer_date" name="transfer_date" value="<?= $r['transfer_date'] ?>" required>
+          <div id="error-message"></div>
         </div>
         <div class="mb-3" id="account_last_5">
           <label for="account_last_5" class="form-label">帳號末五碼</label>
           <input type="text" class="form-control" id="account_last_5" name="account_last_5"
             value="<?= $r['account_last_5'] ?>" required>
+            <div id="error-message"></div>
         </div>
         <div class="mb-3">
           <label for="reconciliation_status" class="form-label">對帳狀態</label>
@@ -59,6 +69,11 @@ if (empty($r)) {
       </form>
     </div>
   </div>
+</div>
+</div>
+</main>
+<?php include ROOT_PATH . 'dist/pages/parts/footer.php' ?>
+
 </div>
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -81,7 +96,40 @@ if (empty($r)) {
   </div>
 </div>
 <?php include __DIR__ . '/parts/html-scripts.php' ?>
-
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+    integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <!--end::Third Party Plugin(OverlayScrollbars)-->
+  <!--begin::Required Plugin(Bootstrap 5)-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!--end::Required Plugin(Bootstrap 5)-->
+  <!--begin::Required Plugin(AdminLTE)-->
+  <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
+  <!--end::Required Plugin(AdminLTE)-->
+  <!--begin::OverlayScrollbars Configure 設定滾動條-->
+  <script>
+    const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+    const Default = {
+      // 當鼠標離開滾動區域時，滾動條會自動隱藏；允許用戶通過點擊滾動條來進行滾動
+      scrollbarTheme: 'os-theme-light',
+      scrollbarAutoHide: 'leave',
+      scrollbarClickScroll: true,
+    };
+    // DOMContentLoaded確保在DOM完全加載後執行代碼
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+      if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+        // 初始化滾動條，並傳遞配置選項，如主題和自動隱藏行為
+        OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+          scrollbars: {
+            theme: Default.scrollbarTheme,
+            autoHide: Default.scrollbarAutoHide,
+            clickScroll: Default.scrollbarClickScroll,
+          },
+        });
+      }
+    });
+  </script>
+</body>
 <script>
   const myModal = new bootstrap.Modal('#exampleModal');
 
@@ -126,4 +174,4 @@ if (empty($r)) {
   const form = document.getElementById('editForm');
   form.addEventListener('submit', sendData);
 </script>
-<?php include __DIR__ . '/parts/html-tail.php' ?>
+</html>
