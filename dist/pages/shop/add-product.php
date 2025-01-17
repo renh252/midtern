@@ -153,9 +153,9 @@ form .mb-3.error .form-text {
           <form name="upload_form" hidden>
             <input type="file" name="photo" accept="image/jpeg,image/png" />
           </form>
-          <form method="post" action="upload-photos.php" enctype="multipart/form-data">
+          <form method="post" action="upload-photo.php" enctype="multipart/form-data">
               <input 
-              name="img[]" 
+              name="img" 
               type="file" 
               accept="image/jpeg,image/png" 
               multiple 
