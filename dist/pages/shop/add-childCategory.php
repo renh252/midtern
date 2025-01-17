@@ -224,7 +224,7 @@ const NameField = document.querySelector('#category_name');
             // 更新商品名稱欄位
             console.log(data.count);
             
-            if(data.count !== "0"){
+            if(data.count !== 0){
               NameField.nextElementSibling.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 已有此類別名稱，名稱不可重複`;
               NameField.closest('.mb-3').classList.add('error');
             }else{

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2025-01-16 11:08:54
+-- 產生時間： 2025-01-16 13:37:49
 -- 伺服器版本： 8.0.40
 -- PHP 版本： 8.2.12
 
@@ -36,7 +36,6 @@ CREATE TABLE `bank_transfer_details` (
   `transfer_amount` int NOT NULL,
   `donor_name` varchar(80) COLLATE utf8mb4_general_ci NOT NULL,
   `account_last_5` varchar(5) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `id_or_tax_id_number` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `reconciliation_status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '未核對'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -44,17 +43,18 @@ CREATE TABLE `bank_transfer_details` (
 -- 傾印資料表的資料 `bank_transfer_details`
 --
 
-INSERT INTO `bank_transfer_details` (`id`, `donation_id`, `transfer_date`, `transfer_amount`, `donor_name`, `account_last_5`, `id_or_tax_id_number`, `reconciliation_status`) VALUES
-(1, 1, '2025-01-01', 500, '王小明', '12345', 'A123456789', '未核對'),
-(2, 2, '2025-01-02', 1000, '匿名', '23456', 'B234567890', '未核對'),
-(3, 3, '2025-01-03', 200, '張美美', '34567', 'C345678901', '未核對'),
-(4, 4, '2025-01-04', 1500, '林志強', '45678', 'D456789012', '未核對'),
-(5, 5, '2025-01-05', 300, '匿名', '56789', 'E567890123', '未核對'),
-(6, 6, '2025-01-06', 800, '李華', '67890', 'F678901234', '未核對'),
-(7, 7, '2025-01-07', 700, '陳志宏', '78901', 'G789012345', '未核對'),
-(8, 8, '2025-01-08', 1200, '黃淑芬', '89012', 'H890123456', '未核對'),
-(9, 9, '2025-01-09', 600, '許志宏', '90123', 'J901234567', '未核對'),
-(10, 10, '2025-01-10', 1400, '周杰倫', '01234', 'K012345678', '未核對');
+INSERT INTO `bank_transfer_details` (`id`, `donation_id`, `transfer_date`, `transfer_amount`, `donor_name`, `account_last_5`, `reconciliation_status`) VALUES
+(1, 1, '2025-01-01', 500, '王小明', '12345', '未核對'),
+(2, 2, '2025-01-02', 1000, '匿名', '23456', '未核對'),
+(3, 3, '2025-01-03', 200, '張美美', '34567', '未核對'),
+(4, 4, '2025-01-04', 1500, '林志強', '45678', '未核對'),
+(5, 5, '2025-01-05', 300, '匿名', '56789', '未核對'),
+(6, 6, '2025-01-06', 800, '李華', '67890', '未核對'),
+(7, 7, '2025-01-07', 700, '陳志宏', '78901', '未核對'),
+(8, 8, '2025-01-08', 1200, '黃淑芬', '89012', '未核對'),
+(9, 9, '2025-01-09', 600, '許志宏', '90123', '未核對'),
+(10, 10, '2025-01-10', 1400, '周杰倫', '01234', '未核對'),
+(11, 11, '2025-01-16', 800, '王曉明', '12345', '未核對');
 
 -- --------------------------------------------------------
 
@@ -158,10 +158,10 @@ CREATE TABLE `categories` (
 
 INSERT INTO `categories` (`category_id`, `category_name`, `category_tag`, `category_description`, `parent_id`, `created_at`, `updated_at`) VALUES
 (1, '電子產品', 'ELEC', '電子產品及設備', NULL, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
-(2, '時尚', 'FASH', '服裝及配件', NULL, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
+(2, '時', 'FASH', '服裝及配件', NULL, '2025-01-16 03:08:30', '2025-01-16 13:29:18'),
 (3, '智能手機', 'PHON', '最新智能手機', 1, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
 (4, '筆記型電腦', 'LAP', '便攜式電腦', 1, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
-(5, '鞋類', 'SHOE', '各種鞋類', 2, '2025-01-16 03:08:30', '2025-01-16 03:08:30');
+(5, '鞋', 'SHOE', '各種鞋類', 2, '2025-01-16 03:08:30', '2025-01-16 13:29:23');
 
 -- --------------------------------------------------------
 
@@ -723,7 +723,8 @@ INSERT INTO `donations` (`id`, `donation_type`, `pet_id`, `amount`, `donation_mo
 (7, '醫療救援', NULL, 500, '定期捐款', '2025-03-01', 0, '信用卡', '2025-01-16 16:00:00', NULL, 1, '陳志宏', '0955555555', 'chen@gmail.com'),
 (8, '捐予平台', NULL, 2000, '一次性捐款', NULL, 1, '銀行轉帳', '2025-01-17 17:00:00', NULL, 0, '匿名', '匿名', '匿名'),
 (9, '醫療救援', NULL, 700, '一次性捐款', NULL, 0, '信用卡', '2025-01-18 18:00:00', NULL, 1, '黃淑芬', '0966666666', 'huang@gmail.com'),
-(10, '線上認養', 4, 300, '一次性捐款', NULL, 0, '信用卡', '2025-01-19 19:00:00', NULL, 1, '周杰倫', '0977777777', 'zhou@gmail.com');
+(10, '線上認養', 4, 300, '一次性捐款', NULL, 0, '信用卡', '2025-01-19 19:00:00', NULL, 1, '周杰倫', '0977777777', 'zhou@gmail.com'),
+(11, '線上認養', 90, 800, '定期捐款', '2025-01-14', 0, '銀行轉帳', '2025-01-16 13:23:32', NULL, 1, '王曉明', '0981745555', 'sjka@gjkam.vom');
 
 -- --------------------------------------------------------
 
@@ -755,7 +756,8 @@ INSERT INTO `expenses` (`id`, `expense_purpose`, `amount`, `created_by`, `expens
 (7, '志工招募', 700, 2, '2025-01-07', '志工培訓和招募支出', NULL),
 (8, '交通費用', 300, 3, '2025-01-08', '救援行動中的交通花費', NULL),
 (9, '器材採購', 1000, 4, '2025-01-09', '購買新的救援器材', NULL),
-(10, '食品採購', 1400, 5, '2025-01-10', '額外補充的食品採購', NULL);
+(10, '食品採購', 1400, 5, '2025-01-10', '額外補充的食品採購', NULL),
+(11, '食品採購', 800, 2, '2025-01-09', '123', NULL);
 
 -- --------------------------------------------------------
 
@@ -849,7 +851,8 @@ INSERT INTO `manager` (`id`, `manager_account`, `manager_password`, `manager_pri
 (3, 'sheng', '$2y$10$74PAtWNHoLBdO.2TETXpM.HFradmM5VYazVXa8GxMgGkX1MPGAEF2', 'donation'),
 (4, 'ching', '$2y$10$97XycLclWAAXi6LOLCpx4Opr8K4i3NVYRsW4axCLEHfv4i1RvKnfG', 'shop'),
 (5, 'ting', '$2y$10$Es2iSjkXB81qwnnbUewAfe4h.8.HFHk2UvmYvcFP2KaCgSyydA4Fm', 'post'),
-(6, 'aaa', '$2y$10$3PY7..Z4dL4.ENXW/XZG1.HO7FkOKaMViKjPHOySYYOp0.pRbGAVe', 'test');
+(6, 'aaa', '$2y$10$3PY7..Z4dL4.ENXW/XZG1.HO7FkOKaMViKjPHOySYYOp0.pRbGAVe', '111'),
+(20, 'aa', '$2y$10$ls7Ts30LmD0x9ODUrVtrZefQLcyghnzGNmw.yMbGFNOaBisC/2QyK', 'test');
 
 -- --------------------------------------------------------
 
@@ -886,7 +889,7 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`order_id`, `user_id`, `total_price`, `order_status`, `payment_method`, `payment_status`, `invoice_method`, `invoice`, `mobile_barcode`, `taxID_number`, `recipient_name`, `recipient_phone`, `recipient_email`, `remark`, `shipping_method`, `shipping_address`, `tracking_number`, `shipped_at`, `created_at`, `finish_at`, `updated_at`) VALUES
-('ORD00001', 1, 500, '待出貨', 'linePay', '已付款', '紙本', 'INV12345', NULL, '12345678', '王小明', 912345678, 'li.dahua@example.com', '請於上午配送', '宅配', '台北市信義區XX路XX號', 'TRACK001', NULL, '2025-01-16 03:08:30', NULL, '2025-01-16 03:08:30'),
+('ORD00001', 1, 500, '待出貨', 'linePay', '已付款', '紙本', 'INV12345', NULL, '12345678', '王小', 912345678, 'li.dahua@examp', '請於上午配送', '宅配', '台北市信義區XX路XX號', 'TRACK001', NULL, '2025-01-16 03:08:30', NULL, '2025-01-16 13:27:24'),
 ('ORD00002', 2, 300, '已出貨', '信用卡', '已付款', '載具', 'INV67890', '/ABCD123', NULL, '李大華', 911223344, 'li.dahua@example.com', '門市取貨後聯繫', '7-11', '7-11門市', 'TRACK002', '2025-01-16 03:08:30', '2025-01-16 03:08:30', NULL, '2025-01-16 03:08:30'),
 ('ORD00003', 3, 1200, '已完成', '信用卡', '已付款', '統編', 'INV11223', NULL, '87654321', '陳美麗', 987654321, 'li.dahua@example.com', '感謝服務，請保持聯繫', '全家', '全家門市', 'TRACK003', '2025-01-16 03:08:30', '2025-01-16 03:08:30', '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
 ('ORD00004', 4, 800, '待出貨', '信用卡', '已付款', '紙本', 'INV33445', '/XYZ9876', NULL, '黃俊傑', 911223344, 'li.dahua@example.com', '請提前通知配送時間', '宅配', '新竹市東區XX路XX號', 'TRACK004', NULL, '2025-01-16 03:08:30', NULL, '2025-01-16 03:08:30'),
@@ -1066,9 +1069,7 @@ INSERT INTO `pets` (`id`, `name`, `gender`, `species`, `variety`, `birthday`, `w
 (96, 'Pet96', '母', '其他', '未知', '2021-09-23', 18.59, '8637890170', 0, 'This is the story of Pet96. It is a very lovely pet.', 6, '2025-01-14 19:39:06', 0, ''),
 (97, 'Pet97', '公', '狗', '貴賓', '2022-01-25', 46.02, '7082803478', 1, 'This is the story of Pet97. It is a very lovely pet.', 6, '2025-01-14 19:39:06', 1, ''),
 (98, 'Pet98', '公', '狗', '拉布拉多', '2023-01-11', 35.42, '9372005666', 1, 'This is the story of Pet98. It is a very lovely pet.', 3, '2025-01-14 19:39:06', 1, ''),
-(99, 'Pet99', '公', '貓', '暹羅貓', '2018-03-16', 36.16, '5633186516', 1, 'This is the story of Pet99. It is a very lovely pet.', 8, '2025-01-14 19:39:06', 1, ''),
-(100, 'Pet100', '公', '狗', '拉布拉多', '2015-11-23', 16.88, '9409816850', 1, 'This is the story of Pet100. It is a very lovely pet.', 2, '2025-01-14 19:39:06', 1, ''),
-(101, 'aaaa', '公', '狗', '黃金獵犬', '2025-01-14', 22.33, '8958766701', NULL, NULL, NULL, '2025-01-14 19:40:25', 0, '');
+(99, 'Pet99', '公', '貓', '暹羅貓', '2018-03-16', 36.16, '5633186516', 1, 'This is the story of Pet99. It is a very lovely pet.', 8, '2025-01-14 19:39:06', 1, '');
 
 -- --------------------------------------------------------
 
@@ -1405,7 +1406,7 @@ INSERT INTO `posts` (`id`, `title`, `body`, `user_id`, `status`, `likes_count`, 
 (197, '我的寵物日記 197', '今天和我的寵物一起出去玩，牠真的很可愛！', 19, '已發佈', 42, 5, 0, '2025-01-16 01:28:48', '2025-01-16 01:28:48'),
 (198, '我的寵物日記 198', '今天和我的寵物一起出去玩，牠真的很可愛！', 17, '已發佈', 23, 3, 0, '2025-01-16 01:28:48', '2025-01-16 01:28:48'),
 (199, '我的寵物日記 199', '今天和我的寵物一起出去玩，牠真的很可愛！', 6, '已發佈', 8, 19, 0, '2025-01-16 01:28:48', '2025-01-16 01:28:48'),
-(200, '我的寵物日記 200', '今天和我的寵物一起出去玩，牠真的很可愛！', 3, '已發佈', 48, 4, 0, '2025-01-16 01:28:48', '2025-01-16 01:28:48');
+(200, '我的寵物日記 200', '今天和我的寵物一起出去玩，牠真的很可愛！', 3, '已發佈', 48, 4, 0, '2025-01-16 01:28:48', '2025-01-16 05:14:19');
 
 -- --------------------------------------------------------
 
@@ -1510,7 +1511,8 @@ INSERT INTO `products` (`product_id`, `product_name`, `product_description`, `pr
 (7, '筆記型電腦 1', '筆記型電腦 1 的描述', 500, 4, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 10, 0),
 (8, '筆記型電腦 2', '筆記型電腦 2 的描述', 550, 4, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 15, 0),
 (9, '鞋子 1', '鞋子 1 的描述', 60, 5, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 80, 0),
-(10, '鞋子 2', '鞋子 2 的描述', 70, 5, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 90, 0);
+(10, '鞋子 2', '鞋子 2 的描述', 70, 5, '2025-01-16 03:08:30', '2025-01-16 03:08:30', '上架', 'https://placehold.co/100x100', 90, 0),
+(11, '1', '', 2, 3, '2025-01-16 13:28:20', '2025-01-16 13:28:28', '上架', '', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -1561,8 +1563,9 @@ INSERT INTO `product_variants` (`variant_id`, `product_id`, `variant_name`, `pri
 (6, 6, '時尚商品 4 - 變體 A', 150, 20, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
 (7, 7, '時尚商品 5 - 變體 A', 170, 15, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
 (8, 8, '時尚商品 6 - 變體 A', 190, 30, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
-(9, 9, '時尚商品 7 - 變體 A', 210, 30, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30'),
-(10, 10, '時尚商品 8 - 變體 A', 230, 25, NULL, 'https://placehold.co/100x100', 0, '2025-01-16 03:08:30', '2025-01-16 03:08:30');
+(9, 9, '時尚商品 7 - 變體 A', 21, 30, NULL, '', 0, '2025-01-16 03:08:30', '2025-01-16 13:28:36'),
+(10, 10, '時尚商品 8 - 變體 A', 230, 25, NULL, 'https://placehold.co/100x100', 1, '2025-01-16 03:08:30', '2025-01-16 13:27:54'),
+(11, 9, '11', 60, 2, NULL, '', 0, '2025-01-16 13:28:02', '2025-01-16 13:28:02');
 
 -- --------------------------------------------------------
 
@@ -1576,19 +1579,20 @@ CREATE TABLE `promotions` (
   `promotion_description` text COLLATE utf8mb4_general_ci,
   `start_date` date NOT NULL,
   `end_date` date DEFAULT NULL,
-  `discount_percentage` int NOT NULL
+  `discount_percentage` int NOT NULL,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `promotions`
 --
 
-INSERT INTO `promotions` (`promotion_id`, `promotion_name`, `promotion_description`, `start_date`, `end_date`, `discount_percentage`) VALUES
-(1, '夏季大促銷', '享受高達30%的折扣，適用於所有電子產品，包含手機、電腦等', '2025-06-01', '2025-06-30', 30),
-(2, '時尚商品折扣', '時尚商品系列大放送，買一送一，適用於所有鞋款和服裝', '2025-07-01', '2025-07-15', 50),
-(3, '新品限時優惠', '所有新品首次購買可享20%折扣，包含各類電子產品和時尚商品', '2025-08-01', '2025-08-31', 20),
-(4, '全館滿額折扣', '全館消費滿500元可享受額外10%的折扣，適用於所有商品與變體', '2025-09-01', '2025-09-30', 10),
-(5, '雙11折扣季', '雙11期間所有商品享有30%折扣，特別推薦電子產品與時尚商品', '2025-11-01', '2025-11-11', 30);
+INSERT INTO `promotions` (`promotion_id`, `promotion_name`, `promotion_description`, `start_date`, `end_date`, `discount_percentage`, `updated_at`) VALUES
+(1, '夏季大促銷', '享受高達30%的折扣，適用於所有電子產品，包含手機、電腦等', '2025-06-01', '2025-06-30', 30, '2025-01-16 13:30:05'),
+(2, '時尚商品折扣', '時尚商品系列大放送，買一送一，適用於所有鞋款和服裝', '2025-07-01', '2025-07-15', 50, '2025-01-16 13:30:05'),
+(3, '新品限時優惠', '所有新品首次購買可享20%折扣，包含各類電子產品和時尚商品', '2025-08-01', '2025-08-31', 20, '2025-01-16 13:30:05'),
+(4, '全館滿額折扣', '全館消費滿500元可享受額外10%的折扣，適用於所有商品與變體', '2025-09-01', '2025-09-30', 10, '2025-01-16 13:30:05'),
+(5, '雙11折扣季', '雙11期間所有商品享有30%折扣，特別推薦電子產品與時尚商品', '2025-11-01', '2025-11-11', 30, '2025-01-16 13:30:05');
 
 -- --------------------------------------------------------
 
@@ -1656,7 +1660,8 @@ INSERT INTO `receipts` (`id`, `donation_id`, `receipt_name`, `receipt_phone`, `r
 (7, 7, '陳志宏', '0955555555', '新竹市東區光復路500號'),
 (8, 8, NULL, NULL, NULL),
 (9, 9, '黃淑芬', '0966666666', '台南市中西區中正路600號'),
-(10, 10, '周杰倫', '0977777777', '桃園市中壢區中山路700號');
+(10, 10, '周杰倫', '0977777777', '桃園市中壢區中山路700號'),
+(11, 11, '王曉明', '0123456789', '台南');
 
 -- --------------------------------------------------------
 
@@ -1759,10 +1764,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `user_email`, `user_password`, `user_name`, `user_number`, `user_address`, `user_birthday`, `user_level`, `profile_picture`, `user_status`) VALUES
-(1, 'song1@gmail.com', 'a12345', '宋德鶴', '0912345678', '台南市永康區南台街一號', '2025-01-14', '愛心小天使', '', 'active'),
-(2, 'chin2@gmail.com', 'a23456', '金城武', '0987123456', '台南市永康區南台街123號', '2024-12-17', '乾爹乾媽', NULL, 'active'),
+(1, 'song1@gmail.com', 'a12345', '宋德鶴', '0912345678', '台南市永康區南台街一號', '2025-01-24', '愛心小天使', '', '禁言'),
+(2, 'chin2@gmail.com', 'a23456', '金城武', '0987123456', '台南市永康區南台街123號', '2024-12-17', '乾爹乾媽', NULL, '禁言'),
 (3, 'chang3@example.com', 'password3', '張三', '0933123456', '台北市中正區忠孝東路一段1號', '2024-05-10', '乾爹乾媽', NULL, 'active'),
-(4, 'lee4@example.com', 'password4', '李四', '0966987654', '台中市西屯區台灣大道三段301號', '2023-07-20', '愛心小天使', NULL, 'active'),
+(4, 'lee4@example.com', 'password4', '李四', '0966987654', '台中市西屯區台灣大道三段301號', '2023-07-20', '愛心小天使', NULL, '正常'),
 (5, 'wang5@example.com', 'password5', '王五', '0955567890', '高雄市苓雅區中正一路1號', '2022-11-01', '愛心小天使', NULL, 'active'),
 (6, 'zhao6@example.com', 'password6', '趙六', '0922876543', '新北市板橋區中山路一段1號', '2025-02-15', '乾爹乾媽', NULL, 'active'),
 (7, 'liu7@example.com', 'password7', '劉七', '0977432109', '桃園市桃園區復興路1號', '2024-04-28', '乾爹乾媽', NULL, 'active'),
@@ -2034,7 +2039,7 @@ ALTER TABLE `user_sessions`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `bank_transfer_details`
 --
 ALTER TABLE `bank_transfer_details`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `bans`
@@ -2064,13 +2069,13 @@ ALTER TABLE `comments`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `donations`
 --
 ALTER TABLE `donations`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `expenses`
 --
 ALTER TABLE `expenses`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `follows`
@@ -2082,7 +2087,7 @@ ALTER TABLE `follows`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `manager`
 --
 ALTER TABLE `manager`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `order_items`
@@ -2094,7 +2099,7 @@ ALTER TABLE `order_items`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `pets`
 --
 ALTER TABLE `pets`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `pets_recent_activities`
@@ -2136,7 +2141,7 @@ ALTER TABLE `posts_likes`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `product_reviews`
@@ -2148,13 +2153,13 @@ ALTER TABLE `product_reviews`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `product_variants`
 --
 ALTER TABLE `product_variants`
-  MODIFY `variant_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `variant_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `promotions`
 --
 ALTER TABLE `promotions`
-  MODIFY `promotion_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `promotion_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `promotion_products`
@@ -2166,7 +2171,7 @@ ALTER TABLE `promotion_products`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `receipts`
 --
 ALTER TABLE `receipts`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `refunds`
