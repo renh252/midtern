@@ -37,7 +37,7 @@ $where = ' WHERE parent_id IS NULL '; # SQL 條件的開頭
 
 if ($keyword) {
   $keyword_ = $pdo->quote("%{$keyword}%"); # 字串內容做 SQL 引號的跳脫, 同時前後標單引號
-  $where .= " AND ( product_name LIKE $keyword_ OR category_tag LIKE $keyword_ OR product_id LIKE $keyword_  OR product_description LIKE $keyword_ ) ";
+  $where .= " AND ( category_id  LIKE $keyword_ OR category_name LIKE $keyword_ OR category_tag LIKE $keyword_  OR product_description LIKE $keyword_ ) ";
 }
 
 # 查詢總筆數
@@ -83,18 +83,13 @@ if ($totalRows > 0) {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php echo $title; ?></title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-</head>
 
-<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
-<!--begin::Body-->
+  
+  <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
+  <!--begin::Body-->
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="parts/shopCSS.css"  rel="stylesheet"  />
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <!--begin::App Wrapper 網頁的主要內容在這-->
@@ -382,4 +377,3 @@ const deleteCategory = e => {
 </body>
 <!--end::Body-->
 
-</html>

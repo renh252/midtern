@@ -10,10 +10,10 @@ $pageName = "demo";
 // ob_start();
 
 // 檢查是否已登入
-if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
-    header("Location: login.php");  // 如果未登入，跳轉回登入頁面
-    exit;
-}
+// if (!isset($_SESSION['login_session']) || $_SESSION['login_session'] !== true) {
+//     header("Location: login.php");  // 如果未登入，跳轉回登入頁面
+//     exit;
+// }
 
 ?>
 <?php
@@ -183,8 +183,9 @@ foreach ($rows as $r) {
 
 <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
 <!--begin::Body-->
+<!-- Bootstrap 5 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-<link href="parts/shopCSS.css"  rel="stylesheet"  />
+<link href="./parts/shopCSS.css"  rel="stylesheet"  />
 <style>
       .no-data{
         text-align: center
