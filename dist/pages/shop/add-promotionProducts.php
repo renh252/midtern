@@ -34,7 +34,7 @@ $where = ' WHERE 1 '; # SQL 條件的開頭
 
 if ($keyword) {
   $keyword_ = $pdo->quote("%{$keyword}%"); # 字串內容做 SQL 引號的跳脫, 同時前後標單引號
-  $where .= " AND ( product_name LIKE $keyword_ OR category_tag LIKE $keyword_ OR product_id LIKE $keyword_  OR product_description LIKE $keyword_ ) ";
+  $where .= " AND ( product_name LIKE $keyword_ OR  product_id LIKE $keyword_ ) ";
 }
 
 
@@ -95,6 +95,9 @@ $t_sql = "SELECT COUNT(1)
   JOIN Products p ON c.category_id = p.category_id";
 $categories = $pdo->query($sql_categories)->fetchAll();
 
+$sql_pomotion = "SELECT promotion_name,promotion_id  FROM Promotions WHERE promotion_id = $promotion_id";
+$rows_promotion = $pdo->query($sql_pomotion)->fetch();
+
 
 
 // ----------------- php編輯區END ---------------
@@ -104,6 +107,7 @@ $categories = $pdo->query($sql_categories)->fetchAll();
   
   <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
   <!--begin::Body-->
+  <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="parts/shopCSS.css"  rel="stylesheet"  />
 
@@ -127,7 +131,7 @@ $categories = $pdo->query($sql_categories)->fetchAll();
                     <!--begin::Row-->
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="mb-0">活動搭配商品</h3>
+                            <h3 class="mb-0">活動【<?= $rows_promotion['promotion_name']?>】</h3>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-end">
@@ -155,10 +159,11 @@ $categories = $pdo->query($sql_categories)->fetchAll();
     <!-- 搜尋框 -->
     <div class="col-6">
       
-      <form class="d-flex" role="search">
+      <form class="d-flex" role="search" id="searchForm">
+        <input type="hidden" name="promotion_id" value="<?= $promotion_id?>">
         <input class="form-control me-2" name="keyword"
           value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
-          placeholder="編號/名稱/類別/介紹" aria-label="Search">
+          placeholder="編號/名稱" aria-label="Search" id="searchKeyword">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
     </div>
@@ -294,7 +299,7 @@ $categories = $pdo->query($sql_categories)->fetchAll();
 <script>
 
 /*------------script編輯區--------------*/
-
+// 取消搜尋
 
 // ----------------全選
 document.addEventListener("DOMContentLoaded", () => {
