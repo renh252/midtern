@@ -135,6 +135,7 @@ if ($totalRows > 0) {
     <link href="./parts/shopCSS.css"  rel="stylesheet"  />
 
     <style>
+    
 
     </style>
 
@@ -236,13 +237,14 @@ if ($totalRows > 0) {
                 <?php endif?>
               </td>
               <td>
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#recipient-<?= $r['order_id'] ?>" aria-expanded="false" aria-controls="recipient-<?= $r['order_id'] ?>">
+                <button class="btn btn-primary custom-collapse-btn" data-target="#recipient-<?= $r['order_id'] ?>">
+
                   查看
                 </button>
               </td>
               <td><?= htmlentities($r['remark']) ?></td>
               <td>
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#shipping-<?= $r['order_id'] ?>" aria-expanded="false" aria-controls="shipping-<?= $r['order_id'] ?>">
+                <button class="btn btn-primary custom-collapse-btn" data-target="#shipping-<?= $r['order_id'] ?>">
                   查看
                 </button>
               </td>
@@ -257,7 +259,7 @@ if ($totalRows > 0) {
               </td>
             </tr>
             <!-- 隱藏詳細資訊行 -->
-            <tr class="collapse" id="recipient-<?= $r['order_id'] ?>" data-bs-parent="#order-accordion" >
+            <tr class="collapse order-collapse" id="recipient-<?= $r['order_id'] ?>">
                 <td colspan="20"  class="bg-secondary-subtle">
                     <div class="p-3 ">
                         <strong >收件人資訊：</strong>
@@ -271,7 +273,7 @@ if ($totalRows > 0) {
                 </td>
             </tr>
             <!-- 隱藏詳細資訊行 -->
-            <tr class="collapse" id="shipping-<?= $r['order_id'] ?>" data-bs-parent="#order-accordion">
+            <tr class="collapse order-collapse" id="shipping-<?= $r['order_id'] ?>">
                 <td colspan="20"  class="bg-secondary-subtle">
                     <div class="p-3">
                         <strong>運送資訊：</strong>
@@ -365,62 +367,51 @@ if ($totalRows > 0) {
 <script>
 
 /*------------script編輯區--------------*/
-const deleteOne = e => {
-    e.preventDefault(); // 沒有要連到某處
-    const tr = e.target.closest('tr');
-    const [
-      ,
-      td_product_id,
-      td_product_name,
-      td_add_variant,
-      td_category_tag,
-      td_product_intro,
-      td_product_price,
-      td_product_stock,
-      td_product_status,
-      ,
-      ,
-      ,
-    ] = tr.querySelectorAll('td');
-    const product_id = td_product_id.innerHTML;
-    const product_name = td_product_name.innerHTML;
-    const category_tag = td_category_tag.innerHTML;
-    console.log([td_product_id.innerHTML, product_name.innerHTML]);
-    if (confirm(`是否要刪除編號 ${product_id} 的商品【 ${product_name} 】?`)) {
-      // 使用 JS 做跳轉頁面
-      location.href = `del.php?product_id=${product_id}`;
-    }
-  }
-  const deleteVariant = e => {
-    e.preventDefault(); // 沒有要連到某處
 
 
-    const tr = e.target.closest('tr');
-    const [
-      , //delete
-      td_product_name,
-      td_variant_id,
-      ,
-      ,
-      td_variant_name,
-      ,
-      ,
-      td_variant_price,
-      td_variant_stock,
-      td_variant_img,
-      ,
-      ,
-      ,
-      , //edit 
-    ] = tr.querySelectorAll('td');
-    const product_name = td_product_name.innerHTML;
-    const variant_id = td_variant_id.innerHTML;
-    const variant_name = td_variant_name.innerHTML;
-    if (confirm(`是否要刪除商品 ${product_name} 的規格 【 ${variant_name} 】 ?`)) {
-      // 使用 JS 做跳轉頁面
-      location.href = `del.php?variant_id=${variant_id}`;
-    }
+document.addEventListener('DOMContentLoaded', function() {
+  const buttons = document.querySelectorAll('.custom-collapse-btn');
+  let currentlyOpen = null;
+
+  buttons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('data-target');
+      const targetCollapse = document.querySelector(targetId);
+
+      // 如果點擊的是當前打開的collapse，則只需要關閉它
+      if (currentlyOpen === targetCollapse) {
+        hideCollapse(currentlyOpen);
+        currentlyOpen = null;
+        return;
+      }
+
+      // 如果有其他打開的collapse，立即關閉它
+      if (currentlyOpen) {
+        hideCollapse(currentlyOpen);
+      }
+
+      // 立即打開目標collapse
+      showCollapse(targetCollapse);
+
+      // 更新當前打開的collapse
+      currentlyOpen = targetCollapse;
+    });
+  });
+
+  function hideCollapse(element) {
+    element.style.display = 'none';
+    element.classList.remove('show');
   }
+
+  function showCollapse(element) {
+    element.style.display = 'table-row';
+    element.classList.add('show');
+  }
+});
+
+
+
 /*------------script編輯區END--------------*/
 
     </script>
