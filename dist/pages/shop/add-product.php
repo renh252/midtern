@@ -29,33 +29,31 @@ $rows_category = $pdo->query($sql_category)->fetchAll();
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php echo $title; ?></title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <style>
-  form .mb-3 .form-text {
-    display: none;
-    /* color: red; */
-  }
+  
+  <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
+  <!--begin::Body-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="parts/shopCSS.css"  rel="stylesheet"  />
 
-  form .mb-3.error input.form-control {
-    border: 2px solid red;
-  }
+  <style>
+form .mb-3 .form-text {
+  display: none;
+  /* color: red; */
+}
 
-  form .mb-3.error .form-text {
-    display: block;
-    color: red;
-  }
+form .mb-3.error input.form-control {
+  border: 2px solid red;
+}
+
+form .mb-3.error .form-text {
+  display: block;
+  color: red;
+}
+.imgDiv{
+  width: 100px;
+  height: 100px;
+}
 </style>
-</head>
-
-<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
-<!--begin::Body-->
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <!--begin::App Wrapper 網頁的主要內容在這-->
@@ -103,15 +101,13 @@ $rows_category = $pdo->query($sql_category)->fetchAll();
       <div class="card">
 
         <div class="card-body">
-          <h5 class="card-title">新增商品</h5>
-          
           <form onsubmit="sendData(event)">
             <div class="mb-3">
               <img src="" alt="" class="photo" width="200px">
               <input type="hidden" name="photo" value="">
-              <!-- 表單裡面 button 如果沒有設定 type 會視為 submit button -->
               <!-- <button type="button"
-                class="btn btn-warning" onclick="document.upload_form.photo.click()">上傳圖片</button> -->
+                class="btn btn-warning" onclick="document.upload_form.photo.click()">選擇圖片</button> -->
+                
             </div>
             <div class="mb-3">
               <label for="product_name" class="form-label">商品名稱**</label>
@@ -157,6 +153,19 @@ $rows_category = $pdo->query($sql_category)->fetchAll();
           <form name="upload_form" hidden>
             <input type="file" name="photo" accept="image/jpeg,image/png" />
           </form>
+          <form method="post" action="upload-photo.php" enctype="multipart/form-data">
+              <input 
+              name="img" 
+              type="file" 
+              accept="image/jpeg,image/png" 
+              multiple 
+              onchange="imgChange(event)">
+                
+                <div id="imgContainer">
+    
+                </div>
+                <input type="submit" />
+          </form>
         </div>
       </div>
     </div>
@@ -200,19 +209,9 @@ $rows_category = $pdo->query($sql_category)->fetchAll();
     <!--begin::Script-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
-                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-                    scrollbars: {
-                        theme: 'os-theme-light',
-                        autoHide: 'leave',
-                        clickScroll: true,
-                    },
-                });
-            }
-        });
+    <?php include ROOT_PATH . 'dist/js/sidebarJS.php' ?>
+    
+<script>
 
 /*------------script編輯區--------------*/
 
@@ -292,6 +291,38 @@ const productNameField = document.querySelector('#product_name');
   }
 
 
+  // ----------------照片顯示
+  const myImg = document.querySelector("#myImg");
+  const imgContainer = document.querySelector("#imgContainer");
+  const imgChange = (e) => {
+    if (e.target.files.length > 0) {
+      let str = "";
+      for(let f of e.target.files){
+        const url = URL.createObjectURL(f);
+        str += `
+        <div class="imgDiv">
+          <img src="${url}" alt="" id="myImg" width="200px">
+        </div> `;
+        imgContainer.innerHTML = str;
+      }
+    }else{
+      imgContainer.innerHTML ="";
+    }
+    
+  }
+
+/**
+ {
+"img": {
+"name": "螢幕擷取畫面 (4).png",
+"full_path": "螢幕擷取畫面 (4).png",
+"type": "image/png",
+"tmp_name": "C:\\xampp\\tmp\\php6ADC.tmp",
+"error": 0,
+"size": 184036
+}
+}
+ */
   // ---------------- 做上傳處理 ---------------------------
   
   const photo = document.upload_form.photo; // 取得上傳的欄位
@@ -332,4 +363,3 @@ const productNameField = document.querySelector('#product_name');
 </body>
 <!--end::Body-->
 
-</html>

@@ -146,18 +146,13 @@ if ($totalRows > 0) {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php echo $title; ?></title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-</head>
 
-<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
-<!--begin::Body-->
+  
+  <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
+  <!--begin::Body-->
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="./parts/shopCSS.css"  rel="stylesheet"  />
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <!--begin::App Wrapper 網頁的主要內容在這-->
@@ -182,10 +177,7 @@ if ($totalRows > 0) {
                             <h3 class="mb-0">商品列表</h3>
                         </div>
                         <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-end">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">商品列表</li>
-                            </ol>
+                            
                         </div>
                     </div>
                     <!--end::Row-->
@@ -203,31 +195,36 @@ if ($totalRows > 0) {
   <div class="row mt-2 mb-2">
     <!-- 排序選單 -->
     
-    <div class="col-6 d-flex">
-      <a href="./add-product.php" class="btn btn-outline-secondary me-3" >新增商品</a>
-      <form action=""  method="GET">
-        <select name="orderBy" id="orderBy" onchange="this.form.submit()" class="form-select">
-          <option value="p.product_id DESC" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.product_id DESC'  ? 'selected':'';?>>最新 (排序)</option>
-          <option value="p.product_id" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.product_id'   ? 'selected':''?>>最舊</option>
-          <option value="p.product_name" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.product_name'   ? 'selected':''?>>名稱</option>
-          <option value="c.category_tag" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='c.category_tag'  ? 'selected':''?>>類別
-          </option>
-          <option value="p.price DESC" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.price DESC'   ? 'selected':''?>>價格(高->低)</option>
-          <option value="p.price" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.price'  ? 'selected':''?>>價格(低->高)</option>
-          <option value="p.updated_at DESC" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.updated_at  DESC'  ? 'selected':''?>>最近更新</option>
-          
-        </select>
-      </form>
-    </div>
-    <!-- 搜尋框 -->
     <div class="col-6">
-      
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" name="keyword"
-          value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
-          placeholder="編號/名稱/類別/介紹" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+      <a href="./add-product.php" class="btn btn-outline-secondary me-3" >新增商品</a>
+    </div>
+    <div class="col-6">
+      <div class="row  justify-content-start">
+        <div class="col-3">
+          <form action=""  method="GET">
+            <select name="orderBy" id="orderBy" onchange="this.form.submit()" class="form-select">
+              <option value="p.product_id DESC" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.product_id DESC'  ? 'selected':'';?>>最新 (排序)</option>
+              <option value="p.product_id" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.product_id'   ? 'selected':''?>>最舊</option>
+              <option value="p.product_name" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.product_name'   ? 'selected':''?>>名稱</option>
+              <option value="c.category_tag" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='c.category_tag'  ? 'selected':''?>>類別
+                </option>
+                <option value="p.price DESC" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.price DESC'   ? 'selected':''?>>價格(高->低)</option>
+                <option value="p.price" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.price'  ? 'selected':''?>>價格(低->高)</option>
+                <option value="p.updated_at DESC" <?php echo isset($_GET['orderBy']) &&  $_GET['orderBy']=='p.updated_at  DESC'  ? 'selected':''?>>最近更新</option>
+              </select>
+            </form>
+        </div>
+        <div class="col">
+          <!-- 搜尋框 -->
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" name="keyword"
+              value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
+              placeholder="編號/名稱/類別/介紹" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+        
     </div>
   </div>
 
@@ -400,20 +397,9 @@ if ($totalRows > 0) {
     <!--begin::Script-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
+    <?php include ROOT_PATH . 'dist/js/sidebarJS.php' ?>
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
-                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-                    scrollbars: {
-                        theme: 'os-theme-light',
-                        autoHide: 'leave',
-                        clickScroll: true,
-                    },
-                });
-            }
-        });
-
 /*------------script編輯區--------------*/
 
 const deleteOne = e => {
@@ -488,4 +474,4 @@ const deleteOne = e => {
 </body>
 <!--end::Body-->
 
-</html>
+

@@ -1,6 +1,6 @@
 <?php
 // 先載入初始化檔案
-require __DIR__ . '/../parts/init.php';
+require_once __DIR__ . '/../parts/init.php';
 
 // 設定標題和頁面名稱
 $title = "訂單列表";
@@ -26,18 +26,13 @@ $pageName = "order";
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php echo $title; ?></title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-</head>
+
 
 <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
 <!--begin::Body-->
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="parts/shopCSS.css"  rel="stylesheet"  />
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <!--begin::App Wrapper 網頁的主要內容在這-->
@@ -97,19 +92,9 @@ $pageName = "order";
     <!--begin::Script-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
+    <?php include ROOT_PATH . 'dist/js/sidebarJS.php' ?>
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
-                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-                    scrollbars: {
-                        theme: 'os-theme-light',
-                        autoHide: 'leave',
-                        clickScroll: true,
-                    },
-                });
-            }
-        });
 
 /*------------script編輯區--------------*/
 
@@ -122,4 +107,4 @@ $pageName = "order";
 </body>
 <!--end::Body-->
 
-</html>
+

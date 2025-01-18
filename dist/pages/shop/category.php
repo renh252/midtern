@@ -37,7 +37,7 @@ $where = ' WHERE parent_id IS NULL '; # SQL 條件的開頭
 
 if ($keyword) {
   $keyword_ = $pdo->quote("%{$keyword}%"); # 字串內容做 SQL 引號的跳脫, 同時前後標單引號
-  $where .= " AND ( product_name LIKE $keyword_ OR category_tag LIKE $keyword_ OR product_id LIKE $keyword_  OR product_description LIKE $keyword_ ) ";
+  $where .= " AND ( category_id  LIKE $keyword_ OR category_name LIKE $keyword_ OR category_tag LIKE $keyword_  ) ";
 }
 
 # 查詢總筆數
@@ -83,18 +83,13 @@ if ($totalRows > 0) {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php echo $title; ?></title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-</head>
 
-<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
-<!--begin::Body-->
+  
+  <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
+  <!--begin::Body-->
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="parts/shopCSS.css"  rel="stylesheet"  />
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <!--begin::App Wrapper 網頁的主要內容在這-->
@@ -146,7 +141,7 @@ if ($totalRows > 0) {
       <form class="d-flex" role="search">
         <input class="form-control me-2" name="keyword"
           value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
-          placeholder="編號/名稱/類別/介紹" aria-label="Search">
+          placeholder="類別名稱/標籤" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
     </div>
@@ -164,7 +159,7 @@ if ($totalRows > 0) {
             <td hidden></td>
             <td hidden></td>
             <th>子類別</th>
-            <th>tag</th>
+            <th>標籤</th>
             <th>描述</th>
             <th><i class="fa-solid fa-pen-to-square"></i></th>
           </tr>
@@ -303,20 +298,9 @@ if ($totalRows > 0) {
     <!--begin::Script-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
-                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-                    scrollbars: {
-                        theme: 'os-theme-light',
-                        autoHide: 'leave',
-                        clickScroll: true,
-                    },
-                });
-            }
-        });
-
+    <?php include ROOT_PATH . 'dist/js/sidebarJS.php' ?>
+    
+<script>
 /*------------script編輯區--------------*/
 
 const deleteCategory = e => {
@@ -393,4 +377,3 @@ const deleteCategory = e => {
 </body>
 <!--end::Body-->
 
-</html>

@@ -33,7 +33,7 @@ $where = ' WHERE 1 '; # SQL 條件的開頭
 
 if ($keyword) {
   $keyword_ = $pdo->quote("%{$keyword}%"); # 字串內容做 SQL 引號的跳脫, 同時前後標單引號
-  $where .= " AND ( product_name LIKE $keyword_ OR category_tag LIKE $keyword_ OR product_id LIKE $keyword_  OR product_description LIKE $keyword_ ) ";
+  $where .= " AND ( product_name LIKE $keyword_ OR  product_id LIKE $keyword_ ) ";
 }
 
 
@@ -94,8 +94,10 @@ $t_sql = "SELECT COUNT(1)
   JOIN Products p ON c.category_id = p.category_id";
 $categories = $pdo->query($sql_categories)->fetchAll();
 
-// 假設 $promotion_id 已經設置
-$promotion_id = intval($_GET['promotion_id']); // 或者從其他地方獲取
+
+$sql_pomotion = "SELECT promotion_name,promotion_id  FROM Promotions WHERE promotion_id = $promotion_id";
+$rows_promotion = $pdo->query($sql_pomotion)->fetch();
+
 
 // ---------------------------
 // 查詢 有搭配活動的商品
@@ -131,19 +133,12 @@ $categories = $pdo->query($sql_categories)->fetchAll();
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php echo $title; ?></title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-</head>
 
 <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
 <!--begin::Body-->
-
+ <!-- Bootstrap 5 CSS -->
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="parts/shopCSS.css"  rel="stylesheet"  />
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <!--begin::App Wrapper 網頁的主要內容在這-->
     <div class="app-wrapper">
@@ -164,7 +159,7 @@ $categories = $pdo->query($sql_categories)->fetchAll();
                     <!--begin::Row-->
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="mb-0">活動搭配商品</h3>
+                        <h3 class="mb-0">活動【<?= $rows_promotion['promotion_name']?>】</h3>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-end">
@@ -193,12 +188,13 @@ $categories = $pdo->query($sql_categories)->fetchAll();
     <!-- 搜尋框 -->
     <div class="col-6">
       
-      <!-- <form class="d-flex" role="search">
+    <form class="d-flex" role="search" id="searchForm">
+        <input type="hidden" name="promotion_id" value="<?= $promotion_id?>">
         <input class="form-control me-2" name="keyword"
           value="<?= empty($_GET['keyword']) ? '' : htmlentities($_GET['keyword']) ?>" type="search"
-          placeholder="商品名稱" aria-label="Search">
+          placeholder="編號/名稱" aria-label="Search" id="searchKeyword">
         <button class="btn btn-outline-success" type="submit">Search</button>
-      </form> -->
+      </form>
     </div>
   </div>
 
@@ -331,19 +327,9 @@ $categories = $pdo->query($sql_categories)->fetchAll();
     <!--begin::Script-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
-                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-                    scrollbars: {
-                        theme: 'os-theme-light',
-                        autoHide: 'leave',
-                        clickScroll: true,
-                    },
-                });
-            }
-        });
+    <?php include ROOT_PATH . 'dist/js/sidebarJS.php' ?>
+    
+<script>
 
 /*------------script編輯區--------------*/
 
@@ -522,4 +508,4 @@ function sendData(event) {
 </body>
 <!--end::Body-->
 
-</html>
+

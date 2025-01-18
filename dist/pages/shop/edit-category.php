@@ -47,33 +47,28 @@ if (empty($r)) {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php echo $title; ?></title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <style>
-  form .mb-3 .form-text {
-    display: none;
-    /* color: red; */
-  }
 
-  form .mb-3.error input.form-control {
-    border: 2px solid red;
-  }
+  
+  <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
+  <!--begin::Body-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="parts/shopCSS.css"  rel="stylesheet"  />
 
-  form .mb-3.error .form-text {
-    display: block;
-    color: red;
-  }
+  <style>
+form .mb-3 .form-text {
+  display: none;
+  /* color: red; */
+}
+
+form .mb-3.error input.form-control {
+  border: 2px solid red;
+}
+
+form .mb-3.error .form-text {
+  display: block;
+  color: red;
+}
 </style>
-</head>
-
-<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
-<!--begin::Body-->
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <!--begin::App Wrapper 網頁的主要內容在這-->
@@ -199,19 +194,9 @@ if (empty($r)) {
     <!--begin::Script-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
-                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-                    scrollbars: {
-                        theme: 'os-theme-light',
-                        autoHide: 'leave',
-                        clickScroll: true,
-                    },
-                });
-            }
-        });
+    <?php include ROOT_PATH . 'dist/js/sidebarJS.php' ?>
+    
+<script>
 
 /*------------script編輯區--------------*/
 
@@ -271,4 +256,4 @@ const categoryNameField = document.querySelector('#category_name');
 </body>
 <!--end::Body-->
 
-</html>
+

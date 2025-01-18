@@ -81,14 +81,13 @@ if (empty($order_id)) {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php echo $title; ?></title>
+
+<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
+<!--begin::Body-->
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="parts/shopCSS.css"  rel="stylesheet"  />
+
     <style>
     .non_img{
       width: 100px;
@@ -132,10 +131,6 @@ if (empty($order_id)) {
       font-weight: bolder;
     }
   </style>
-</head>
-
-<?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
-<!--begin::Body-->
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <!--begin::App Wrapper 網頁的主要內容在這-->
@@ -382,19 +377,9 @@ if (empty($order_id)) {
     <!--begin::Script-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
-                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-                    scrollbars: {
-                        theme: 'os-theme-light',
-                        autoHide: 'leave',
-                        clickScroll: true,
-                    },
-                });
-            }
-        });
+    <?php include ROOT_PATH . 'dist/js/sidebarJS.php' ?>
+    
+<script>
 
 /*------------script編輯區--------------*/
 
@@ -472,4 +457,4 @@ const recipient_nameField = document.querySelector('#recipient_name');
 </body>
 <!--end::Body-->
 
-</html>
+

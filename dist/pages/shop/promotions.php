@@ -1,12 +1,11 @@
 <?php
 // 先載入初始化檔案
-require __DIR__ . '/../parts/init.php';
-
+require_once __DIR__ . '/../parts/init.php';
 // 設定標題和頁面名稱
-$title = "訂單列表";
-$pageName = "order";
+$title = "通訊錄列表";
+$pageName = "demo";
 
-// 啟動 Session
+// 啟動 Session init.php已啟動
 // session_start();
 // ob_start();
 
@@ -16,6 +15,8 @@ $pageName = "order";
 //     exit;
 // }
 
+?>
+<?php
 // -------------- php編輯區 ------------------
 
 $perPage = 50; # 每一頁有幾筆
@@ -178,26 +179,18 @@ foreach ($rows as $r) {
 
 
 // ----------------- php編輯區END ---------------
-
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php echo $title; ?></title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <style>
-      .no-data{
-        text-align: center
-      }
-    </style>
-</head>
 
 <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
 <!--begin::Body-->
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="./parts/shopCSS.css"  rel="stylesheet"  />
+<style>
+      .no-data{
+        text-align: center
+      }
+</style>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <!--begin::App Wrapper 網頁的主要內容在這-->
@@ -231,9 +224,11 @@ foreach ($rows as $r) {
             <!--begin::App Content-->
             <div class="app-content">
                 <!--begin::Container-->
+                <div class="container-fluid">
+                    
 <!-- --------- 內容編輯區 --------- -->
 
-<div class="container">
+
   <div class="row mt-2 mb-2">
     <!-- 排序選單 *有空再用-->
     
@@ -385,9 +380,13 @@ foreach ($rows as $r) {
   <?php endif?>
   </div>
   
-</div>
 
+<script>
+ 
+</script>
 <!-- --------- 內容編輯區END --------- -->
+
+                </div>
                 <!--end::Container-->
             </div>
             <!--end::App Content-->
@@ -403,21 +402,10 @@ foreach ($rows as $r) {
     <!--begin::Script-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= ROOT_URL ?>/dist/js/adminlte.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
-                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-                    scrollbars: {
-                        theme: 'os-theme-light',
-                        autoHide: 'leave',
-                        clickScroll: true,
-                    },
-                });
-            }
-        });
-
-/*------------script編輯區--------------*/
+    <?php include ROOT_PATH . 'dist/js/sidebarJS.php' ?>
+    
+<script>
+     /*------------script編輯區--------------*/
 
 const deleteOne = e => {
     e.preventDefault(); // 沒有要連到某處
@@ -485,7 +473,6 @@ const deleteOne = e => {
   }
 
 /*------------script編輯區END--------------*/
-
     </script>
     <!--end::Script-->
 </body>
