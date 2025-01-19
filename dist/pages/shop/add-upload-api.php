@@ -189,7 +189,18 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
       `image_url`,
       `stock_quantity`) 
       VALUES ( ?, ?, ?, ?, ?)";
-    
+
+      
+      $upload_path=null;
+      // 測試上傳圖片
+      $dir= __DIR__.'/photos/'; #存放圖片的資料夾
+
+      // 篩選檔案類型，決定副檔名
+      $exts =[
+        'image/jpeg' => '.jpg',
+        'image/png'=> '.png',
+        'image/webp'=> '.webp'
+      ];
       # ********* TODO: 欄位檢查 *************
       // if ($_POST['product_id']  ) {
       //   $output['code'] = 401; # 自行決定的除錯編號
@@ -227,14 +238,44 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
         echo json_encode($output, JSON_UNESCAPED_UNICODE);
         exit;
       }
-      
+       // -------------------照片
+
+
+    // 檢查是否有上傳檔案
+    if(!empty($_FILES['img'])
+    and
+    !empty($_FILES['img'])
+    and
+    !empty($_FILES['img']['error'] == 0)
+  ){
+    // 檢查副檔名(MIME Type檔案類型)
+    if(!empty($exts[$_FILES['img']['type']])){
+      // 取得副檔名
+      $exts = $exts[$_FILES['img']['type']];
+      // 建立隨機檔案名稱
+      $file_name = md5($_FILES['img']['name'].uniqid());
+      $upload_path = $dir.$file_name.$exts;
+      // 將檔案移動到指定資料夾
+      if(move_uploaded_file(
+        // 暫存檔案的路徑
+        $_FILES['img']['tmp_name'],
+        $upload_path
+        )) {
+          // $output['success']=true; 
+          // $output['file']=$file_name.$exts
+          // ;
+        }
+
+    }
+  }
+  // -------------------照片END
       # *************** TODO END ****************
       $stmt = $pdo->prepare($sql);
       $stmt->execute([
         $_POST['product_id'],
         $_POST['variant_name'],
         $_POST['price'],
-        $_POST['photo'],
+        $upload_path,
         $_POST['stock']
       ]);
   }
@@ -243,7 +284,7 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
   
   
   /************** 新增產品 **********************************************/ 
-  else if(!empty($_POST['category'])){
+  if(!empty($_POST['category'])){
     $sql = "INSERT INTO `Products` ( 
     `product_name`, 
     `product_description`, 
@@ -253,7 +294,18 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
     `image_url`,
     `stock_quantity`) 
     VALUES ( ?, ?, ?, ?, ?, ?, ? )";
-  
+
+
+    $upload_path=null;
+    // 測試上傳圖片
+    $dir= __DIR__.'/photos/'; #存放圖片的資料夾
+
+    // 篩選檔案類型，決定副檔名
+    $exts =[
+      'image/jpeg' => '.jpg',
+      'image/png'=> '.png',
+      'image/webp'=> '.webp'
+    ];
     # ********* TODO: 欄位檢查 *************
     if (empty($_POST['product_name'])  ) {
       $output['code'] = 401; # 自行決定的除錯編號
@@ -298,7 +350,38 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
       exit;
     }
   
-    
+    // -------------------照片
+
+
+    // 檢查是否有上傳檔案
+    if(!empty($_FILES['img'])
+      and
+      !empty($_FILES['img'])
+      and
+      !empty($_FILES['img']['error'] == 0)
+    ){
+      // 檢查副檔名(MIME Type檔案類型)
+      if(!empty($exts[$_FILES['img']['type']])){
+        // 取得副檔名
+        $exts = $exts[$_FILES['img']['type']];
+        // 建立隨機檔案名稱
+        $file_name = md5($_FILES['img']['name'].uniqid());
+        $upload_path = $dir.$file_name.$exts;
+        // 將檔案移動到指定資料夾
+        if(move_uploaded_file(
+          // 暫存檔案的路徑
+          $_FILES['img']['tmp_name'],
+          $upload_path
+          )) {
+            // $output['success']=true; 
+            // $output['file']=$file_name.$exts
+            // ;
+          }
+
+      }
+    }
+    // -------------------照片END
+
     # *************** TODO END ****************
    
     /*
@@ -332,7 +415,7 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
       $_POST['price'],
       $_POST['category'],
       $_POST['product_status'],
-      $_POST['photo'],
+      $upload_path  ?? null,
       $_POST['stock']
     ]);
   
@@ -350,7 +433,7 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
 
     $sql = "INSERT INTO Promotion_Products (promotion_id, product_id, variant_id) VALUES (?, ?, ?)";
     $stmt = $pdo->prepare($sql);
-
+    
     try {
         $pdo->beginTransaction();
 
@@ -372,9 +455,6 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
         $output['success'] = false;
         $output['error'] = '資料庫錯誤: ' . $e->getMessage();
     }
-} else {
-    $output['success'] = false;
-    $output['error'] = '缺少必要參數';
 }
 
 
