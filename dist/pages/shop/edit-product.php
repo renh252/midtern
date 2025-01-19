@@ -67,12 +67,10 @@ $rows_category = $pdo->query($sql_category)->fetchAll();
 
   
   <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
-  <!--begin::Body-->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="parts/shopCSS.css"  rel="stylesheet"  />
-
+  <link href="<?= ROOT_URL ?>/dist/pages/shop/parts/shopCSS.css" rel="stylesheet" />
   <style>
-form .mb-3 .form-text {
+    form .mb-3 .form-text {
   display: none;
   /* color: red; */
 }
@@ -86,32 +84,22 @@ form .mb-3.error .form-text {
   color: red;
 }
 
-#imgContainer{
-  display: flex;
-  flex-wrap: wrap;
-}
-.imgDiv{
-  height: 100px;
-  margin: 10px;
-}
-.imgDiv img{
-  height: 100%;
-  }
-</style>
+  </style>
 
+<!--begin::Body-->
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-    <!--begin::App Wrapper 網頁的主要內容在這-->
-    <div class="app-wrapper">
-        <!--begin::Header-->
-        <?php include ROOT_PATH . 'dist/pages/parts/navbar.php' ?>
-        <!--end::Header-->
-
-        <!--begin::Sidebar-->
-        <?php include ROOT_PATH . 'dist/pages/parts/sidebar.php' ?>
-        <!--end::Sidebar-->
-
-        <!--begin::App Main-->
-        <main class="app-main pt-5">
+  <!--begin::App Wrapper 網頁的主要內容在這-->
+  <div class="app-wrapper">
+    <!--begin::Header-->
+    <?php include ROOT_PATH . 'dist/pages/parts/navbar.php' ?>
+    <!--end::Header-->
+    
+    <!--begin::Sidebar-->
+    <?php include ROOT_PATH . 'dist/pages/parts/sidebar.php' ?>
+    <!--end::Sidebar-->
+    
+    <!--begin::App Main-->
+    <main class="app-main pt-5">
             <!--begin::App Content Header-->
             <div class="app-content-header">
                 <!--begin::Container-->
@@ -210,7 +198,15 @@ form .mb-3.error .form-text {
               onchange="imgChange(event)"/>
                 
                 <div id="imgContainer">
-    
+                <?php if($r['image_url']):?>
+                  <input type="hidden" 
+                  id="originImg"
+                  name="originImg" value="<?= $r['image_url'] ?>">
+                  <div class="imgDiv">
+                  <i class="fa-solid fa-circle-xmark deleteImg" onclick="deleteImg(event)" ></i>
+                    <img src="<?= $r['image_url'] ?>" alt="">
+                  </div>
+                <?php endif;?>
                 </div>
                 
             </div>
@@ -350,7 +346,7 @@ const productNameField = document.querySelector('#product_name');
 
 
   }
-  
+
 
 
   // ----------------照片預覽
@@ -363,6 +359,7 @@ const productNameField = document.querySelector('#product_name');
         const url = URL.createObjectURL(f);
         str += `
         <div class="imgDiv">
+          <i class="fa-solid fa-circle-xmark deleteImg" onclick="deleteImg(event)"></i>
           <img src="${url}" alt="" id="myImg" >
         </div> `;
         imgContainer.innerHTML = str;
@@ -372,6 +369,18 @@ const productNameField = document.querySelector('#product_name');
     }
     
   }
+
+
+  // ------------------刪除圖片
+  const originImg= document.querySelector('#originImg');
+  function deleteImg (e) {
+    e.target.closest('.imgDiv').remove();
+    document.querySelector('#img').value="";
+    if(originImg){
+      originImg.remove();
+    }
+  }
+  // ------------------刪除圖片END
 /*------------script編輯區END--------------*/
 
     </script>

@@ -241,33 +241,36 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
        // -------------------照片
 
 
-    // 檢查是否有上傳檔案
-    if(!empty($_FILES['img'])
-    and
-    !empty($_FILES['img'])
-    and
-    !empty($_FILES['img']['error'] == 0)
-  ){
-    // 檢查副檔名(MIME Type檔案類型)
-    if(!empty($exts[$_FILES['img']['type']])){
-      // 取得副檔名
-      $exts = $exts[$_FILES['img']['type']];
-      // 建立隨機檔案名稱
-      $file_name = md5($_FILES['img']['name'].uniqid());
-      $upload_path = $dir.$file_name.$exts;
-      // 將檔案移動到指定資料夾
-      if(move_uploaded_file(
-        // 暫存檔案的路徑
-        $_FILES['img']['tmp_name'],
-        $upload_path
-        )) {
-          // $output['success']=true; 
-          // $output['file']=$file_name.$exts
-          // ;
-        }
 
+    // 檢查要更新的圖片是否有上傳檔案
+    if(!empty($_FILES['img'])
+      and
+      !empty($_FILES['img'])
+      and
+      !empty($_FILES['img']['error'] == 0)
+    ){
+      // 檢查副檔名(MIME Type檔案類型)
+      if(!empty($exts[$_FILES['img']['type']])){
+        // 取得副檔名
+        $exts = $exts[$_FILES['img']['type']];
+        // 建立隨機檔案名稱
+        $file_name = md5($_FILES['img']['name'].uniqid());
+        $upload_path = 'photos/'.$file_name.$exts;
+        // 將檔案移動到指定資料夾
+        if(move_uploaded_file(
+          // 暫存檔案的路徑
+          $_FILES['img']['tmp_name'],
+          $dir.$file_name.$exts
+          )) {
+            // $output['success']=true; 
+            // $output['file']=$file_name.$exts
+            // ;
+          }
+
+      }
+    }else{
+      $upload_path=null;
     }
-  }
   // -------------------照片END
       # *************** TODO END ****************
       $stmt = $pdo->prepare($sql);
@@ -275,7 +278,7 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
         $_POST['product_id'],
         $_POST['variant_name'],
         $_POST['price'],
-        'photos/'.$file_name.$exts,
+        $upload_path,
         $_POST['stock']
       ]);
   }
@@ -353,8 +356,8 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
     // -------------------照片
 
 
-    // 檢查是否有上傳檔案
-    if(!empty($_FILES['img'])
+    // 檢查要更新的圖片是否有上傳檔案
+    elseif(!empty($_FILES['img'])
       and
       !empty($_FILES['img'])
       and
@@ -366,12 +369,12 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
         $exts = $exts[$_FILES['img']['type']];
         // 建立隨機檔案名稱
         $file_name = md5($_FILES['img']['name'].uniqid());
-        $upload_path = $dir.$file_name.$exts;
+        $upload_path = 'photos/'.$file_name.$exts;
         // 將檔案移動到指定資料夾
         if(move_uploaded_file(
           // 暫存檔案的路徑
           $_FILES['img']['tmp_name'],
-          $upload_path
+          $dir.$file_name.$exts
           )) {
             // $output['success']=true; 
             // $output['file']=$file_name.$exts
@@ -379,6 +382,8 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
           }
 
       }
+    }else{
+      $upload_path=null;
     }
     // -------------------照片END
 
@@ -415,7 +420,7 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
       $_POST['price'],
       $_POST['category'],
       $_POST['product_status'],
-      'photos/'.$file_name.$exts  ?? null,
+      $upload_path  ?? null,
       $_POST['stock']
     ]);
   

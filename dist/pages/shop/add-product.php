@@ -34,7 +34,7 @@ $rows_category = $pdo->query($sql_category)->fetchAll();
   <!--begin::Body-->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="parts/shopCSS.css"  rel="stylesheet"  />
-
+  <link href="<?= ROOT_URL ?>/dist/pages/shop/parts/shopCSS.css" rel="stylesheet" />
   <style>
 form .mb-3 .form-text {
   display: none;
@@ -49,17 +49,6 @@ form .mb-3.error .form-text {
   display: block;
   color: red;
 }
-#imgContainer{
-  display: flex;
-  flex-wrap: wrap;
-}
-.imgDiv{
-  height: 100px;
-  margin: 10px;
-}
-.imgDiv img{
-  height: 100%;
-  }
 </style>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -312,6 +301,7 @@ const productNameField = document.querySelector('#product_name');
         const url = URL.createObjectURL(f);
         str += `
         <div class="imgDiv">
+          <i class="fa-solid fa-circle-xmark deleteImg" onclick="deleteImg(event)"></i>
           <img src="${url}" alt="" id="myImg" >
         </div> `;
         imgContainer.innerHTML = str;
@@ -322,50 +312,17 @@ const productNameField = document.querySelector('#product_name');
     
   }
 
-/**
- {
-"img": {
-"name": "螢幕擷取畫面 (4).png",
-"full_path": "螢幕擷取畫面 (4).png",
-"type": "image/png",
-"tmp_name": "C:\\xampp\\tmp\\php6ADC.tmp",
-"error": 0,
-"size": 184036
-}
-}
- */
-  // ---------------- 做上傳處理 ---------------------------
-  
-  // const photo = document.upload_form.photo; // 取得上傳的欄位
 
-  // photo.onchange = (e) => {
-  //   const fd = new FormData(document.upload_form);
-
-  //   // 檢查傳送的 FormData 是否正確
-  //   console.log("FormData entries:");
-  //   for (let [key, value] of fd.entries()) {
-  //       console.log(key, value);
-  //   }
-
-
-  //   fetch("./upload-photos.php", {
-  //       method: "POST",
-  //       body: fd,
-  //     })
-  //     .then((r) => r.json())
-  //     .then((obj) => {
-  //       console.log(obj);
-  //           if (obj.success && obj.file > 0) {
-  //               const myImg = document.querySelector("img.photo");
-  //               document.forms[0].photo.value = obj.files[0];
-  //               myImg.src = `./uploads/${obj.file[0]}`;
-  //           } else {
-  //               alert("圖片上傳失敗，請再試一次！");
-  //           }
-  //     })
-  //     .catch(console.warn);
-  // };
-  
+  // ------------------刪除圖片
+  const originImg= document.querySelector('#originImg');
+  function deleteImg (e) {
+    e.target.closest('.imgDiv').remove();
+    document.querySelector('#img').value="";
+    if(originImg){
+      originImg.remove();
+    }
+  }
+  // ------------------刪除圖片END
 
 /*------------script編輯區END--------------*/
 
