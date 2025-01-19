@@ -46,7 +46,7 @@ if (isset($_GET['category_name_check'])) {
 
 if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_POST['category']) || isset($_POST['promotion_name'])  || isset($_POST['promotion_id'])  ){
 
-  /************** 新增產品類別 *****************/ 
+  /************** 新增促銷活動 *****************/ 
   
   if(!empty($_POST['promotion_name']) ){
     $sql = "INSERT INTO `promotions` ( 
