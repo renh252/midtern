@@ -90,8 +90,12 @@ if (!empty($_POST['variant_name']) || !empty($_POST['category']) || !empty($_POS
       exit;
     }
     
-    // 檢查是否有上傳檔案
-    if(!empty($_FILES['img'])
+    // 檢查圖片是否有變動
+    if(!empty($_POST['originImg'])){
+      $upload_path=$_POST['originImg'];
+    }
+    // 檢查要更新的圖片是否有上傳檔案
+    elseif(!empty($_FILES['img'])
       and
       !empty($_FILES['img'])
       and
@@ -103,12 +107,12 @@ if (!empty($_POST['variant_name']) || !empty($_POST['category']) || !empty($_POS
         $exts = $exts[$_FILES['img']['type']];
         // 建立隨機檔案名稱
         $file_name = md5($_FILES['img']['name'].uniqid());
-        $upload_path = $dir.$file_name.$exts;
+        $upload_path = 'photos/'.$file_name.$exts;
         // 將檔案移動到指定資料夾
         if(move_uploaded_file(
           // 暫存檔案的路徑
           $_FILES['img']['tmp_name'],
-          $upload_path
+          $dir.$file_name.$exts
           )) {
             // $output['success']=true; 
             // $output['file']=$file_name.$exts
@@ -116,6 +120,8 @@ if (!empty($_POST['variant_name']) || !empty($_POST['category']) || !empty($_POS
           }
 
       }
+    }else{
+      $upload_path=null;
     }
 
     # ********* TODO END *************
@@ -125,7 +131,7 @@ if (!empty($_POST['variant_name']) || !empty($_POST['category']) || !empty($_POS
       $_POST['variant_name'],
       $_POST['price'],
       $_POST['stock'],
-      'photos/'.$file_name.$exts  ?? null,
+      $upload_path  ?? null,
       $_POST['variant_id']
     ]);
 
@@ -211,8 +217,12 @@ if (!empty($_POST['variant_name']) || !empty($_POST['category']) || !empty($_POS
     // -------------------照片
 
 
-    // 檢查是否有上傳檔案
-    if(!empty($_FILES['img'])
+    // 檢查圖片是否有變動
+    if(!empty($_POST['originImg'])){
+      $upload_path=$_POST['originImg'];
+    }
+    // 檢查要更新的圖片是否有上傳檔案
+    elseif(!empty($_FILES['img'])
       and
       !empty($_FILES['img'])
       and
@@ -224,19 +234,20 @@ if (!empty($_POST['variant_name']) || !empty($_POST['category']) || !empty($_POS
         $exts = $exts[$_FILES['img']['type']];
         // 建立隨機檔案名稱
         $file_name = md5($_FILES['img']['name'].uniqid());
-        $upload_path = $dir.$file_name.$exts;
+        $upload_path = 'photos/'.$file_name.$exts;
         // 將檔案移動到指定資料夾
         if(move_uploaded_file(
           // 暫存檔案的路徑
           $_FILES['img']['tmp_name'],
-          $upload_path
+          $dir.$file_name.$exts
           )) {
             // $output['success']=true; 
             // $output['file']=$file_name.$exts
             // ;
           }
-
       }
+    }else{
+      $upload_path=null;
     }
     // -------------------照片END
     # ********* TODO END *************
@@ -249,7 +260,7 @@ if (!empty($_POST['variant_name']) || !empty($_POST['category']) || !empty($_POS
       $_POST['category'],
       $_POST['product_status'],
       $_POST['stock'],
-      'photos/'.$file_name.$exts  ?? null,
+      $upload_path  ?? null,
       $_POST['product_id']
     ]);
 

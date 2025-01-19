@@ -48,6 +48,7 @@ if (empty($r)) {
   <!--begin::Body-->
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="<?= ROOT_URL ?>/dist/pages/shop/parts/shopCSS.css" rel="stylesheet" />
   <style>
 form .mb-3 .form-text {
   display: none;
@@ -63,17 +64,6 @@ form .mb-3.error .form-text {
   color: red;
 }
 
-#imgContainer{
-  display: flex;
-  flex-wrap: wrap;
-}
-.imgDiv{
-  height: 100px;
-  margin: 10px;
-}
-.imgDiv img{
-  height: 100%;
-  }
 </style>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -156,7 +146,7 @@ form .mb-3.error .form-text {
               <div class="form-text"></div>
             </div>
             <div class="mb-3">
-              <label for="img"  class="form-label">商品圖片
+              <label for="img"  class="form-label">商品圖片(上限一張)</label>
               </label>
               <!-- <img src="" alt="" class="photo" width="200px">
               <input type="hidden" name="photo" value=""> -->
@@ -301,6 +291,7 @@ const variantNameField = document.querySelector('#variant_name');
         const url = URL.createObjectURL(f);
         str += `
         <div class="imgDiv">
+          <i class="fa-solid fa-circle-xmark deleteImg" onclick="deleteImg(event)"></i>
           <img src="${url}" alt="" id="myImg" >
         </div> `;
         imgContainer.innerHTML = str;
@@ -310,6 +301,18 @@ const variantNameField = document.querySelector('#variant_name');
     }
     
   }
+
+  
+  // ------------------刪除圖片
+  const originImg= document.querySelector('#originImg');
+  function deleteImg (e) {
+    e.target.closest('.imgDiv').remove();
+    document.querySelector('#img').value="";
+    if(originImg){
+      originImg.remove();
+    }
+  }
+  // ------------------刪除圖片END
 /*------------script編輯區END--------------*/
 
     </script>

@@ -60,7 +60,8 @@ if (empty($r)) {
   <!--begin::Body-->
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
+  <link href="<?= ROOT_URL ?>/dist/pages/shop/parts/shopCSS.css" rel="stylesheet" />
+<style>
 form .mb-3 .form-text {
   display: none;
   /* color: red; */
@@ -75,17 +76,6 @@ form .mb-3.error .form-text {
   color: red;
 }
 
-#imgContainer{
-  display: flex;
-  flex-wrap: wrap;
-}
-.imgDiv{
-  height: 100px;
-  margin: 10px;
-}
-.imgDiv img{
-  height: 100%;
-  }
 </style>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -166,12 +156,13 @@ form .mb-3.error .form-text {
               <div class="form-text"></div>
             </div>
             <div class="mb-3">
-              <label for="img"  class="form-label">商品圖片
+              <label for="img"  class="form-label">商品圖片(上限一張)
               </label>
               <!-- <img src="" alt="" class="photo" width="200px">
               <input type="hidden" name="photo" value=""> -->
               <!-- <button type="button"
                 class="btn btn-warning" onclick="document.upload_form.photo.click()">選擇圖片</button> -->
+                
               <input 
               name="img" 
               id="img"
@@ -180,9 +171,17 @@ form .mb-3.error .form-text {
               accept="image/jpeg,image/png" 
               onchange="imgChange(event)"/>
                 
-                <div id="imgContainer">
-    
-                </div>
+              <div id="imgContainer">
+                <?php if($r['image_url']):?>
+                  <input type="hidden" 
+                  id="originImg"
+                  name="originImg" value="<?= $r['image_url'] ?>">
+                  <div class="imgDiv">
+                  <i class="fa-solid fa-circle-xmark deleteImg" onclick="deleteImg(event)" ></i>
+                    <img src="<?= $r['image_url'] ?>" alt="">
+                  </div>
+                <?php endif;?>
+              </div>
                 
             </div>
             <button type="submit" class="btn btn-primary">確定修改</button>
@@ -240,7 +239,7 @@ form .mb-3.error .form-text {
 
 /*----------- 檢查商品id -----------*/
 const productIdField = document.querySelector('#product_id');
-  const productNameField = document.querySelector('#product_name');
+const productNameField = document.querySelector('#product_name');
   
   document.getElementById('product_id').addEventListener('input', function () {
     const productId = this.value;
@@ -352,6 +351,7 @@ const productIdField = document.querySelector('#product_id');
         const url = URL.createObjectURL(f);
         str += `
         <div class="imgDiv">
+          <i class="fa-solid fa-circle-xmark deleteImg" onclick="deleteImg(event)"></i>
           <img src="${url}" alt="" id="myImg" >
         </div> `;
         imgContainer.innerHTML = str;
@@ -361,6 +361,17 @@ const productIdField = document.querySelector('#product_id');
     }
     
   }
+
+  // ------------------刪除圖片
+  const originImg= document.querySelector('#originImg');
+  function deleteImg (e) {
+    e.target.closest('.imgDiv').remove();
+    document.querySelector('#img').value="";
+    if(originImg){
+      originImg.remove();
+    }
+  }
+  // ------------------刪除圖片END
 /*------------script編輯區END--------------*/
 
     </script>

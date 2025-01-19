@@ -1,4 +1,32 @@
+
+/* 表格樣式 */
 .list-variant td, .list-title th, .order-detail{
   background-color: rgb(221, 221, 221);
   border:1px solid rgb(255, 255, 255);
+}
+
+
+/* 刪除圖片icon */
+
+#imgContainer{
+  display: flex;
+  flex-wrap: wrap;
+}
+.imgDiv{
+  height: 100px;
+  margin: 10px;
+  position: relative;
+}
+.imgDiv img{
+  height: 100%;
+  }
+.deleteImg{
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: yellow;
+  /*
+  border: none;
+  padding: 5px 10px; */
+  cursor: pointer;
 }
