@@ -62,6 +62,18 @@ form .mb-3.error .form-text {
   display: block;
   color: red;
 }
+
+#imgContainer{
+  display: flex;
+  flex-wrap: wrap;
+}
+.imgDiv{
+  height: 100px;
+  margin: 10px;
+}
+.imgDiv img{
+  height: 100%;
+  }
 </style>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -147,6 +159,27 @@ form .mb-3.error .form-text {
               <label for="stock" class="form-label">庫存**</label>
               <input type="number" class="form-control" id="stock" name="stock">
               <div class="form-text"></div>
+            </div>
+            <div class="mb-3">
+              <label for="img"  class="form-label">商品圖片
+              </label>
+              <!-- <img src="" alt="" class="photo" width="200px">
+              <input type="hidden" name="photo" value=""> -->
+              <!-- <button type="button"
+                class="btn btn-warning" onclick="document.upload_form.photo.click()">選擇圖片</button> -->
+              <input 
+              name="img" 
+              id="img"
+              class="form-control"
+              type="file" 
+              accept="image/jpeg,image/png" 
+              multiple 
+              onchange="imgChange(event)"/>
+                
+                <div id="imgContainer">
+    
+                </div>
+                
             </div>
             <button type="submit" class="btn btn-primary">新增</button>
           </form>
@@ -296,6 +329,27 @@ const variantNameField = document.querySelector('#variant_name');
       })
       .catch(console.warn);
   };
+
+  
+  // ----------------照片預覽
+  const myImg = document.querySelector("#myImg");
+  const imgContainer = document.querySelector("#imgContainer");
+  const imgChange = (e) => {
+    if (e.target.files.length > 0) {
+      let str = "";
+      for(let f of e.target.files){
+        const url = URL.createObjectURL(f);
+        str += `
+        <div class="imgDiv">
+          <img src="${url}" alt="" id="myImg" >
+        </div> `;
+        imgContainer.innerHTML = str;
+      }
+    }else{
+      imgContainer.innerHTML ="";
+    }
+    
+  }
 
 /*------------script編輯區END--------------*/
 

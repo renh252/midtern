@@ -49,10 +49,17 @@ form .mb-3.error .form-text {
   display: block;
   color: red;
 }
-.imgDiv{
-  width: 100px;
-  height: 100px;
+#imgContainer{
+  display: flex;
+  flex-wrap: wrap;
 }
+.imgDiv{
+  height: 100px;
+  margin: 10px;
+}
+.imgDiv img{
+  height: 100%;
+  }
 </style>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -101,14 +108,7 @@ form .mb-3.error .form-text {
       <div class="card">
 
         <div class="card-body">
-          <form onsubmit="sendData(event)">
-            <div class="mb-3">
-              <img src="" alt="" class="photo" width="200px">
-              <input type="hidden" name="photo" value="">
-              <!-- <button type="button"
-                class="btn btn-warning" onclick="document.upload_form.photo.click()">選擇圖片</button> -->
-                
-            </div>
+          <form onsubmit="sendData(event)"  enctype="multipart/form-data">
             <div class="mb-3">
               <label for="product_name" class="form-label">商品名稱**</label>
               <input type="text" class="form-control" id="product_name" name="product_name">
@@ -147,24 +147,32 @@ form .mb-3.error .form-text {
               </select>
               <div class="form-text"></div>
             </div>
+            <div class="mb-3">
+              <label for="img"  class="form-label">商品圖片
+              </label>
+              <!-- <img src="" alt="" class="photo" width="200px">
+              <input type="hidden" name="photo" value=""> -->
+              <!-- <button type="button"
+                class="btn btn-warning" onclick="document.upload_form.photo.click()">選擇圖片</button> -->
+              <input 
+              name="img" 
+              id="img"
+              class="form-control"
+              type="file" 
+              accept="image/jpeg,image/png" 
+              multiple 
+              onchange="imgChange(event)"/>
+                
+                <div id="imgContainer">
+    
+                </div>
+                
+            </div>
             <button type="submit" class="btn btn-primary">新增</button>
           </form>
 
           <form name="upload_form" hidden>
             <input type="file" name="photo" accept="image/jpeg,image/png" />
-          </form>
-          <form method="post" action="upload-photo.php" enctype="multipart/form-data">
-              <input 
-              name="img" 
-              type="file" 
-              accept="image/jpeg,image/png" 
-              multiple 
-              onchange="imgChange(event)">
-                
-                <div id="imgContainer">
-    
-                </div>
-                <input type="submit" />
           </form>
         </div>
       </div>
@@ -220,11 +228,13 @@ const productNameField = document.querySelector('#product_name');
   const priceField = document.querySelector('#price');
   const stockField = document.querySelector('#stock');
   const statusField = document.querySelector('#product_status');
+  const imgField = document.querySelector('#img');
   const myModal = new bootstrap.Modal('#exampleModal');
 
   const sendData = e => {
     e.preventDefault(); // 不要讓表單以傳統的方式送出
-
+    console.log(imgField.file);
+    
     productNameField.closest('.mb-3').classList.remove('error');
     descriptionField.closest('.mb-3').classList.remove('error');
     priceField.closest('.mb-3').classList.remove('error');
@@ -266,6 +276,7 @@ const productNameField = document.querySelector('#product_name');
       statusField.nextElementSibling.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 請選取正確的商品狀態`;
       statusField.closest('.mb-3').classList.add('error');
     }
+    
     // --------------------------------------------------------
 
     if (isPass) {
@@ -291,7 +302,7 @@ const productNameField = document.querySelector('#product_name');
   }
 
 
-  // ----------------照片顯示
+  // ----------------照片預覽
   const myImg = document.querySelector("#myImg");
   const imgContainer = document.querySelector("#imgContainer");
   const imgChange = (e) => {
@@ -301,7 +312,7 @@ const productNameField = document.querySelector('#product_name');
         const url = URL.createObjectURL(f);
         str += `
         <div class="imgDiv">
-          <img src="${url}" alt="" id="myImg" width="200px">
+          <img src="${url}" alt="" id="myImg" >
         </div> `;
         imgContainer.innerHTML = str;
       }
@@ -325,35 +336,35 @@ const productNameField = document.querySelector('#product_name');
  */
   // ---------------- 做上傳處理 ---------------------------
   
-  const photo = document.upload_form.photo; // 取得上傳的欄位
+  // const photo = document.upload_form.photo; // 取得上傳的欄位
 
-  photo.onchange = (e) => {
-    const fd = new FormData(document.upload_form);
+  // photo.onchange = (e) => {
+  //   const fd = new FormData(document.upload_form);
 
-    // 檢查傳送的 FormData 是否正確
-    console.log("FormData entries:");
-    for (let [key, value] of fd.entries()) {
-        console.log(key, value);
-    }
+  //   // 檢查傳送的 FormData 是否正確
+  //   console.log("FormData entries:");
+  //   for (let [key, value] of fd.entries()) {
+  //       console.log(key, value);
+  //   }
 
 
-    fetch("./upload-photos.php", {
-        method: "POST",
-        body: fd,
-      })
-      .then((r) => r.json())
-      .then((obj) => {
-        console.log(obj);
-            if (obj.success && obj.file > 0) {
-                const myImg = document.querySelector("img.photo");
-                document.forms[0].photo.value = obj.files[0];
-                myImg.src = `./uploads/${obj.file[0]}`;
-            } else {
-                alert("圖片上傳失敗，請再試一次！");
-            }
-      })
-      .catch(console.warn);
-  };
+  //   fetch("./upload-photos.php", {
+  //       method: "POST",
+  //       body: fd,
+  //     })
+  //     .then((r) => r.json())
+  //     .then((obj) => {
+  //       console.log(obj);
+  //           if (obj.success && obj.file > 0) {
+  //               const myImg = document.querySelector("img.photo");
+  //               document.forms[0].photo.value = obj.files[0];
+  //               myImg.src = `./uploads/${obj.file[0]}`;
+  //           } else {
+  //               alert("圖片上傳失敗，請再試一次！");
+  //           }
+  //     })
+  //     .catch(console.warn);
+  // };
   
 
 /*------------script編輯區END--------------*/
