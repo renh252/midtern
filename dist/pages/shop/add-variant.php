@@ -173,7 +173,6 @@ form .mb-3.error .form-text {
               class="form-control"
               type="file" 
               accept="image/jpeg,image/png" 
-              multiple 
               onchange="imgChange(event)"/>
                 
                 <div id="imgContainer">
