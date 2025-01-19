@@ -275,7 +275,7 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
         $_POST['product_id'],
         $_POST['variant_name'],
         $_POST['price'],
-        $upload_path,
+        'photos/'.$file_name.$exts,
         $_POST['stock']
       ]);
   }
@@ -415,7 +415,7 @@ if(isset($_POST['category_name']) || isset($_POST['variant_name']) || isset($_PO
       $_POST['price'],
       $_POST['category'],
       $_POST['product_status'],
-      $upload_path  ?? null,
+      'photos/'.$file_name.$exts  ?? null,
       $_POST['stock']
     ]);
   

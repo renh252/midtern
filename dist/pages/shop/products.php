@@ -150,11 +150,18 @@ if ($totalRows > 0) {
   
   <?php include ROOT_PATH . 'dist/pages/parts/head.php' ?>
   <!--begin::Body-->
+  
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="./parts/shopCSS.css"  rel="stylesheet"  />
-
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <style>
+    .photo{
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+  </style>
     <!--begin::App Wrapper 網頁的主要內容在這-->
     <div class="app-wrapper">
         <!--begin::Header-->
@@ -243,7 +250,7 @@ if ($totalRows > 0) {
             <th>價格</th>
             <th>庫存</th>
             <th>狀態</th>
-            <!-- <th>照片</th> -->
+            <th>照片</th>
             <!-- <th>照片</th> -->
             <th>創建時間</th>
             <th>更新時間</th>
@@ -272,12 +279,11 @@ if ($totalRows > 0) {
                 <?php endif ?>
               </td>
               <td><?= htmlentities($r['product_status']) ?></td>
-              <!-- <td><?= htmlentities($r['image_url']) ?></td> -->
-              <!-- <td>
+              <td>
                 <?php if (!empty($r['image_url'])): ?>
-                  <img src="<?= $r['image_url'] ?>" alt="" width="100px">
+                  <img src="<?= $r['image_url'] ?>" alt="" class="photo">
                 <?php endif; ?>
-              </td> -->
+              </td>
               
               <td><?= $r['created_at'] ?></td>
               <td><?= $r['updated_at'] ?></td>
@@ -308,9 +314,9 @@ if ($totalRows > 0) {
                   <td><?= $v['variant_stock'] ?></td>
                   <td></td>
                   <?php if (!empty($v['variant_img'])): ?>
-                    <!-- <td>
-                      <img src="<?= $v['variant_img'] ?>" alt="" width="100px">
-                    </td> -->
+                    <td>
+                      <img src="<?= $v['variant_img'] ?>" alt="" class="photo">
+                    </td>
                   <?php endif; ?>
                   <td></td>
                   <td></td>
