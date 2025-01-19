@@ -85,6 +85,18 @@ form .mb-3.error .form-text {
   display: block;
   color: red;
 }
+
+#imgContainer{
+  display: flex;
+  flex-wrap: wrap;
+}
+.imgDiv{
+  height: 100px;
+  margin: 10px;
+}
+.imgDiv img{
+  height: 100%;
+  }
 </style>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -141,13 +153,7 @@ form .mb-3.error .form-text {
               value="<?= $r['product_id'] ?>">
             </div>
 
-            <div class="mb-3">
-              <img src="" alt="" class="photo" width="200px">
-              <input type="hidden" name="photo" value="">
-              <!-- 表單裡面 button 如果沒有設定 type 會視為 submit button -->
-              <button type="button"
-                class="btn btn-warning" onclick="document.upload_form.photo.click()">上傳圖片</button>
-            </div>
+            
             <div class="mb-3">
               <label for="product_name" class="form-label">商品名稱**</label>
               <input type="text" class="form-control" id="product_name" name="product_name"
@@ -187,6 +193,26 @@ form .mb-3.error .form-text {
                 <option value="上架" <?php if ($r['product_status'] == "上架") echo 'selected'; ?>>上架</option>
                 <option value="下架" <?php if ($r['product_status'] == "下架") echo 'selected'; ?>>下架</option>
               </select>
+            </div>
+            <div class="mb-3">
+              <label for="img"  class="form-label">商品圖片
+              </label>
+              <!-- <img src="" alt="" class="photo" width="200px">
+              <input type="hidden" name="photo" value=""> -->
+              <!-- <button type="button"
+                class="btn btn-warning" onclick="document.upload_form.photo.click()">選擇圖片</button> -->
+              <input 
+              name="img" 
+              id="img"
+              class="form-control"
+              type="file" 
+              accept="image/jpeg,image/png" 
+              onchange="imgChange(event)"/>
+                
+                <div id="imgContainer">
+    
+                </div>
+                
             </div>
             <button type="submit" class="btn btn-primary">確認修改</button>
           </form>
@@ -324,40 +350,28 @@ const productNameField = document.querySelector('#product_name');
 
 
   }
+  
 
-  // ---------------- 照片上傳處理 ---------------------------
 
-  const photo = document.upload_form.photo; // 取得上傳的欄位
-
-  photo.onchange = (e) => {
-    const fd = new FormData(document.upload_form);
-
-    // 檢查傳送的 FormData 是否正確
-    console.log("FormData entries:");
-    for (let [key, value] of fd.entries()) {
-      console.log(key, value);
+  // ----------------照片預覽
+  const myImg = document.querySelector("#myImg");
+  const imgContainer = document.querySelector("#imgContainer");
+  const imgChange = (e) => {
+    if (e.target.files.length > 0) {
+      let str = "";
+      for(let f of e.target.files){
+        const url = URL.createObjectURL(f);
+        str += `
+        <div class="imgDiv">
+          <img src="${url}" alt="" id="myImg" >
+        </div> `;
+        imgContainer.innerHTML = str;
+      }
+    }else{
+      imgContainer.innerHTML ="";
     }
-
-
-    fetch("./upload-photos.php", {
-      method: "POST",
-      body: fd,
-    })
-      .then((r) => r.json())
-      .then((obj) => {
-        console.log(obj);
-        if (obj.success && obj.file > 0) {
-          const myImg = document.querySelector("img.photo");
-          document.forms[0].photo.value = obj.files[0];
-          myImg.src = `./uploads/${obj.file[0]}`;
-        } else {
-          alert("圖片上傳失敗，請再試一次！");
-        }
-      })
-      .catch(console.warn);
-  };
-
-
+    
+  }
 /*------------script編輯區END--------------*/
 
     </script>

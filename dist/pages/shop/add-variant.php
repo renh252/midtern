@@ -124,12 +124,7 @@ form .mb-3.error .form-text {
         <div class="card-body">
 
           <form onsubmit="sendData(event)">
-            <div class="mb-3">
-              <img src="" alt="" class="photo" width="200px">
-              <input type="hidden" name="photo" value="">
-              <!-- 表單裡面 button 如果沒有設定 type 會視為 submit button -->
-              <!-- <button type="button" class="btn btn-warning" onclick="document.upload_form.photo.click()">上傳圖片</button> -->
-            </div>
+            
             <input type="hidden" name="product_id" value="<?= $r['product_id'] ?>">
             <div class="mb-3">
               <label class="form-label">商品編號</label>
@@ -183,9 +178,7 @@ form .mb-3.error .form-text {
             <button type="submit" class="btn btn-primary">新增</button>
           </form>
 
-          <form name="upload_form" hidden>
-            <input type="file" name="photo" accept="image/jpeg,image/png" />
-          </form>
+          
         </div>
       </div>
     </div>
@@ -297,38 +290,6 @@ const variantNameField = document.querySelector('#variant_name');
   }
 
 
-  // ---------------- 做上傳處理 ---------------------------
-
-  const photo = document.upload_form.photo; // 取得上傳的欄位
-
-  photo.onchange = (e) => {
-    const fd = new FormData(document.upload_form);
-
-    // 檢查傳送的 FormData 是否正確
-    console.log("FormData entries:");
-    for (let [key, value] of fd.entries()) {
-      console.log(key, value);
-    }
-
-
-    fetch("./upload-photos.php", {
-      method: "POST",
-      body: fd,
-    })
-      .then((r) => r.json())
-      .then((obj) => {
-        console.log(obj);
-        if (obj.success && obj.file > 0) {
-          const myImg = document.querySelector("img.photo");
-          document.forms[0].photo.value = obj.files[0];
-          myImg.src = `./uploads/${obj.file[0]}`;
-        } else {
-          alert("圖片上傳失敗，請再試一次！");
-        }
-      })
-      .catch(console.warn);
-  };
-
   
   // ----------------照片預覽
   const myImg = document.querySelector("#myImg");
@@ -349,7 +310,6 @@ const variantNameField = document.querySelector('#variant_name');
     }
     
   }
-
 /*------------script編輯區END--------------*/
 
     </script>
