@@ -129,7 +129,7 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
                       <div class="form-text"></div>
                     </div>
                     <div class="row mb-3 align-items-center">
-                      <label for="weight" class="col-sm-2 col-form-label">體重</label>
+                      <label for="weight" class="col-sm-2 col-form-label">體重 **</label>
                       <div class="col-sm-10">
                         <input type="number" class="form-control" id="weight" name="weight" step="0.01">
                       </div>
@@ -169,13 +169,22 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
                     <div class="row mb-3 align-items-center">
                       <label for="avatar" class="col-sm-2 col-form-label">大頭貼</label>
                       <div class="col-sm-10">
-                        <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+                        <img src="" width="200px" alt="" class="avatar-preview">
+                        <input type="hidden" name="avatar" value="">
+                        <div>
+                          <button type="button" class="btn btn-primary" onclick="document.getElementById('avatarInput').click()">上傳大頭貼</button>
+                        </div>
+                        <input type="file" id="avatarInput" name="avatar" accept="image/*" style="display: none;">
                       </div>
                     </div>
                     <div class="card-footer">
                       <button type="submit" class="btn btn-warning">提交</button>
                       <button type="button" class="btn btn-light float-end" onclick="goBack()">取消</button>
                     </div>
+                </form>
+
+                <form name="upload_form" hidden>
+                  <input type="file" name="avatar" accept="image/jpeg,image/png" />
                 </form>
                 <!--end::Form-->
               </div>
@@ -257,14 +266,35 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
   <!-- Customized Script -->
   <script>
     const nameField = document.querySelector('#name');
-    // const emailField = document.querySelector('#email');
     const myModal = new bootstrap.Modal('#pet-add-modal');
+    const avatarInput = document.getElementById('avatarInput');
+    let selectedFile = null;
 
-    // function validateEmail(email) {
-    //   // 使用 regular expression 檢查 email 格式正不正確
-    //   const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zAZ]{2,}))$/;
-    //   return pattern.test(email);
-    // }
+    // 為名字欄位添加 blur 事件監聽器
+    nameField.addEventListener('blur', validateName);
+
+    function validateName() {
+      const errorElement = nameField.closest('.row').querySelector('.form-text');
+      if (nameField.value.length < 2) {
+        errorElement.innerHTML = '名字至少要兩個字';
+        nameField.closest('.mb-3').classList.add('error');
+      } else {
+        errorElement.innerHTML = '';
+        nameField.closest('.mb-3').classList.remove('error');
+      }
+    }
+    avatarInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        selectedFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const myImg = document.querySelector('img.avatar-preview');
+          myImg.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    };
 
     const sendData = e => {
       e.preventDefault(); //不要讓表單送出
@@ -275,10 +305,10 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
       let isPass = true; //有沒有通過檢查，預設true
       // TODO: 資料欄位的檢查 birthday species variety
 
-      if (nameField.value.length < 2) {
+      // 在提交時再次驗證名字
+      validateName();
+      if (nameField.closest('.mb-3').classList.contains('error')) {
         isPass = false;
-        nameField.nextElementSibling.innerHTML = '名字至少要兩個字';
-        nameField.closest('.mb-3').classList.add('error');
       }
 
       // if (!validateEmail(emailField.value)) {
@@ -292,6 +322,11 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
         //先做一個空的表單
         const fd = new FormData(document.forms[0]);
 
+        // 如果有選擇檔案，添加到 FormData
+        if (selectedFile) {
+          fd.set('avatar', selectedFile);
+        }
+
         fetch(`./api/pet-add-api.php`, {
             method: 'POST',
             body: fd
@@ -303,10 +338,13 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
             } else if (obj.success) {
               myModal.show();
             }
-          }).catch(console.warn);
+          }).catch(error => {
+            console.error('Error:', error);
+            alert('提交過程中發生錯誤');
+          })
+        document.querySelector('form').onsubmit = sendData;
       }
-
-    }
+    };
 
     function goBack() {
       window.history.back();

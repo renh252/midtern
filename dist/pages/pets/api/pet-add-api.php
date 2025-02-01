@@ -18,7 +18,7 @@ $output = [
 // 處理上傳
 $main_photo = null;
 if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
-    $uploadDir = __DIR__ . '/../../uploads/pet_avatars/'; // 确保这个目录存在并可写
+    $uploadDir = __DIR__ . '/../uploads/pet_avatars/'; // 上傳目錄
     if (!file_exists($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
@@ -29,7 +29,8 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
     if (move_uploaded_file($_FILES['avatar']['tmp_name'], $uploadFile)) {
         $main_photo = '/uploads/pet_avatars/' . $newFileName; // 儲存路徑
     } else {
-        $output['error'] = '上傳失敗';
+        $output['error'] =  '上傳失敗：' . error_get_last()['message'];
+        error_log("File upload failed: " . error_get_last()['message']);
         echo json_encode($output, JSON_UNESCAPED_UNICODE);
         exit;
     }
