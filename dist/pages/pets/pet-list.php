@@ -261,7 +261,7 @@ $qs = array_filter($_GET); #去除值為空的項目
                       }
                       ?>
                       <th><i class="fa-regular fa-pen-to-square"></i></th>
-                      <!-- <th>main_photo</th> -->
+                      <th>main_photo</th>
                     </tr>
 
                   </thead>
@@ -283,11 +283,11 @@ $qs = array_filter($_GET); #去除值為空的項目
                         <td><?= $r['chip_number'] ?></td>
                         <td><?= $r['is_adopted'] ?></td>
                         <td><a href="pet-edit.php?id=<?= $r['id'] ?>"><i class="fa-regular fa-pen-to-square"></i></a></td>
-                        <!-- <td>
+                        <td>
                           <?php if (!empty($r['main_photo'])): ?>
                             <img src="<?=ROOT_URL .'dist/pages/pets'. $r['main_photo']?>" alt="寵物照片" width="100px">
                           <?php endif; ?>
-                        </td> -->
+                        </td>
                       </tr>
                     <?php endforeach; ?>
                   </tbody>
@@ -304,7 +304,7 @@ $qs = array_filter($_GET); #去除值為空的項目
                       <th>chip_number</th>
                       <th>is_adopted</th>
                       <th><i class="fa-regular fa-pen-to-square"></i></th>
-                      <!-- <th>main_photo</th> -->
+                      <th>main_photo</th>
                     </tr>
                   </tfoot>
                 </table>
