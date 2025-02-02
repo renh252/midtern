@@ -42,15 +42,7 @@ $sql = "INSERT INTO `pets`
     `variety`, `gender`, `birthday`, `weight`, `chip_number`, `is_adopted`, `main_photo`)
     VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-# TODO: 欄位檢查 mobile birthday address
-
-// $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
-// if (!$email) {
-//     $output['code'] = 401; #自行決定的除錯編碼
-//     $output['error'] = '請填寫正確的email';
-//     echo json_encode($output, JSON_UNESCAPED_UNICODE);
-//     exit;
-// }
+# TODO: 欄位檢查 
 
 $birthday = empty($_POST['birthday']) ?null:$_POST['birthday'];
 # 處理日期
@@ -68,22 +60,33 @@ if (empty($_POST['birthday'])) {
 }
 
 // `name`, `species`, `variety`, `gender`, `birthday`, `weight`, `chip`, `is-adopted`
-$stmt = $pdo->prepare($sql);
-#因為還沒有值 不能直接query,用prepare先編譯成SQL語法
-// execute會自動跳脫，避免SQL注入
-$stmt->execute([
-    $_POST['name'],
-    $_POST['species'],
-    $_POST['variety'],
-    $_POST['gender'],
-    $_POST['birthday'],
-    $_POST['weight'],
-    $_POST['chip'],
-    $_POST['is-adopted'],
-    $main_photo // 添加 main_photo
-]);
+try {
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        $_POST['name'],
+        $_POST['species'],
+        $_POST['variety'],
+        $_POST['gender'],
+        $birthday,
+        $_POST['weight'],
+        $_POST['chip'],
+        $_POST['is-adopted'],
+        $main_photo
+    ]);
 
-$output['success'] = !! $stmt->rowCount(); #新增幾筆，轉換成bool
-$output['lastInsertId'] = $pdo->lastInsertId(); # 最新拿到的 PK
+    $output['success'] = !! $stmt->rowCount(); #新增幾筆，轉換成bool
+    $output['lastInsertId'] = $pdo->lastInsertId(); # 最新拿到的 PK
+} catch (PDOException $e) {
+    $output['success'] = false;
+    // 如果有重複的chip_number，就回傳錯誤訊息
+    if ($e->getCode() == '23000' && strpos($e->getMessage(), 'Duplicate entry') !== false && strpos($e->getMessage(), 'chip_number') !== false) {
+        $output['error'] = 'duplicate_chip';
+    } else {
+        $output['error'] = 'database_error';
+        // 可以選擇記錄詳細錯誤信息，但不要發送給客戶端
+        error_log("Database error: " . $e->getMessage());
+    }
+}
 
+// 輸出
 echo json_encode($output, JSON_UNESCAPED_UNICODE);

@@ -82,7 +82,7 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
                       <label for="species" class="col-sm-2 col-form-label">物種 **</label>
                       <div class="col-sm-10">
                         <select class="form-select" aria-label="select species" name="species">
-                          <option value="null" selected>請選擇</option>
+                          <option value="null" selected disabled>請選擇</option>
                           <option value="狗">狗</option>
                           <option value="貓">貓</option>
                         </select>
@@ -122,22 +122,24 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
                       </div>
                     </div>
                     <div class="row mb-3 align-items-center">
-                      <label for="birthday" class="col-sm-2 col-form-label">生日</label>
+                      <label for="birthday" class="col-sm-2 col-form-label">生日 **</label>
                       <div class="col-sm-10">
                         <input type="date" class="form-control" id="birthday" name="birthday">
                       </div>
                       <div class="form-text"></div>
                     </div>
                     <div class="row mb-3 align-items-center">
-                      <label for="weight" class="col-sm-2 col-form-label">體重 **</label>
+                      <label for="weight" class="col-sm-2 col-form-label">體重(公斤) **</label>
                       <div class="col-sm-10">
                         <input type="number" class="form-control" id="weight" name="weight" step="0.01">
                       </div>
+                      <div class="form-text"></div>
                     </div>
                     <div class="row mb-3 align-items-center">
-                      <label for="chip" class="col-sm-2 col-form-label">晶片號碼</label>
+                      <label for="chip" class="col-sm-2 col-form-label">晶片號碼(10碼數字) **</label>
                       <div class="col-sm-10">
                         <input type="number" class="form-control" id="chip" name="chip" value="">
+                        <div class="form-text"></div>
                       </div>
                     </div>
                     <div class="row mb-3 align-items-center">
@@ -266,8 +268,12 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
   <!-- Customized Script -->
   <script>
     const nameField = document.querySelector('#name');
+    const weightField = document.querySelector('#weight');
+    const speciesField = document.querySelector('select[name="species"]');
     const myModal = new bootstrap.Modal('#pet-add-modal');
     const avatarInput = document.getElementById('avatarInput');
+    const birthdayField = document.querySelector('#birthday');
+    const chipField = document.querySelector('#chip');
     let selectedFile = null;
 
     // 為名字欄位添加 blur 事件監聽器
@@ -296,28 +302,130 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
       }
     };
 
+    // 為生日欄位添加 blur 事件監聽器
+    birthdayField.addEventListener('blur', validateBirthday);
+
+    function validateBirthday() {
+      const errorElement = birthdayField.closest('.row').querySelector('.form-text');
+      if (!errorElement) {
+        console.error('找不到生日欄位的錯誤訊息元素');
+        return;
+      }
+
+      const inputDate = new Date(birthdayField.value);
+      const today = new Date();
+      // 設置輸入日期和今天的時間為當天的開始（00:00:00）
+      inputDate.setHours(0, 0, 0, 0);
+      today.setHours(0, 0, 0, 0);
+
+      if (isNaN(inputDate.getTime())) {
+        // 日期無效
+        errorElement.innerHTML = '請輸入有效的日期';
+        birthdayField.closest('.mb-3').classList.add('error');
+      } else if (inputDate > today) {
+        // 日期超過今天
+        errorElement.innerHTML = '生日不能超過今天';
+        birthdayField.closest('.mb-3').classList.add('error');
+      } else {
+        // 日期有效
+        errorElement.innerHTML = '';
+        birthdayField.closest('.mb-3').classList.remove('error');
+      }
+    }
+
+    // 體重欄位驗證
+    weightField.addEventListener('blur', validateWeight);
+
+    function validateWeight() {
+      const errorElement = weightField.closest('.row').querySelector('.form-text');
+      let weight = parseFloat(weightField.value);
+
+      if (isNaN(weight) || weight <= 0) {
+        errorElement.innerHTML = '請輸入正確的體重';
+        weightField.closest('.mb-3').classList.add('error');
+      } else {
+        // 如果小數點後超過兩位，則四捨五入到第二位
+        if (weight.toString().split('.')[1]?.length > 2) {
+          weight = Math.round(weight * 100) / 100;
+          weightField.value = weight.toFixed(2);
+        }
+        errorElement.innerHTML = '';
+        weightField.closest('.mb-3').classList.remove('error');
+      }
+    }
+
+    // 為晶片號碼欄位添加 blur 事件監聽器
+    chipField.addEventListener('blur', validateChip);
+
+    function validateChip() {
+      const errorElement = chipField.closest('.row').querySelector('.form-text');
+      if (!errorElement) {
+        console.error('找不到晶片號碼欄位的錯誤訊息元素');
+        return;
+      }
+
+      const chipNumber = chipField.value.trim();
+      const chipRegex = /^\d{10}$/; // 正則表達式：匹配10個數字
+
+      if (chipNumber === '') {
+        errorElement.innerHTML = '請填入晶片號碼(10碼純數字)';
+        chipField.closest('.mb-3').classList.add('error');
+      } else if (!chipRegex.test(chipNumber)) {
+        // 晶片號碼不符合要求
+        errorElement.innerHTML = '晶片號碼必須為10碼數字';
+        chipField.closest('.mb-3').classList.add('error');
+      } else {
+        // 晶片號碼有效
+        errorElement.innerHTML = '';
+        chipField.closest('.mb-3').classList.remove('error');
+      }
+    }
+
     const sendData = e => {
       e.preventDefault(); //不要讓表單送出
 
       nameField.closest('.mb-3').classList.remove('error');
-      // emailField.closest('.mb-3').classList.remove('error');
+      weightField.closest('.mb-3').classList.remove('error');
+      speciesField.closest('.mb-3').classList.remove('error');
 
       let isPass = true; //有沒有通過檢查，預設true
-      // TODO: 資料欄位的檢查 birthday species variety
+      // TODO: 資料欄位的檢查 birthday variety
 
-      // 在提交時再次驗證名字
+      // 驗證名字
       validateName();
       if (nameField.closest('.mb-3').classList.contains('error')) {
         isPass = false;
       }
 
-      // if (!validateEmail(emailField.value)) {
-      //   isPass = false;
-      //   emailField.nextElementSibling.innerHTML = '請填寫正確的email';
-      //   emailField.closest('.mb-3').classList.add('error');
-      // }
+      // 驗證體重
+      validateWeight();
+      if (weightField.closest('.mb-3').classList.contains('error')) {
+        isPass = false;
+      }
 
-      //isPass = false;
+      // 驗證生日
+      validateBirthday();
+      if (birthdayField.closest('.mb-3').classList.contains('error')) {
+        isPass = false;
+      }
+
+      // 驗證晶片號碼
+      validateChip();
+      if (chipField.closest('.mb-3').classList.contains('error')) {
+        isPass = false;
+      }
+
+      // 驗證物種
+      const speciesErrorElement = speciesField.closest('.row').querySelector('.form-text');
+      if (speciesField.value === 'null') {
+        speciesErrorElement.innerHTML = '請選擇物種';
+        speciesField.closest('.mb-3').classList.add('error');
+        isPass = false;
+      } else {
+        speciesErrorElement.innerHTML = '';
+        speciesField.closest('.mb-3').classList.remove('error');
+      }
+
       if (isPass) {
         //先做一個空的表單
         const fd = new FormData(document.forms[0]);
@@ -331,16 +439,26 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
             method: 'POST',
             body: fd
           }).then(r => r.json())
-          .then(obj => {
-            console.log(obj);
-            if (!obj.success && obj.error) {
-              alert(obj.error);
-            } else if (obj.success) {
+          .then(data => {
+            console.log(data);
+            if (data.success) {
               myModal.show();
+            } else {
+              if (data.error === 'duplicate_chip') {
+                // 顯示晶片號碼重複的錯誤
+                const chipErrorElement = chipField.closest('.row').querySelector('.form-text');
+                if (chipErrorElement) {
+                  chipErrorElement.innerHTML = '晶片號碼重複';
+                  chipField.closest('.mb-3').classList.add('error');
+                }
+              } else {
+                // 處理其他錯誤
+                alert('新增失敗');
+              }
             }
           }).catch(error => {
             console.error('Error:', error);
-            alert('提交過程中發生錯誤');
+            alert('新增過程中發生錯誤');
           })
         document.querySelector('form').onsubmit = sendData;
       }
