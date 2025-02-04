@@ -285,7 +285,7 @@ $qs = array_filter($_GET); #去除值為空的項目
                         <td><a href="pet-edit.php?id=<?= $r['id'] ?>"><i class="fa-regular fa-pen-to-square"></i></a></td>
                         <td>
                           <?php if (!empty($r['main_photo'])): ?>
-                            <img src="<?=ROOT_URL .'dist/pages/pets'. $r['main_photo']?>" alt="寵物照片" width="100px">
+                            <img src="<?= ROOT_URL . 'dist/pages/pets' . $r['main_photo'] ?>" alt="寵物照片" width="100px">
                           <?php endif; ?>
                         </td>
                       </tr>
@@ -320,6 +320,43 @@ $qs = array_filter($_GET); #去除值為空的項目
     <?php include ROOT_PATH . 'dist/pages/parts/footer.php' ?>
     <!--end::Footer-->
   </div>
+
+  <!-- 結果顯示 Modal -->
+  <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="resultModalLabel">操作結果</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="resultModalBody">
+          <!-- 訊息內容將在這裡動態插入 -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 確認刪除 Modal -->
+  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteModalLabel">確認刪除</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="confirmDeleteModalBody">
+          <!-- 確認刪除的訊息將在這裡動態插入 -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">確認刪除</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!--end::App Wrapper-->
   <!--begin::Script-->
   <script>
@@ -330,12 +367,42 @@ $qs = array_filter($_GET); #去除值為空的項目
       const id = parseInt(td_id.innerHTML);
       const name = td_name.innerHTML;
       console.log('刪除', id, name);
-      if (confirm(`是否要刪除編號為 ${id} 名字為 ${name} 的資料?`)) {
-        // 使用javascript做跳轉頁面
+      
+      // 顯示確認刪除的 Modal
+      const confirmDeleteModalBody = document.getElementById('confirmDeleteModalBody');
+      confirmDeleteModalBody.textContent = `是否要刪除編號為 ${id} 名字為 ${name} 的資料?`;
+      
+      const confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+      confirmDeleteModal.show();
+
+      // 設置確認刪除按鈕的點擊事件
+      document.getElementById('confirmDeleteBtn').onclick = function() {
+        confirmDeleteModal.hide();
         location.href = `pet-del.php?id=${id}`;
-      }
+      };
+    }
+
+    // 顯示結果 Modal 的函數
+    function showResultModal(message) {
+      const modalBody = document.getElementById('resultModalBody');
+      modalBody.textContent = message;
+      const modal = new bootstrap.Modal(document.getElementById('resultModal'));
+      modal.show();
     }
   </script>
+  <?php
+  // 如果有設定標誌就顯示 Modal
+  if (isset($_SESSION['show_alert']) && $_SESSION['show_alert']) {
+    echo "<script>
+            window.onload = function() {
+              showResultModal('已刪除編號為: " . $_SESSION['deleted_id'] . " 名字為: " . $_SESSION['deleted_name'] . " 的資料');
+            }
+          </script>";
+    unset($_SESSION['show_alert']); // 使用後清除標誌
+    unset($_SESSION['deleted_id']); // 清除 id
+    unset($_SESSION['deleted_name']); // 清除 name
+  }
+  ?>
   <!--begin::Third Party Plugin(OverlayScrollbars) 可自定義的覆蓋滾動條-->
   <script
     src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
@@ -372,19 +439,7 @@ $qs = array_filter($_GET); #去除值為空的項目
       }
     });
   </script>
-  <?php
-  // 如果有設定標誌就顯示alert
-  if (isset($_SESSION['show_alert']) && $_SESSION['show_alert']) {
-    echo "<script>
-            window.onload = function() {
-                alert('已刪除編號: ' + {$_SESSION['deleted_id']} + ' ' + '{$_SESSION['deleted_name']}');
-            }
-          </script>";
-    unset($_SESSION['show_alert']); // 使用後清除標誌
-    unset($_SESSION['deleted_id']); // 清除 id
-    unset($_SESSION['deleted_name']); // 清除 name
-  }
-  ?>
+
   <!--end::OverlayScrollbars Configure-->
   <!-- OPTIONAL SCRIPTS 額外功能&實作-->
   <!-- 排序功能 -->

@@ -12,15 +12,24 @@ $result = [
 ];
 if ($id) {
   if ($id > 0) {
-    $stmt = $pdo->prepare("DELETE FROM pets WHERE id = ?");
+    // 在刪除之前，先獲取寵物的名稱
+    $stmt = $pdo->prepare("SELECT name FROM pets WHERE id = ?");
     $stmt->execute([$id]);
-    $affected_rows = $stmt->rowCount(); // 取得受影響的列數，用來判斷是否有刪到資料
-    if ($affected_rows > 0) {
-      $result['status'] = 'success';
-      $result['message'] = '資料已成功刪除';
-      $_SESSION['show_alert'] = true; // 設置一個標誌來顯示 alert
-      $_SESSION['deleted_id'] = $id;  // 假設 $id 是被刪除項目的 id
-      $_SESSION['deleted_name'] = $name;  // 假設 $name 是被刪除項目的 name
+    $pet = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($pet) {
+      $stmt = $pdo->prepare("DELETE FROM pets WHERE id = ?");
+      $stmt->execute([$id]);
+      $affected_rows = $stmt->rowCount(); // 取得受影響的列數，用來判斷是否有刪到資料
+      if ($affected_rows > 0) {
+        $result['status'] = 'success';
+        $result['message'] = '資料已成功刪除';
+        $_SESSION['show_alert'] = true; // 設置一個標誌來顯示 alert
+        $_SESSION['deleted_id'] = $id;  // 設置被刪除項目的 id
+        $_SESSION['deleted_name'] = $pet['name'];  // 設置被刪除項目的 name
+      } else {
+        $result['message'] = '查無此筆資料';
+      }
     } else {
       $result['message'] = '查無此筆資料';
     }
