@@ -107,7 +107,7 @@ if (empty($r)) {
                       <input type="hidden" name="species" value="<?= $r['species'] ?>">
                       <label for="species" class="col-sm-2 col-form-label">物種 **</label>
                       <div class="col-sm-10">
-                        <input type="text" name="species" class="form-control" value="<?= isset($r['species']) ? $r['species'] : '' ?>" disabled>
+                        <input type="text" name="species" class="form-control" value="<?= isset($r['species']) ? $r['species'] : '' ?>">
                       </div>
                       <div class="form-text"></div>
                     </div>
@@ -115,7 +115,7 @@ if (empty($r)) {
                       <input type="hidden" name="variety" value="<?= $r['variety'] ?>">
                       <label for="variety" class="col-sm-2 col-form-label">品種</label>
                       <div class="col-sm-10">
-                        <input type="text" class="form-control" value="<?= $r['variety'] ?>" disabled>
+                        <input type="text" class="form-control" value="<?= $r['variety'] ?>">
                       </div>
                     </div>
                     <div class="row mb-3 align-items-center">
@@ -191,13 +191,40 @@ if (empty($r)) {
                       </div>
                     </div>
                     <div class="row mb-3 align-items-center">
+                      <div class="col-sm-2 col-form-label">是否絕育 **</div>
+                      <div class="col-sm-1">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="fixed"
+                            id="fixed1"
+                            value="0"
+                            <?= $r['fixed'] == '0' ? 'checked' : '' ?> />
+                          <label class="form-check-label" for="fixed1"> 否 </label>
+                        </div>
+                      </div>
+                      <div class="col-sm-1">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="fixed"
+                            id="fixed2"
+                            value="1"
+                            <?= $r['fixed'] == '1' ? 'checked' : '' ?> />
+                          <label class="form-check-label" for="fixed2"> 是 </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mb-3 align-items-center">
                       <label for="avatar" class="col-sm-2 col-form-label">大頭貼</label>
                       <div class="col-sm-10">
-                        <?php if (!empty($row['main_photo'])): ?>
-                          <img src="<?= $row['main_photo'] ?>" alt="Current Avatar" style="max-width: 200px; margin-bottom: 10px;">
+                        <?php if (!empty($r['main_photo'])): ?>
+                          <img src="<?= ROOT_URL .'dist/pages/pets'. $r['main_photo'] ?>" alt="Current Avatar" style="max-width: 200px; margin-bottom: 10px;">
                         <?php endif; ?>
                         <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
-                        <input type="hidden" name="old_avatar" value="<?= $row['main_photo'] ?>">
+                        <input type="hidden" name="old_avatar" value="<?= $r['main_photo'] ?>">
                         <small class="form-text text-muted">上傳新照片將覆蓋原有照片</small>
                       </div>
                     </div>
@@ -239,6 +266,26 @@ if (empty($r)) {
       </div>
     </div>
     <!-- End Modal -->
+    <!-- 資料未修改 Modal -->
+    <div class="modal fade" id="noChangeModal" tabindex="-1" aria-labelledby="noChangeModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="noChangeModalLabel">修改結果</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            資料未修改
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            <a href="pet-list.php" class="btn btn-primary">回到列表</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Modal -->
+
 
     <!--begin::Footer-->
     <?php include ROOT_PATH . 'dist/pages/parts/footer.php' ?>
@@ -286,41 +333,65 @@ if (empty($r)) {
   <!-- Customized Script -->
   <script>
     const nameField = document.querySelector('#name');
-    // const emailField = document.querySelector('#email');
     const myModal = new bootstrap.Modal('#pet-add-modal');
-
-    // function validateEmail(email) {
-    //   // 使用 regular expression 檢查 email 格式正不正確
-    //   const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zAZ]{2,}))$/;
-    //   return pattern.test(email);
-    // }
 
     const sendData = e => {
       e.preventDefault(); //不要讓表單送出
 
-      nameField.closest('.mb-3').classList.remove('error');
-      // emailField.closest('.mb-3').classList.remove('error');
+      // 重置所有錯誤提示
+      document.querySelectorAll('.mb-3').forEach(el => el.classList.remove('error'));
+      document.querySelectorAll('.form-text').forEach(el => el.innerHTML = '');
 
       let isPass = true; //有沒有通過檢查，預設true
-      // TODO: 資料欄位的檢查 birthday species variety
 
+      // 驗證名字
       if (nameField.value.length < 2) {
         isPass = false;
         nameField.nextElementSibling.innerHTML = '名字至少要兩個字';
         nameField.closest('.mb-3').classList.add('error');
       }
 
-      // if (!validateEmail(emailField.value)) {
-      //   isPass = false;
-      //   emailField.nextElementSibling.innerHTML = '請填寫正確的email';
-      //   emailField.closest('.mb-3').classList.add('error');
-      // }
+      // 驗證生日
+      const birthdayField = document.querySelector('#birthday');
+      if (!birthdayField.value) {
+        isPass = false;
+        birthdayField.nextElementSibling.innerHTML = '請選擇生日';
+        birthdayField.closest('.mb-3').classList.add('error');
+      }
 
-      //isPass = false;
+      // 驗證體重
+      const weightField = document.querySelector('#weight');
+      if (weightField.value && (isNaN(weightField.value) || Number(weightField.value) <= 0)) {
+        isPass = false;
+        weightField.nextElementSibling.innerHTML = '請輸入有效的體重';
+        weightField.closest('.mb-3').classList.add('error');
+      }
+
+      // 驗證是否領養
+      const isAdoptedField = document.querySelector('input[name="is-adopted"]:checked');
+      if (!isAdoptedField) {
+        isPass = false;
+        const errorElement = document.querySelector('input[name="is-adopted"]').closest('.row').querySelector('.form-text');
+        if (errorElement) {
+          errorElement.innerHTML = '請選擇是否領養';
+          document.querySelector('input[name="is-adopted"]').closest('.mb-3').classList.add('error');
+        }
+      }
+
+      // 驗證是否絕育
+      const isFixedField = document.querySelector('input[name="fixed"]:checked');
+      if (!isFixedField) {
+        isPass = false;
+        const errorElement = document.querySelector('input[name="fixed"]').closest('.row').querySelector('.form-text');
+        if (errorElement) {
+          errorElement.innerHTML = '請選擇是否絕育';
+          document.querySelector('input[name="fixed"]').closest('.mb-3').classList.add('error');
+        }
+      }
+
       if (isPass) {
-        //先做一個空的表單
+        // 如果通過驗證，發送 AJAX 請求
         const fd = new FormData(document.forms[0]);
-
         fetch(`./api/pet-edit-api.php`, {
             method: 'POST',
             body: fd
@@ -330,12 +401,32 @@ if (empty($r)) {
             if (obj.success) {
               myModal.show();
             } else {
-              alert('資料未修改');
+              if (obj.errors) {
+                for (let k in obj.errors) {
+                  const el = document.querySelector(`#${k}`);
+                  if (el) {
+                    el.closest('.mb-3').classList.add('error');
+                    el.nextElementSibling.innerHTML = obj.errors[k];
+                  }
+                }
+              } else {
+                // 顯示資料未修改的 Modal
+                const noChangeModal = new bootstrap.Modal(document.getElementById('noChangeModal'));
+                noChangeModal.show();
+              }
             }
-          }).catch(console.warn);
+          }).catch(ex => {
+            console.log(ex)
+            // 如果發生錯誤，也顯示資料未修改的 Modal
+            const noChangeModal = new bootstrap.Modal(document.getElementById('noChangeModal'));
+            noChangeModal.show();
+          });
       }
-
-    }
+    };
+    // 確保在 DOM 加載完成後初始化 Modal
+    document.addEventListener('DOMContentLoaded', function() {
+      const noChangeModal = new bootstrap.Modal(document.getElementById('noChangeModal'));
+    });
 
     function goBack() {
       window.history.back();

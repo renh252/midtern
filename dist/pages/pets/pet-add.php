@@ -169,14 +169,37 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
                       </div>
                     </div>
                     <div class="row mb-3 align-items-center">
+                      <div class="col-sm-2 col-form-label">是否絕育 **</div>
+                      <div class="col-sm-1">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="fixed"
+                            id="fixed1"
+                            value="0"
+                            checked />
+                          <label class="form-check-label" for="fixed1"> 否 </label>
+                        </div>
+                      </div>
+                      <div class="col-sm-1">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="fixed"
+                            id="fixed2"
+                            value="1" />
+                          <label class="form-check-label" for="fixed2"> 是 </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3 align-items-center">
                       <label for="avatar" class="col-sm-2 col-form-label">大頭貼</label>
                       <div class="col-sm-10">
-                        <img src="" width="200px" alt="" class="avatar-preview">
-                        <input type="hidden" name="avatar" value="">
-                        <div>
-                          <button type="button" class="btn btn-primary" onclick="document.getElementById('avatarInput').click()">上傳大頭貼</button>
-                        </div>
-                        <input type="file" id="avatarInput" name="avatar" accept="image/*" style="display: none;">
+                        <img src="" alt="" class="avatar-preview" style="max-width: 200px; margin-bottom: 10px;">
+                        <input type="file" class="form-control" id="avatarInput" name="avatar" accept="image/*">
                       </div>
                     </div>
                     <div class="card-footer">
@@ -412,6 +435,17 @@ $pageName = "pet-add"; // 這個變數可修改，用在sidebar的按鈕active
       // 驗證晶片號碼
       validateChip();
       if (chipField.closest('.mb-3').classList.contains('error')) {
+        isPass = false;
+      }
+
+      // 驗證是否絕育
+      const isfixedField = document.querySelector('input[name="fixed"]:checked');
+      if (!isfixedField || (isfixedField.value !== '0' && isfixedField.value !== '1')) {
+        const errorElement = document.querySelector('input[name="fixed"]').closest('.row').querySelector('.form-text');
+        if (errorElement) {
+          errorElement.innerHTML = '請選擇是否絕育';
+          document.querySelector('input[name="fixed"]').closest('.mb-3').classList.add('error');
+        }
         isPass = false;
       }
 

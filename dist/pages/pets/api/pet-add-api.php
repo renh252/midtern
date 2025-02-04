@@ -36,48 +36,71 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-//避免SQL注入 用?佔位符號
-$sql = "INSERT INTO `pets` 
-  ( `name`, `species`,
-    `variety`, `gender`, `birthday`, `weight`, `chip_number`, `is_adopted`, `main_photo`)
-    VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-# TODO: 欄位檢查 
+// 驗證並處理輸入數據
+$name = trim($_POST['name'] ?? '');
+$species = trim($_POST['species'] ?? '');
+$variety = trim($_POST['variety'] ?? '');
+$gender = $_POST['gender'] ?? '';
+$birthday = !empty($_POST['birthday']) ? date('Y-m-d', strtotime($_POST['birthday'])) : null;
+$weight = !empty($_POST['weight']) ? floatval($_POST['weight']) : null;
+$chip_number = trim($_POST['chip'] ?? '');
+$is_adopted = isset($_POST['is-adopted']) ? intval($_POST['is-adopted']) : 0;
+$fixed = isset($_POST['fixed']) ? intval($_POST['fixed']) : 0;
 
-$birthday = empty($_POST['birthday']) ?null:$_POST['birthday'];
-# 處理日期
-if (empty($_POST['birthday'])) {
-    $birthday = null;
-} else {
-    $birthday = strtotime($_POST['birthday']); #轉換成timestamp
-    if ($birthday === false) {
-        //用==如果輸入0也會變成true，所以需要用嚴格等於
-        //如果不能轉換成timestamp格式
-        $birthday = null;
-    } else {
-        $birthday = date('Y-m-d', $birthday);
-    }
+// 驗證
+$errors = [];
+
+if (strlen($name) < 2) {
+    $errors['name'] = '名字至少要兩個字';
 }
 
-// `name`, `species`, `variety`, `gender`, `birthday`, `weight`, `chip`, `is-adopted`
+if (empty($birthday)) {
+    $errors['birthday'] = '請選擇生日';
+}
+
+if ($weight !== null && $weight <= 0) {
+    $errors['weight'] = '請輸入有效的體重';
+}
+
+if (!in_array($is_adopted, [0, 1])) {
+    $errors['is-adopted'] = '請選擇是否領養';
+}
+
+if (!in_array($fixed, [0, 1])) {
+    $errors['fixed'] = '請選擇是否絕育';
+}
+
+if (!empty($errors)) {
+    $output['errors'] = $errors;
+    echo json_encode($output, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+$sql = "INSERT INTO `pets` 
+  (`name`, `species`, `variety`, `gender`, `birthday`, `weight`, `chip_number`, `is_adopted`, `fixed`, `main_photo`)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+$stmt = $pdo->prepare($sql);
+
 try {
-    $stmt = $pdo->prepare($sql);
     $stmt->execute([
-        $_POST['name'],
-        $_POST['species'],
-        $_POST['variety'],
-        $_POST['gender'],
+        $name,
+        $species,
+        $variety,
+        $gender,
         $birthday,
-        $_POST['weight'],
-        $_POST['chip'],
-        $_POST['is-adopted'],
+        $weight,
+        $chip_number,
+        $is_adopted,
+        $fixed,
         $main_photo
     ]);
 
-    $output['success'] = !! $stmt->rowCount(); #新增幾筆，轉換成bool
-    $output['lastInsertId'] = $pdo->lastInsertId(); # 最新拿到的 PK
+    $output['success'] = $stmt->rowCount() > 0;
+    $output['lastInsertId'] = $pdo->lastInsertId();
 } catch (PDOException $e) {
-    $output['success'] = false;
+    $output['error'] = '資料新增失敗：' . $e->getMessage();
     // 如果有重複的chip_number，就回傳錯誤訊息
     if ($e->getCode() == '23000' && strpos($e->getMessage(), 'Duplicate entry') !== false && strpos($e->getMessage(), 'chip_number') !== false) {
         $output['error'] = 'duplicate_chip';
