@@ -47,7 +47,7 @@ $totalRows = $pdo->query($t_sql)->fetch(PDO::FETCH_NUM)[0];  // 索引式陣列�
 #總頁數
 $totalPages = ceil($totalRows / $perPage); #ceil無條件進位
 
-$allowedColumns = ['id', 'name', 'species', 'variety', 'gender', 'birthday', 'weight', 'chip_number', 'is_adopted'];
+$allowedColumns = ['id', 'name', 'species', 'variety', 'gender', 'birthday', 'weight', 'chip_number', 'is_adopted', 'fixed'];
 $sort = isset($_GET['sort']) && in_array($_GET['sort'], $allowedColumns) ? $_GET['sort'] : 'id';
 
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'id';
@@ -230,7 +230,7 @@ $qs = array_filter($_GET); #去除值為空的項目
                     <tr>
                       <th><i class="fa-regular fa-trash-can"></i></th>
                       <?php
-                      $columns = ['id', 'name', 'species', 'variety', 'gender', 'birthday', 'weight', 'chip_number', 'is_adopted'];
+                      $columns = ['id', 'name', 'species', 'variety', 'gender', 'birthday', 'weight', 'chip_number', 'is_adopted', 'fixed'];
                       $currentSort = isset($_GET['sort']) ? $_GET['sort'] : '';
                       $currentOrder = isset($_GET['order']) ? $_GET['order'] : '';
 
@@ -263,7 +263,6 @@ $qs = array_filter($_GET); #去除值為空的項目
                       <th><i class="fa-regular fa-pen-to-square"></i></th>
                       <th>main_photo</th>
                     </tr>
-
                   </thead>
                   <tbody>
                     <?php
@@ -282,6 +281,7 @@ $qs = array_filter($_GET); #去除值為空的項目
                         <td><?= $r['weight'] ?></td>
                         <td><?= $r['chip_number'] ?></td>
                         <td><?= $r['is_adopted'] ?></td>
+                        <td><?= $r['fixed'] == 1 ? '是' : '否' ?></td>
                         <td><a href="pet-edit.php?id=<?= $r['id'] ?>"><i class="fa-regular fa-pen-to-square"></i></a></td>
                         <td>
                           <?php if (!empty($r['main_photo'])): ?>
@@ -303,6 +303,7 @@ $qs = array_filter($_GET); #去除值為空的項目
                       <th>weight</th>
                       <th>chip_number</th>
                       <th>is_adopted</th>
+                      <th>fixed</th>
                       <th><i class="fa-regular fa-pen-to-square"></i></th>
                       <th>main_photo</th>
                     </tr>
@@ -366,7 +367,6 @@ $qs = array_filter($_GET); #去除值為空的項目
       const [, td_id, td_name] = tr.querySelectorAll('td'); //陣列的解構賦值
       const id = parseInt(td_id.innerHTML);
       const name = td_name.innerHTML;
-      console.log('刪除', id, name);
       
       // 顯示確認刪除的 Modal
       const confirmDeleteModalBody = document.getElementById('confirmDeleteModalBody');
