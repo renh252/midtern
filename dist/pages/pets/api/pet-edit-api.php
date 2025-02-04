@@ -34,6 +34,12 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
             if (file_exists($oldFile)) {
                 unlink($oldFile);
             }
+            // 刪除 uploads/pet_avatars 資料夾中的舊檔案
+            $oldFileName = basename($_POST['old_avatar']);
+            $oldFileInUploadDir = $uploadDir . $oldFileName;
+            if (file_exists($oldFileInUploadDir)) {
+                unlink($oldFileInUploadDir);
+            }
         }
     } else {
         $output['error'] = '上傳失敗：' . error_get_last()['message'];
