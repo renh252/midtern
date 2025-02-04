@@ -360,6 +360,9 @@ $qs = array_filter($_GET); #去除值為空的項目
   </div>
   <!--end::App Wrapper-->
   <!--begin::Script-->
+  <!--begin::Required Plugin(AdminLTE)-->
+  <script src="<?= ROOT_URL ?>dist/js/adminlte.js"></script>
+  <!--end::Required Plugin(AdminLTE)-->
   <script>
     const deleteOne = e => {
       e.preventDefault(); //取消超連結導向
@@ -367,11 +370,11 @@ $qs = array_filter($_GET); #去除值為空的項目
       const [, td_id, td_name] = tr.querySelectorAll('td'); //陣列的解構賦值
       const id = parseInt(td_id.innerHTML);
       const name = td_name.innerHTML;
-      
+
       // 顯示確認刪除的 Modal
       const confirmDeleteModalBody = document.getElementById('confirmDeleteModalBody');
       confirmDeleteModalBody.textContent = `是否要刪除編號為 ${id} 名字為 ${name} 的資料?`;
-      
+
       const confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
       confirmDeleteModal.show();
 
