@@ -24,6 +24,7 @@ nbproject/private
 # Node / Bower
 node_modules/
 bower_components/
+package-lock.json
 
 # Docs
 /docs/_site/
